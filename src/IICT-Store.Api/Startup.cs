@@ -1,5 +1,6 @@
 using IICT_Store.Models;
 using IICT_Store.Repositories.CategoryRepositories;
+using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.PersonRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
@@ -54,6 +55,7 @@ namespace IICT_Store.Api
             services.AddScoped<IPurchaseService, PurchaseService>();
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IDistributionRepository, DistributionRepository>();
             services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
