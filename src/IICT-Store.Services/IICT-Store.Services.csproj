@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>IICT_Store.Services</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IICT-Store.Dtos\IICT-Store.Dtos.csproj" />
+    <ProjectReference Include="..\IICT-Store.Repositories\IICT-Store.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>
