@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IICT_Store.Dtos.Categories;
+using IICT_Store.Dtos.DistributionDtos;
 using IICT_Store.Dtos.PersonDtos;
 using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Dtos.Purchases;
@@ -28,6 +29,11 @@ namespace IICT_Store.Api
             CreateMap<Person, GetPersonDto>();
             CreateMap<CreatePersonDto, GetPersonDto>();
             CreateMap<CreatePersonDto, Person>();
+            CreateMap<CreateDistributionDto, Distribution>();
+            CreateMap<CreateDistributionDto, GetDistributionDto>();
+            CreateMap<ProductSerialNoDto, ProductSerialNo>();
+            CreateMap<ProductSerialNo, ProductSerialNoDto>();
+            CreateMap<Distribution, GetDistributionDto>();
         }
     }
 }
