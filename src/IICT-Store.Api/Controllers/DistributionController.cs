@@ -25,5 +25,26 @@ namespace IICT_Store.Api.Controllers
             var distribution = await distributionService.Create(createDistributionDto);
             return Ok(distribution);
         }
+        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(long id)
+        {
+            var distribution = await distributionService.GetById(id);
+            return Ok(distribution);
+        }
+
+        [HttpGet("roomno/{id}")]
+        public async Task<IActionResult> GetByRoomNo(int id)
+        {
+            var distribution = await distributionService.GetByRoomNo(id);
+            return Ok(distribution);
+        }
+        
+        [HttpGet("person/{id}")]
+        public async Task<IActionResult> GetByPersonId(long id)
+        {
+            var distribution = await distributionService.GetByPersonId(id);
+            return Ok(distribution);
+        }
     }
 }

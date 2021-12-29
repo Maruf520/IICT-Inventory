@@ -3,6 +3,7 @@ using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Dtos.Purchases;
 using IICT_Store.Models;
 using IICT_Store.Models.Pruchashes;
+using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
 using IICT_Store.Services.ProductServices;
 using Microsoft.AspNetCore.Http;
@@ -20,16 +21,19 @@ namespace IICT_Store.Services.PurchaseServices
         private readonly IMapper mapper;
         private readonly IPurchaseRepository purchaseRepository;
         private readonly IProductService productService;
-        public PurchaseService(IPurchaseRepository purchaseRepository, IProductService productService, IMapper mapper)
+        private readonly IProductRepository productRepository;
+        public PurchaseService(IPurchaseRepository purchaseRepository, IProductService productService, IMapper mapper, IProductRepository productRepository)
         {
             this.purchaseRepository = purchaseRepository;
             this.productService = productService;
             this.mapper = mapper;
+            this.productRepository = productRepository;
         }
         public async Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto)
         {
             ServiceResponse<GetPurchaseDto> response = new();
             var documentslist = await  UploadFile(createPurchaseDto.File);
+            var products = productRepository.GetById(createPurchaseDto.ProductId);
             List<CashMemo> cashMemos = new List<CashMemo>();
             foreach(var document in documentslist)
             {
@@ -51,7 +55,8 @@ namespace IICT_Store.Services.PurchaseServices
 
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToMap.CashMemos = cashMemos;
-            
+            products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
+            productRepository.Update(products);
             purchaseRepository.Insert(productToMap);
             response.Data = productToReturn;
             response.Messages.Add("Purchased.");
