@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace IICT_Store.Api.Migrations
+namespace IICT_Store.Api.Migrations.IICT_StoreDb
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20211229073004_PersonImage")]
-    partial class PersonImage
+    [Migration("20220105051135_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

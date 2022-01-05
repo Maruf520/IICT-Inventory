@@ -4,16 +4,14 @@ using IICT_Store.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace IICT_Store.Api.Migrations
+namespace IICT_Store.Api.Migrations.IICT_StoreDb
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20211229072744_ProductEntityNameChanged")]
-    partial class ProductEntityNameChanged
+    partial class IICT_StoreDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +60,9 @@ namespace IICT_Store.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
