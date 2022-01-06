@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IICT_Store.Dtos.Categories
+namespace IICT_Store.Dtos.ProductDtos
 {
-    public class CategoryDto
+    public class DamagedProductDto
     {
-        [Required]
+        public long Id { get; set; }
         public string Name { get; set; }
+        public int Quantity { get; set; }
     }
 }

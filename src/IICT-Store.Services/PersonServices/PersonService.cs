@@ -54,6 +54,18 @@ namespace IICT_Store.Services.PersonServices
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetPersonDto>>> GetAllPerson()
+        {
+            ServiceResponse<List<GetPersonDto>> response = new();
+            var person = personRepository.GetAll();
+            var personToMap = mapper.Map<List<GetPersonDto>>(person);
+            response.Data = personToMap;
+            response.Messages.Add("All Person");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+
+        }
+
         public async Task<ServiceResponse<GetPersonDto>> GetPersonById(long id)
         {
             ServiceResponse<GetPersonDto> response = new();

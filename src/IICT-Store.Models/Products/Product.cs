@@ -17,6 +17,7 @@ namespace IICT_Store.Models.Products
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public int QuantityInStock { get; set; }
+       // public int TotalQuantity { get; set; }
         public long CategoryId { get; set; }
         public Category Category { get; set; }
     }

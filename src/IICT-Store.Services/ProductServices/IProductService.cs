@@ -12,7 +12,7 @@ namespace IICT_Store.Services.ProductServices
     {
         Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto);
         Task<ServiceResponse<GetProductDto>> GetProductById(long id);
-        Task<ServiceResponse<IEnumerable<GetProductDto>>> GetALlProduct();
+        Task<ServiceResponse<List<GetProductDto>>> GetALlProduct();
         Task<ServiceResponse<CreateProductDto>> UpdateProduct(CreateProductDto createProductDto, long productId);
         Task<ServiceResponse<GetProductDto>> DeleteProduct( long productId);
     }

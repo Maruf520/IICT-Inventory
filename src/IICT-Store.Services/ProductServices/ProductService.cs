@@ -62,17 +62,17 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<IEnumerable<GetProductDto>>> GetALlProduct()
+        public async Task<ServiceResponse<List<GetProductDto>>> GetALlProduct()
         {
-            ServiceResponse<IEnumerable<GetProductDto>> response = new();
-            var products = await productRepository.GetAllProduct();
+            ServiceResponse<List<GetProductDto>> response = new();
+            var products =   productRepository.GetAll();
             if(products == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            var productToMap = mapper.Map<IEnumerable<GetProductDto>>(products);
+            var productToMap = mapper.Map<List<GetProductDto>>(products);
             response.Messages.Add("All Products.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Data = productToMap;

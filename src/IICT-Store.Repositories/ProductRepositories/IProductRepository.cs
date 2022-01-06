@@ -10,7 +10,7 @@ namespace IICT_Store.Repositories.ProductRepositories
     public interface IProductRepository : IBaseRepository<Product>
     {
         Task<Product> GetProductById(long id);
-        Task<IEnumerable<Product>> GetAllProduct();
+        Task<List<Product>> GetAllProduct();
         
     }
 }

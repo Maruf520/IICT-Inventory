@@ -17,9 +17,11 @@ namespace IICT_Store.Repositories.ProductRepositories
             this.context = context;
         }
 
-        public async  Task<IEnumerable<Product>> GetAllProduct()
+
+
+        public async  Task<List<Product>> GetAllProduct()
         {
-            var products =  context.Products.Include(a => a.Category).ToList();
+            var products = await context.Products.Include(x => x.Category).ToListAsync();
             return products;
         }
 
