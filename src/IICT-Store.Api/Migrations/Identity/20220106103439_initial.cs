@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace IICT_Store.Api.Migrations
+namespace IICT_Store.Api.Migrations.Identity
 {
-    public partial class identityextends : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

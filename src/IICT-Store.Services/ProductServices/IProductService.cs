@@ -15,5 +15,6 @@ namespace IICT_Store.Services.ProductServices
         Task<ServiceResponse<List<GetProductDto>>> GetALlProduct();
         Task<ServiceResponse<CreateProductDto>> UpdateProduct(CreateProductDto createProductDto, long productId);
         Task<ServiceResponse<GetProductDto>> DeleteProduct( long productId);
+        Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto);
     }
 }

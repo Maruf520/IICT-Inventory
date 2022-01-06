@@ -44,7 +44,7 @@ namespace IICT_Store.Services.DistributionServices
             foreach(var item in createDistributionDto.ProductSerialNo)
             {
                 ProductSerialNo productSerialNo = new();
-                productSerialNo.SerialNo = item.SerialNo;
+                productSerialNo.ProductNoId = item.SerialNo;
                 productSerialNo.CreatedAt = DateTime.Now;
                 productSerialNos.Add(productSerialNo);
 

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace IICT_Store.Api.Migrations
+namespace IICT_Store.Api.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20220105050700_identityextends")]
-    partial class identityextends
+    [Migration("20220106103439_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

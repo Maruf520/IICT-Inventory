@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace IICT_Store.Api.Migrations
+namespace IICT_Store.Api.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
     partial class IdentityContextModelSnapshot : ModelSnapshot

@@ -27,11 +27,12 @@ namespace IICT_Store.Services.ProductServices
             var productToCreate = mapper.Map<Product>(createProductDto);
             productToCreate.CreatedAt = DateTime.Now;
             productToCreate.CategoryId = createProductDto.CategoryId;
-            if(productToCreate.Description == null)
+            productToCreate.TotalQuantity = 1;
+            if (productToCreate.Description == null)
             {
                 productToCreate.Description = "";
             }
-            if(productToCreate.ImageUrl == null)
+            if (productToCreate.ImageUrl == null)
             {
                 productToCreate.ImageUrl = "";
             }
@@ -46,8 +47,8 @@ namespace IICT_Store.Services.ProductServices
         public async Task<ServiceResponse<GetProductDto>> GetProductById(long id)
         {
             ServiceResponse<GetProductDto> response = new();
-            var product =  productRepository.GetById(id);
-            if(product == null)
+            var product = productRepository.GetById(id);
+            if (product == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -65,8 +66,8 @@ namespace IICT_Store.Services.ProductServices
         public async Task<ServiceResponse<List<GetProductDto>>> GetALlProduct()
         {
             ServiceResponse<List<GetProductDto>> response = new();
-            var products =   productRepository.GetAll();
-            if(products == null)
+            var products = productRepository.GetAll();
+            if (products == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -83,7 +84,7 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse<CreateProductDto> response = new();
             var product = await productRepository.GetProductById(id);
-            if(product == null)
+            if (product == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -99,14 +100,14 @@ namespace IICT_Store.Services.ProductServices
             response.Messages.Add("Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
-           
+
         }
 
         public async Task<ServiceResponse<GetProductDto>> DeleteProduct(long productId)
         {
             ServiceResponse<GetProductDto> response = new();
-            var product = await  productRepository.GetProductById(productId);
-            if(product == null)
+            var product = await productRepository.GetProductById(productId);
+            if (product == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -120,5 +121,26 @@ namespace IICT_Store.Services.ProductServices
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
         }
+
+        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id,CreateProductNoDto createProductNoDto)
+        {
+            ServiceResponse<GetProductDto> response = new();
+            var product =  productRepository.GetById(id);
+            List<ProductNo> nos = new();
+            foreach (var item in createProductNoDto.ProductNos)
+            {
+                ProductNo productNo = new();
+                productNo.Name = item.Name;
+                productNo.CreatedAt = DateTime.Now;
+                nos.Add(productNo);
+            }
+            product.ProductNos = nos;
+
+            productRepository.Update(product);
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Messages.Add("Product Number Added.");
+            return response;
+        }
+
     }
 }

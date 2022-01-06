@@ -53,5 +53,12 @@ namespace IICT_Store.Api.Controllers
             var product = await productService.DeleteProduct(id);
             return Ok(product);
         }
+
+        [HttpPost("{id}/serial")]
+        public async Task<IActionResult> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
+        {
+            var product = await productService.InsertProductNo(id, createProductNoDto);
+            return Ok(product);
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace IICT_Store.Api.Migrations.IICT_StoreDb
+namespace IICT_Store.Api.Migrations
 {
     public partial class initial : Migration
     {
@@ -13,7 +13,7 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -53,6 +53,7 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
+                    TotalQuantity = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -156,6 +157,28 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductNos",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductId = table.Column<long>(type: "bigint", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductNos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductNos_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Purchasheds",
                 columns: table => new
                 {
@@ -195,7 +218,8 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SerialNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductNoId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductNoId1 = table.Column<long>(type: "bigint", nullable: true),
                     DistributionId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -209,6 +233,12 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                         principalTable: "Distributions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductSerialNos_ProductNos_ProductNoId1",
+                        column: x => x.ProductNoId1,
+                        principalTable: "ProductNos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,6 +295,11 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductNos_ProductId",
+                table: "ProductNos",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
@@ -273,6 +308,11 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                 name: "IX_ProductSerialNos_DistributionId",
                 table: "ProductSerialNos",
                 column: "DistributionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSerialNos_ProductNoId1",
+                table: "ProductSerialNos",
+                column: "ProductNoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Purchasheds_ProductId",
@@ -299,6 +339,9 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
 
             migrationBuilder.DropTable(
                 name: "Distributions");
+
+            migrationBuilder.DropTable(
+                name: "ProductNos");
 
             migrationBuilder.DropTable(
                 name: "Persons");
