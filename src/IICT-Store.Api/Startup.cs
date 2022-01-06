@@ -1,13 +1,16 @@
 using IICT_Store.Models;
 using IICT_Store.Models.Users;
 using IICT_Store.Repositories.CategoryRepositories;
+using IICT_Store.Repositories.DamagedProductRepositories;
 using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.PersonRepositories;
 using IICT_Store.Repositories.ProductRepositories;
+using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
 using IICT_Store.Repositories.UserRepositories;
 using IICT_Store.Services.AuthServices;
 using IICT_Store.Services.CategoryServices;
+using IICT_Store.Services.DamagedProductServices;
 using IICT_Store.Services.DistributionServices;
 using IICT_Store.Services.PersonServices;
 using IICT_Store.Services.ProductServices;
@@ -69,6 +72,9 @@ namespace IICT_Store.Api
             services.AddScoped<IDistributionRepository, DistributionRepository>();
             services.AddScoped<IDistributionService, DistributionService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IDamagedProductService, DamagedProductService>();
+            services.AddScoped<IDamagedProductRepository, DamagedProductRepository>();
+            services.AddScoped<IProductSerialNoRepository, ProductSerialNoRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {

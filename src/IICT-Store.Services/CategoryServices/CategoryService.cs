@@ -92,7 +92,7 @@ namespace IICT_Store.Services.CategoryServices
         public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategory()
         {
             ServiceResponse<List<GetCategoryDto>> response = new();
-            var categories =  categoryRepository.GetAll();
+            var categories =  categoryRepository.GetAll().ToList();
             var categoryToMap = mapper.Map<List<GetCategoryDto>>(categories);
             response.Data = categoryToMap;
             response.StatusCode = System.Net.HttpStatusCode.OK;

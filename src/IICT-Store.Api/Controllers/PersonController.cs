@@ -26,6 +26,13 @@ namespace IICT_Store.Api.Controllers
             return Ok(person);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var person = await personService.GetAllPerson();
+            return Ok(person);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPersonById(long id)
         {

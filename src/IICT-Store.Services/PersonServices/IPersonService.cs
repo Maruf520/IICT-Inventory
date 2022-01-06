@@ -14,5 +14,6 @@ namespace IICT_Store.Services.PersonServices
         Task<ServiceResponse<GetPersonDto>> GetPersonById(long id);
         Task<ServiceResponse<GetPersonDto>> UpdatePerson(long id, CreatePersonDto createPersonDto);
         Task<ServiceResponse<GetPersonDto>> DeletePerson(long id);
+        Task<ServiceResponse<List<GetPersonDto>>> GetAllPerson();
     }
 }

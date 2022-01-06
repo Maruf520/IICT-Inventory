@@ -110,6 +110,7 @@ namespace IICT_Store.Services.DistributionServices
             }
             var map = mapper.Map<List<GetDistributionDto>>(product);
             response.Data = map;
+            response.Messages.Add("All distribution");
             return response;
         }
     }
