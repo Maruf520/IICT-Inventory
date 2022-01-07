@@ -27,8 +27,7 @@ namespace IICT_Store.Services.ProductServices
             var productToCreate = mapper.Map<Product>(createProductDto);
             productToCreate.CreatedAt = DateTime.Now;
             productToCreate.CategoryId = createProductDto.CategoryId;
-            productToCreate.TotalQuantity = 1;
-            if (productToCreate.Description == null)
+            if(productToCreate.Description == null)
             {
                 productToCreate.Description = "";
             }
