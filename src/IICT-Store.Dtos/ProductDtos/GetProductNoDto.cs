@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Dtos.ProductDtos
 {
-    public class CreateProductDto
+    public class GetProductNoDto
     {
+        public long Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public long CategoryId { get; set; }
     }
 }

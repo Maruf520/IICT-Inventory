@@ -8,7 +8,7 @@ namespace IICT_Store.Models.Products
 {
     public class ProductSerialNo : BaseModel
     {
-        public string SerialNo { get; set; }
+        public long ProductNoId { get; set; }
         public long DistributionId { get; set; }
         public Distribution Distribution { get; set; }
     }

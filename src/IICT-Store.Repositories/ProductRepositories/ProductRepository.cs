@@ -25,10 +25,33 @@ namespace IICT_Store.Repositories.ProductRepositories
             return products;
         }
 
+        public async Task<List<ProductNo>> GetAllProductNo()
+        {
+            var productNo = context.ProductNos.ToList();
+            return productNo;
+        }
+        public async Task<List<ProductNo>> GetAllProductNoById(long id)
+        {
+            var productNo = context.ProductNos.Where(x => x.ProductId == id).ToList();
+            return productNo;
+        }
         public Task<Product> GetProductById(long id)
         {
             var product = context.Products.Include(a => a.Category).FirstOrDefaultAsync(x => x.Id == id);
             return product;
+        }
+
+        public async Task<ProductNo> GetProductNoById(long id)
+        {
+            var product =  context.ProductNos.Where(x => x.Id == id).FirstOrDefault();
+            return product;
+        }
+
+        public void RemoveProductNo(long id)
+        {
+           var product =  context.ProductNos.Where(x => x.Id == id).FirstOrDefault();
+            context.Remove(product);
+            context.SaveChanges();
         }
     }
 }

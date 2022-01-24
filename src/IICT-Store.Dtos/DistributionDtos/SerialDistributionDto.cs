@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Dtos.DistributionDtos
 {
-    public class ProductSerialNoDto
+    public class SerialDistributionDto
     {
-        public long ProductNoId { get; set; }
+        public int RoomNo { get; set; }
+        public ICollection<ProductSerialNoDto> ProductSerialNoDtos { get; set; }
     }
 }

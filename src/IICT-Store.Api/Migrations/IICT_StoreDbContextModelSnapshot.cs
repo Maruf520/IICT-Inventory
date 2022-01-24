@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace IICT_Store.Api.Migrations.IICT_StoreDb
+namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
     partial class IICT_StoreDbContextModelSnapshot : ModelSnapshot
@@ -33,6 +33,7 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -213,6 +214,9 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -221,6 +225,32 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.ProductNo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductNos");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.ProductSerialNo", b =>
@@ -236,8 +266,8 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                     b.Property<long>("DistributionId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("SerialNo")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("ProductNoId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -398,6 +428,17 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("IICT_Store.Models.Products.ProductNo", b =>
+                {
+                    b.HasOne("IICT_Store.Models.Products.Product", "Product")
+                        .WithMany("ProductNos")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("IICT_Store.Models.Products.ProductSerialNo", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.Distribution", "Distribution")
@@ -432,6 +473,11 @@ namespace IICT_Store.Api.Migrations.IICT_StoreDb
             modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>
                 {
                     b.Navigation("ProductSerialNo");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.Product", b =>
+                {
+                    b.Navigation("ProductNos");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Pruchashes.Purchashed", b =>

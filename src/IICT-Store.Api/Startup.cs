@@ -153,7 +153,18 @@ namespace IICT_Store.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IICT_Store.Api v1"));
             }
-
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "IICT_Store.Api v1");
+            });
+            app.UseSwagger();
+            app.UseCors(cors =>
+              cors
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .SetIsOriginAllowed(_ => true)
+              .AllowCredentials()
+            );
             app.UseHttpsRedirection();
 
             app.UseRouting();

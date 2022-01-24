@@ -53,5 +53,32 @@ namespace IICT_Store.Api.Controllers
             var product = await productService.DeleteProduct(id);
             return Ok(product);
         }
+
+        [HttpPost("{id}/serial")]
+        public async Task<IActionResult> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
+        {
+            var product = await productService.InsertProductNo(id, createProductNoDto);
+            return Ok(product);
+        }
+
+        [HttpGet("serial/{id}")]
+        public async Task<IActionResult> GetProductBySerialNo(long id)
+        {
+            var serial = await productService.GetProductBySerialNo(id);
+            return Ok(serial);
+        }
+
+        [HttpGet("available/{id}")]
+        public async Task<IActionResult> GetAvailableProduct(long id)
+        {
+            var product = await productService.GetAllAvailableProductno(id);
+            return Ok(product);
+        }
+        [HttpGet("return/{id}")]
+        public async Task<IActionResult> ReturnTOStock(long id)
+        {
+            var product = await productService.ReturnProductToStore(id);
+            return Ok(product);
+        }
     }
 }

@@ -46,5 +46,12 @@ namespace IICT_Store.Api.Controllers
             var distribution = await distributionService.GetByPersonId(id);
             return Ok(distribution);
         }
+
+        [HttpGet("product/{id}")]
+        public async Task<IActionResult> GetALlDistributionByProductId(long id)
+        {
+            var distribution = await distributionService.GetAllDistributionByProductId(id);
+            return Ok(distribution);
+        }
     }
 }
