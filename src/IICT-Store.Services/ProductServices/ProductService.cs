@@ -2,7 +2,9 @@
 using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
+using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.ProductRepositories;
+using IICT_Store.Repositories.ProductSerialNoRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +17,14 @@ namespace IICT_Store.Services.ProductServices
     {
         private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
-        public ProductService(IProductRepository productRepository, IMapper mapper)
+        private readonly IDistributionRepository distributionRepository;
+        private readonly IProductSerialNoRepository productSerialNoRepository;
+        public ProductService(IProductRepository productRepository, IMapper mapper, IDistributionRepository distributionRepository, IProductSerialNoRepository productSerialNoRepository)
         {
             this.mapper = mapper;
             this.productRepository = productRepository;
+            this.distributionRepository = distributionRepository;
+            this.productSerialNoRepository = productSerialNoRepository;
         }
 
         public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto)
@@ -55,7 +61,7 @@ namespace IICT_Store.Services.ProductServices
             }
 
             var productToMap = mapper.Map<GetProductDto>(product);
-            productToMap.CategoryId = product.Category.Id;
+            productToMap.CategoryId = product.CategoryId;
             response.Data = productToMap;
             response.Messages.Add("Product");
             response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -125,6 +131,12 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse<GetProductDto> response = new();
             var product =  productRepository.GetById(id);
+            var checkSerialNo = CheckIfSerialNoExists(id, (List<ProductNoDto>)createProductNoDto.ProductNos);
+            if(checkSerialNo.Result == false)
+            {
+                response.Messages.Add("Please set unique serial no.");
+                return response;
+            }
             List<ProductNo> nos = new();
             foreach (var item in createProductNoDto.ProductNos)
             {
@@ -139,6 +151,89 @@ namespace IICT_Store.Services.ProductServices
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Messages.Add("Product Number Added.");
             return response;
+        }
+
+        public async Task<ServiceResponse<GetProductDto>> GetProductBySerialNo(long serialNo)
+        {
+            ServiceResponse<GetProductDto> response = new();
+            return response;
+        }
+
+        public async  Task<ServiceResponse<List<GetProductNoDto>>> GetAllAvailableProductno(long productId)
+        {
+            ServiceResponse < List < GetProductNoDto >> response = new();
+            List <GetProductNoDto> productNos = new();
+            var distribution = await distributionRepository.GetAllSerialNo();
+            var xx = await productRepository.GetAllProductNoById(productId);
+            var productSerial = await productRepository.GetAllProductNoById(productId);
+            foreach(var item in productSerial)
+            {
+                foreach(var serial in distribution)
+                {
+                    if(!(item.Id == serial.ProductNoId))
+                    {
+                        GetProductNoDto getProductNoDto = new();
+                        getProductNoDto.Id = item.Id;
+                        getProductNoDto.Name = item.Name;
+                        productNos.Add(getProductNoDto);
+                       
+                        
+                        xx.Remove(productSerial.Find(x =>x.Id == serial.ProductNoId));
+                    }
+                }
+            }
+         
+            List<GetProductNoDto> productNos1 = new();
+            foreach (var nos in xx)
+            {
+                GetProductNoDto getProductNoDto = new();
+                getProductNoDto.Id = nos.Id;
+                getProductNoDto.Name = nos.Name;
+                productNos1.Add(getProductNoDto);
+            }
+            response.Data = productNos1;
+           
+            return response;
+        }
+
+        public async Task<bool> CheckIfSerialNoExists(long productId, List<ProductNoDto> name)
+        {
+            var productSerialNo =  await productRepository.GetAllProductNoById(productId);
+            var nameCount = name.Count;
+            for(int i = 0;i<nameCount; i++)
+            {
+                foreach (var serialno in productSerialNo)
+                {
+                    if (serialno.Name == name[i].Name)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<ServiceResponse<GetProductNoDto>> ReturnProductToStore(long productNoId)
+        {
+            ServiceResponse<GetProductNoDto> response = new();
+            var getProductNo = await productSerialNoRepository.GetByProductNoId(productNoId);
+            if(getProductNo == null)
+            {
+                response.Messages.Add("Not  found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            productSerialNoRepository.Delete(getProductNo.Id);
+            var distribution =  distributionRepository.GetById(getProductNo.DistributionId);
+            var product = productRepository.GetById(distribution.ProductId);
+
+            product.QuantityInStock = product.QuantityInStock + 1;
+            productRepository.Update(product);
+            response.Messages.Add(" Product returned to stock.");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+
         }
 
     }

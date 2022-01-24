@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IICT_Store.Models.Products
+namespace IICT_Store.Dtos.ProductDtos
 {
-    public class ProductNo : BaseModel
+    public class GetProductNoDto
     {
+        public long Id { get; set; }
         public string Name { get; set; }
-        public long ProductId { get; set; }
-        public Product Product { get; set; }
     }
 }

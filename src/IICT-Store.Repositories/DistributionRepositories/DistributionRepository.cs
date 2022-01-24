@@ -34,5 +34,23 @@ namespace IICT_Store.Repositories.DistributionRepositories
             var distribution = await context.Distributions.Include(x => x.ProductSerialNo).Where(x => x.RoomNo == roomNo).ToListAsync();
             return distribution;
         }
+
+        public async Task<List<ProductSerialNo>> GetAllSerialNo()
+        {
+            var serialNos =  context.ProductSerialNos.ToList();
+            return serialNos;
+        }
+
+        public async Task<ProductSerialNo> GetProductBySerialNo(long id)
+        {
+            var serial = context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefault();
+            return serial;
+        }
+
+        public async Task<List<Distribution>> GetAllDistributionByProductId(long productId)
+        {
+            var distribution = context.Distributions.Include(x => x.ProductSerialNo).Where(x => x.ProductId == productId).ToList();
+            return distribution;
+        }
     }
 }

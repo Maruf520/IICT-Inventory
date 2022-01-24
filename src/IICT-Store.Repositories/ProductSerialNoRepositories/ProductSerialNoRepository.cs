@@ -15,5 +15,11 @@ namespace IICT_Store.Repositories.ProductSerialNoRepositories
         {
             this.context = context;
         }
+
+        public async Task<ProductSerialNo> GetByProductNoId(long id)
+        {
+            var product = context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefault();
+            return product;
+        }
     }
 }

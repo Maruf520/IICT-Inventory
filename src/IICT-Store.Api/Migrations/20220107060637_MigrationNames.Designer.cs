@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220106103431_initial")]
-    partial class initial
+    [Migration("20220107060637_MigrationNames")]
+    partial class MigrationNames
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,7 +242,7 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("ProductId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -268,10 +268,7 @@ namespace IICT_Store.Api.Migrations
                     b.Property<long>("DistributionId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("ProductNoId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("ProductNoId1")
+                    b.Property<long>("ProductNoId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -280,8 +277,6 @@ namespace IICT_Store.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DistributionId");
-
-                    b.HasIndex("ProductNoId1");
 
                     b.ToTable("ProductSerialNos");
                 });
@@ -437,9 +432,13 @@ namespace IICT_Store.Api.Migrations
 
             modelBuilder.Entity("IICT_Store.Models.Products.ProductNo", b =>
                 {
-                    b.HasOne("IICT_Store.Models.Products.Product", null)
+                    b.HasOne("IICT_Store.Models.Products.Product", "Product")
                         .WithMany("ProductNos")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.ProductSerialNo", b =>
@@ -450,13 +449,7 @@ namespace IICT_Store.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IICT_Store.Models.Products.ProductNo", "ProductNo")
-                        .WithMany()
-                        .HasForeignKey("ProductNoId1");
-
                     b.Navigation("Distribution");
-
-                    b.Navigation("ProductNo");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Pruchashes.CashMemo", b =>
