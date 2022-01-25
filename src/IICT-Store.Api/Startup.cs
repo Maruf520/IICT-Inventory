@@ -2,6 +2,7 @@ using IICT_Store.Models;
 using IICT_Store.Models.Users;
 using IICT_Store.Repositories.CategoryRepositories;
 using IICT_Store.Repositories.DamagedProductRepositories;
+using IICT_Store.Repositories.DamagedProductSerialRepositories;
 using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.PersonRepositories;
 using IICT_Store.Repositories.ProductNumberRepositories;
@@ -80,6 +81,7 @@ namespace IICT_Store.Api
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProductNumberRepository, ProductNumberRepository>();
             services.AddScoped<IProductNumberService, ProductNumberService>();
+            services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;

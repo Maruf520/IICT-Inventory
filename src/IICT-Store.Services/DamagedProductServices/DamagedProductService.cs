@@ -3,7 +3,9 @@ using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
 using IICT_Store.Repositories.DamagedProductRepositories;
+using IICT_Store.Repositories.DamagedProductSerialRepositories;
 using IICT_Store.Repositories.DistributionRepositories;
+using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using System;
@@ -20,26 +22,51 @@ namespace IICT_Store.Services.DamagedProductServices
         private readonly IDamagedProductRepository damagedProductRepository;
         private readonly IDistributionRepository distributionRepository;
         private readonly IProductRepository productReository;
-        public DamagedProductService(IProductSerialNoRepository productSerialNoRepository, IDamagedProductRepository damagedProductRepository
-            , IDistributionRepository distributionRepository, IProductRepository productReository)
+        private readonly IDamagedProductSerialNoRepository damagedProductSerialNoRepository;
+        private readonly IProductNumberRepository productNumberRepository;
+        public DamagedProductService(
+            IProductSerialNoRepository productSerialNoRepository,
+            IDamagedProductRepository damagedProductRepository,
+            IDistributionRepository distributionRepository, 
+            IProductRepository productReository,
+            IDamagedProductSerialNoRepository damagedProductSerialNoRepository,
+            IProductNumberRepository productNumberRepository
+
+            )
         {
             this.productSerialNoRepository = productSerialNoRepository;
             this.damagedProductRepository = damagedProductRepository;
             this.distributionRepository = distributionRepository;
             this.productReository = productReository;
+            this.damagedProductSerialNoRepository = damagedProductSerialNoRepository;
+            this.productNumberRepository = productNumberRepository;
         }
 
         public async Task<ServiceResponse<ProductSerialNoDto>> DamageProduct(long id)
         {
             ServiceResponse<ProductSerialNoDto> response = new();
             var productSerialNo = productSerialNoRepository.GetById(id);
+            if(productSerialNo == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
             var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
+            var productNo = productNumberRepository.GetById(productSerialNo.ProductNoId);
             distribution.Quantity = distribution.Quantity - 1;
             distributionRepository.Update(distribution);
+            List<DamagedProductSerialNo> damagedProductSerialNos = new();
             DamagedProduct damagedProduct = new();
             damagedProduct.Quantity = 1;
             damagedProduct.ProductId = distribution.ProductId;
             damagedProduct.CreatedAt = DateTime.Now;
+            DamagedProductSerialNo damagedProductSerialNo = new();
+            damagedProductSerialNo.ProductNoId = productNo.Id;
+            damagedProductSerialNo.Name = productNo.Name;
+            damagedProductSerialNo.CreatedAt = DateTime.Now;
+            damagedProductSerialNos.Add(damagedProductSerialNo);
+            damagedProduct.DamagedProductSerialNos = damagedProductSerialNos;
             damagedProductRepository.Insert(damagedProduct);
             productSerialNoRepository.Delete(id);
             response.Messages.Add("Damaged product added.");
@@ -67,6 +94,32 @@ namespace IICT_Store.Services.DamagedProductServices
             }
 
             response.Data = damagedProductDtos;
+            response.Messages.Add("All Damaged Products");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+        }
+
+        public async Task<ServiceResponse<GetDamagedProductDto>> GetDamagedProductById(long id)
+        {
+            ServiceResponse<GetDamagedProductDto> response = new();
+            List<DamagedProductDto> damagedProductDtos = new();
+            var damagedProduct = damagedProductRepository.GetAll();
+            var damagedProducts = damagedProduct.Where(x => x.ProductId == id);
+            foreach (var items in damagedProducts)
+            {
+                var damagedporductSerialNo = damagedProductSerialNoRepository.GetById(items.Id);
+                DamagedProductDto damagedProductDto = new();
+                damagedProductDto.Id = damagedporductSerialNo.Id;
+                damagedProductDto.Name = damagedporductSerialNo.Name;
+                
+                damagedProductDtos.Add(damagedProductDto);
+
+            }
+            GetDamagedProductDto getDamagedProductDto = new();
+            getDamagedProductDto.Quantity = damagedProductDtos.Count;
+            getDamagedProductDto.DamagedProducts = damagedProductDtos;
+
+            response.Data = getDamagedProductDto;
             response.Messages.Add("All Damaged Products");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

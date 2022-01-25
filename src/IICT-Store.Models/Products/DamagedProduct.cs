@@ -8,6 +8,10 @@ namespace IICT_Store.Models.Products
 {
     public class DamagedProduct : BaseModel
     {
+        public DamagedProduct()
+        {
+            DamagedProductSerialNos = new List<DamagedProductSerialNo>();
+        }
         public long ProductId { get; set; }
         public Product Product { get; set; }
         public int Quantity { get; set; }
