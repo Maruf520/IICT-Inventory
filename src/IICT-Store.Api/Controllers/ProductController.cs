@@ -1,4 +1,5 @@
 ﻿using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Services.ProductNumberServices;
 using IICT_Store.Services.ProductServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,11 @@ namespace IICT_Store.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
-        public ProductController(IProductService productService)
+        private readonly IProductNumberService productNumberService;
+        public ProductController(IProductService productService, IProductNumberService productNumberService)
         {
             this.productService = productService;
+            this.productNumberService = productNumberService;
         }
 
         [HttpPost]
@@ -57,7 +60,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost("{id}/serial")]
         public async Task<IActionResult> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
         {
-            var product = await productService.InsertProductNo(id, createProductNoDto);
+            var product = await productNumberService.InsertProductNo(id, createProductNoDto);
             return Ok(product);
         }
 

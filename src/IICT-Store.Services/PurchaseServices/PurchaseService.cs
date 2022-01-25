@@ -32,18 +32,24 @@ namespace IICT_Store.Services.PurchaseServices
         public async Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto)
         {
             ServiceResponse<GetPurchaseDto> response = new();
-            var documentslist = await  UploadFile(createPurchaseDto.File);
+
             var products = productRepository.GetById(createPurchaseDto.ProductId);
             List<CashMemo> cashMemos = new List<CashMemo>();
-            foreach(var document in documentslist)
+            if (createPurchaseDto.File != null)
             {
-                var cashMemo = new CashMemo();
-                cashMemo.ImageUrl = document;
 
-                cashMemo.CreatedAt = DateTime.Now;
-                cashMemos.Add(cashMemo);
+
+                var documentslist = await UploadFile(createPurchaseDto.File);
+   
+                foreach (var document in documentslist)
+                {
+                    var cashMemo = new CashMemo();
+                    cashMemo.ImageUrl = document;
+
+                    cashMemo.CreatedAt = DateTime.Now;
+                    cashMemos.Add(cashMemo);
+                }
             }
-
             var product = await productService.GetProductById(createPurchaseDto.ProductId);
             if (product == null)
             {
@@ -56,6 +62,7 @@ namespace IICT_Store.Services.PurchaseServices
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToMap.CashMemos = cashMemos;
             products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
+            products.TotalQuantity = products.TotalQuantity + createPurchaseDto.Quantity;
             productRepository.Update(products);
             purchaseRepository.Insert(productToMap);
             response.Data = productToReturn;

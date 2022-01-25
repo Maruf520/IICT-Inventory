@@ -24,6 +24,7 @@ namespace IICT_Store.Models
         public DbSet<Person> Persons { get; set; }
         public DbSet<ProductSerialNo> ProductSerialNos { get; set; }
         public DbSet<ProductNo> ProductNos { get; set; }
+        public DbSet<DamagedProductSerialNo> DamagedProductSerialNos { get; set; }
 /*        //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext*/
 
     }
