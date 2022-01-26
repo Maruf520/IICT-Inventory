@@ -31,5 +31,14 @@ namespace IICT_Store.Api.Controllers
             var damage = await damagedProductService.GetAllDamagedProduct();
             return Ok(damage);
         }
+
+
+        //Get all damaged product by ProductId.
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(long id)
+        {
+            var damage = await damagedProductService.GetDamagedProductById(id);
+            return Ok(damage);
+        }
     }
 }

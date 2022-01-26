@@ -2,8 +2,10 @@ using IICT_Store.Models;
 using IICT_Store.Models.Users;
 using IICT_Store.Repositories.CategoryRepositories;
 using IICT_Store.Repositories.DamagedProductRepositories;
+using IICT_Store.Repositories.DamagedProductSerialRepositories;
 using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.PersonRepositories;
+using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
@@ -13,6 +15,7 @@ using IICT_Store.Services.CategoryServices;
 using IICT_Store.Services.DamagedProductServices;
 using IICT_Store.Services.DistributionServices;
 using IICT_Store.Services.PersonServices;
+using IICT_Store.Services.ProductNumberServices;
 using IICT_Store.Services.ProductServices;
 using IICT_Store.Services.PurchaseServices;
 using IICT_Store.Services.UserServices;
@@ -76,6 +79,9 @@ namespace IICT_Store.Api
             services.AddScoped<IDamagedProductRepository, DamagedProductRepository>();
             services.AddScoped<IProductSerialNoRepository, ProductSerialNoRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IProductNumberRepository, ProductNumberRepository>();
+            services.AddScoped<IProductNumberService, ProductNumberService>();
+            services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;

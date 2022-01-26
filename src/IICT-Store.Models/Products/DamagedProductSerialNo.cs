@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IICT_Store.Dtos.ProductDtos
+namespace IICT_Store.Models.Products
 {
-    public class CreateDamagedProductDto
+    public class DamagedProductSerialNo : BaseModel
     {
         public string Name { get; set; }
         public long ProductNoId { get; set; }
+        public int DamagedProductId { get; set; }
+        public DamagedProduct DamagedProduct { get; set; }
     }
 }

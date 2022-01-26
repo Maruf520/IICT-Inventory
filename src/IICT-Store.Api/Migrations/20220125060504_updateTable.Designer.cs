@@ -4,14 +4,16 @@ using IICT_Store.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    partial class IICT_StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220125060504_updateTable")]
+    partial class updateTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,7 +137,7 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasIndex("DamagedProductId1");
 
-                    b.ToTable("DamagedProductSerialNos");
+                    b.ToTable("DamagedProductSerialNo");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>
