@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220107060637_MigrationNames")]
-    partial class MigrationNames
+    [Migration("20220127071038_MigrationName")]
+    partial class MigrationName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,6 +106,38 @@ namespace IICT_Store.Api.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("DamagedProducts");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.DamagedProductSerialNo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DamagedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("DamagedProductId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProductNoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DamagedProductId1");
+
+                    b.ToTable("DamagedProductSerialNos");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>
@@ -383,6 +415,15 @@ namespace IICT_Store.Api.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("IICT_Store.Models.Products.DamagedProductSerialNo", b =>
+                {
+                    b.HasOne("IICT_Store.Models.Products.DamagedProduct", "DamagedProduct")
+                        .WithMany("DamagedProductSerialNos")
+                        .HasForeignKey("DamagedProductId1");
+
+                    b.Navigation("DamagedProduct");
+                });
+
             modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.Product", "Product")
@@ -470,6 +511,11 @@ namespace IICT_Store.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
+                {
+                    b.Navigation("DamagedProductSerialNos");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>

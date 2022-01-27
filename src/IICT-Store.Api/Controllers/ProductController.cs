@@ -23,7 +23,7 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             var product = await productService.CreateProduct(createProductDto);
             return Ok(product);
@@ -37,7 +37,7 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllProduct()
+        public async Task<IActionResult> GetAllProduct([FromQuery] string pagination)
         {
             var products = await productService.GetALlProduct();
             return Ok(products);

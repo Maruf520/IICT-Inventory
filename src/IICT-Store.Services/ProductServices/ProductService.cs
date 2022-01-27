@@ -5,8 +5,10 @@ using IICT_Store.Models.Products;
 using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,14 +35,9 @@ namespace IICT_Store.Services.ProductServices
             var productToCreate = mapper.Map<Product>(createProductDto);
             productToCreate.CreatedAt = DateTime.Now;
             productToCreate.CategoryId = createProductDto.CategoryId;
-            if(productToCreate.Description == null)
-            {
-                productToCreate.Description = "";
-            }
-            if (productToCreate.ImageUrl == null)
-            {
-                productToCreate.ImageUrl = "";
-            }
+
+            var uploadImage = await UploadImage(createProductDto.Image);
+            productToCreate.ImageUrl = uploadImage;
             productRepository.Insert(productToCreate);
             var productToMap = mapper.Map<GetProductDto>(productToCreate);
             response.Messages.Add("Created");
@@ -234,6 +231,33 @@ namespace IICT_Store.Services.ProductServices
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
 
+        }
+
+        public async Task<string> UploadImage(IFormFile formFile)
+        {
+            if (formFile.Length > 0)
+            {
+                string fName = Path.GetRandomFileName();
+
+                var getext = Path.GetExtension(formFile.FileName);
+                var filename = Path.ChangeExtension(fName, getext);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "files");
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                filePath = Path.Combine(filePath, filename);
+                var pathdb = "files/" + filename;
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                    stream.Flush();
+                }
+
+                return pathdb;
+
+            }
+            return "enter valid photo";
         }
 
     }
