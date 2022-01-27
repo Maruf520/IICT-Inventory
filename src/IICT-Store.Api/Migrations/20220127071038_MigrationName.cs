@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations
 {
-    public partial class MigrationNames : Migration
+    public partial class MigrationName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -213,6 +213,30 @@ namespace IICT_Store.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DamagedProductSerialNos",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductNoId = table.Column<long>(type: "bigint", nullable: false),
+                    DamagedProductId = table.Column<int>(type: "int", nullable: false),
+                    DamagedProductId1 = table.Column<long>(type: "bigint", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DamagedProductSerialNos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DamagedProductSerialNos_DamagedProducts_DamagedProductId1",
+                        column: x => x.DamagedProductId1,
+                        principalTable: "DamagedProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductSerialNos",
                 columns: table => new
                 {
@@ -268,6 +292,11 @@ namespace IICT_Store.Api.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DamagedProductSerialNos_DamagedProductId1",
+                table: "DamagedProductSerialNos",
+                column: "DamagedProductId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Distributions_ProductId",
                 table: "Distributions",
                 column: "ProductId");
@@ -314,7 +343,7 @@ namespace IICT_Store.Api.Migrations
                 name: "CashMemos");
 
             migrationBuilder.DropTable(
-                name: "DamagedProducts");
+                name: "DamagedProductSerialNos");
 
             migrationBuilder.DropTable(
                 name: "MaintenanceProducts");
@@ -327,6 +356,9 @@ namespace IICT_Store.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Purchasheds");
+
+            migrationBuilder.DropTable(
+                name: "DamagedProducts");
 
             migrationBuilder.DropTable(
                 name: "Distributions");
