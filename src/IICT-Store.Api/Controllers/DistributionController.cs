@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/distributions")]
     [ApiController]
     public class DistributionController : ControllerBase
     {
@@ -47,6 +47,7 @@ namespace IICT_Store.Api.Controllers
             return Ok(distribution);
         }
 
+        //get all distributions by product Id
         [HttpGet("product/{id}")]
         public async Task<IActionResult> GetALlDistributionByProductId(long id)
         {

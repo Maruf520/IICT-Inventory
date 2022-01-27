@@ -128,12 +128,16 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse<GetProductDto> response = new();
             var product =  productRepository.GetById(id);
-            var checkSerialNo = CheckIfSerialNoExists(id, (List<ProductNoDto>)createProductNoDto.ProductNos);
-            if(checkSerialNo.Result == false)
+            if (product.ProductNos != null)
             {
-                response.Messages.Add("Please set unique serial no.");
-                return response;
+                var checkSerialNo = CheckIfSerialNoExists(id, (List<ProductNoDto>)createProductNoDto.ProductNos);
+                if (checkSerialNo.Result == false)
+                {
+                    response.Messages.Add("Please set unique serial no.");
+                    return response;
+                }
             }
+
             List<ProductNo> nos = new();
             foreach (var item in createProductNoDto.ProductNos)
             {

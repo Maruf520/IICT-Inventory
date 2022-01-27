@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -36,8 +36,8 @@ namespace IICT_Store.Api.Controllers
             return Ok(product);
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllProduct([FromQuery] string pagination)
+        [HttpGet]
+        public async Task<IActionResult> GetAllProduct()
         {
             var products = await productService.GetALlProduct();
             return Ok(products);

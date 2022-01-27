@@ -3,8 +3,10 @@ using IICT_Store.Dtos.Categories;
 using IICT_Store.Models;
 using IICT_Store.Models.Categories;
 using IICT_Store.Repositories.CategoryRepositories;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,22 +23,31 @@ namespace IICT_Store.Services.CategoryServices
             this.mapper = mapper;
         }
 
-        public async Task<ServiceResponse<CategoryDto>> CreateCategory(CategoryDto categoryDto)
+        public async Task<ServiceResponse<GetCategoryDto>> CreateCategory(CategoryDto categoryDto)
         {
-            ServiceResponse<CategoryDto> response = new();
+            ServiceResponse<GetCategoryDto> response = new();
             Category category = new();
+            var uploadImage = "";
+            if(categoryDto.Image != null)
+            {
+                uploadImage = await UploadImage(categoryDto.Image);
+            }
+            
             category.Name = categoryDto.Name;
             category.CreatedAt = DateTime.Now;
+            category.Description = categoryDto.Discription;
+            category.Image = uploadImage;
             categoryRepository.Insert(category);
+            var categoryToMap = mapper.Map<GetCategoryDto>(category);
             response.Messages.Add("Category Added.");
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            response.Data = categoryDto;
+            response.StatusCode = System.Net.HttpStatusCode.Created;
+            response.Data = categoryToMap;
             return response;
         }
 
-        public async Task<ServiceResponse<CategoryDto>> DeleteCategory(long id)
+        public async Task<ServiceResponse<GetCategoryDto>> DeleteCategory(long id)
         {
-            ServiceResponse<CategoryDto> response = new();
+            ServiceResponse<GetCategoryDto> response = new();
             var category = categoryRepository.GetById(id);
             if(category == null)
             {
@@ -46,14 +57,16 @@ namespace IICT_Store.Services.CategoryServices
             }
 
             categoryRepository.Delete(id);
+            var categoryToMap = mapper.Map<GetCategoryDto>(category);
+            response.Data = categoryToMap;
             response.Messages.Add("Deleted");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
         }
 
-        public async Task<ServiceResponse<CategoryDto>> GetCategoryById(long id)
+        public async Task<ServiceResponse<GetCategoryDto>> GetCategoryById(long id)
         {
-            ServiceResponse<CategoryDto> response = new();
+            ServiceResponse<GetCategoryDto> response = new();
             var category = categoryRepository.GetById(id);
             if(category == null)
             {
@@ -61,17 +74,15 @@ namespace IICT_Store.Services.CategoryServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            CategoryDto categoryDto = new();
-            categoryDto.Name = category.Name;
-            response.Data = categoryDto;
+            var categoryToMap = mapper.Map<GetCategoryDto>(category);
+            response.StatusCode = System.Net.HttpStatusCode.OK;;
+            response.Data = categoryToMap;
             return response;
         }
 
-        public async Task<ServiceResponse<CategoryDto>> UpdateCategory(CategoryDto categoryDto, long id)
+        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(CategoryDto categoryDto, long id)
         {
-            ServiceResponse<CategoryDto> response = new();
+            ServiceResponse<GetCategoryDto> response = new();
             var category = categoryRepository.GetById(id);
             if(category == null)
             {
@@ -83,7 +94,8 @@ namespace IICT_Store.Services.CategoryServices
             category.UpdatedAt = DateTime.Now;
             category.Name = categoryDto.Name;
             categoryRepository.Update(category);
-            response.Data = categoryDto;
+            var categoryToMap = mapper.Map<GetCategoryDto>(category);
+            response.Data = categoryToMap;
             response.Messages.Add("Updated.");
             return response;
             
@@ -99,6 +111,33 @@ namespace IICT_Store.Services.CategoryServices
             response.Messages.Add("All Categores.");
             return response;
 
+        }
+
+        public async Task<string> UploadImage(IFormFile formFile)
+        {
+            if (formFile.Length > 0)
+            {
+                string fName = Path.GetRandomFileName();
+
+                var getext = Path.GetExtension(formFile.FileName);
+                var filename = Path.ChangeExtension(fName, getext);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "files");
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                filePath = Path.Combine(filePath, filename);
+                var pathdb = "files/" + filename;
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                    stream.Flush();
+                }
+
+                return pathdb;
+
+            }
+            return "enter valid photo";
         }
     }
 }

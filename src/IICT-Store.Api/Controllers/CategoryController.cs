@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace IICT_Store.Api.Controllers
         }
        
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryDto categoryDto)
+        public async Task<IActionResult> Create([FromForm]CategoryDto categoryDto)
         {
             var category = await categoryService.CreateCategory(categoryDto);
             return Ok(category);

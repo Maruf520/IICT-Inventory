@@ -10,10 +10,10 @@ namespace IICT_Store.Services.CategoryServices
 {
     public interface ICategoryService
     {
-        Task<ServiceResponse<CategoryDto>> CreateCategory(CategoryDto categoryDto);
-        Task<ServiceResponse<CategoryDto>> GetCategoryById(long id);
-        Task<ServiceResponse<CategoryDto>> UpdateCategory(CategoryDto categoryDto,long id);
-        Task<ServiceResponse<CategoryDto>> DeleteCategory(long id);
+        Task<ServiceResponse<GetCategoryDto>> CreateCategory(CategoryDto categoryDto);
+        Task<ServiceResponse<GetCategoryDto>> GetCategoryById(long id);
+        Task<ServiceResponse<GetCategoryDto>> UpdateCategory(CategoryDto categoryDto,long id);
+        Task<ServiceResponse<GetCategoryDto>> DeleteCategory(long id);
         Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategory();
     }
 }

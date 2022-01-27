@@ -34,6 +34,7 @@ namespace IICT_Store.Api
             CreateMap<ProductSerialNoDto, ProductSerialNo>();
             CreateMap<ProductSerialNo, ProductSerialNoDto>();
             CreateMap<Distribution, GetDistributionDto>();
+            CreateMap<Category, CategoryDto>();
         }
     }
 }
