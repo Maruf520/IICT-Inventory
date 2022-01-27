@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/persons")]
     [ApiController]
     public class PersonController : ControllerBase
     {

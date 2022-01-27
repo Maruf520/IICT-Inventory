@@ -81,6 +81,7 @@ namespace IICT_Store.Api
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProductNumberRepository, ProductNumberRepository>();
             services.AddScoped<IProductNumberService, ProductNumberService>();
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
