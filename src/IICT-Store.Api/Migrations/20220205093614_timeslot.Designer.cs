@@ -4,14 +4,16 @@ using IICT_Store.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    partial class IICT_StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220205093614_timeslot")]
+    partial class timeslot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,11 +68,17 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Purposes")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -78,34 +86,6 @@ namespace IICT_Store.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("IICT_Store.Models.Gallery.BookingTimeSlot", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long?>("BookingId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("TimeSlotId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("TimeSlotId");
-
-                    b.ToTable("BookingTimeSlots");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Gallery.TimeSlot", b =>
@@ -490,21 +470,6 @@ namespace IICT_Store.Api.Migrations
                     b.ToTable("Purchasheds");
                 });
 
-            modelBuilder.Entity("IICT_Store.Models.Gallery.BookingTimeSlot", b =>
-                {
-                    b.HasOne("IICT_Store.Models.Gallery.Booking", "Booking")
-                        .WithMany("BookingTimeSlots")
-                        .HasForeignKey("BookingId");
-
-                    b.HasOne("IICT_Store.Models.Gallery.TimeSlot", "TimeSlot")
-                        .WithMany("BookingTimeSlots")
-                        .HasForeignKey("TimeSlotId");
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("TimeSlot");
-                });
-
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.Product", "Product")
@@ -612,16 +577,6 @@ namespace IICT_Store.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("IICT_Store.Models.Gallery.Booking", b =>
-                {
-                    b.Navigation("BookingTimeSlots");
-                });
-
-            modelBuilder.Entity("IICT_Store.Models.Gallery.TimeSlot", b =>
-                {
-                    b.Navigation("BookingTimeSlots");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>

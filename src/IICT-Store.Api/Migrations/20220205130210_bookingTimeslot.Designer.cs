@@ -4,14 +4,16 @@ using IICT_Store.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    partial class IICT_StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220205130210_bookingTimeslot")]
+    partial class bookingTimeslot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,13 +89,19 @@ namespace IICT_Store.Api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("BookingId")
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("BookingId1")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("TimeSlotId")
+                    b.Property<int>("TimeSlotId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("TimeSlotId1")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -101,9 +109,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingId");
+                    b.HasIndex("BookingId1");
 
-                    b.HasIndex("TimeSlotId");
+                    b.HasIndex("TimeSlotId1");
 
                     b.ToTable("BookingTimeSlots");
                 });
@@ -494,11 +502,11 @@ namespace IICT_Store.Api.Migrations
                 {
                     b.HasOne("IICT_Store.Models.Gallery.Booking", "Booking")
                         .WithMany("BookingTimeSlots")
-                        .HasForeignKey("BookingId");
+                        .HasForeignKey("BookingId1");
 
                     b.HasOne("IICT_Store.Models.Gallery.TimeSlot", "TimeSlot")
                         .WithMany("BookingTimeSlots")
-                        .HasForeignKey("TimeSlotId");
+                        .HasForeignKey("TimeSlotId1");
 
                     b.Navigation("Booking");
 

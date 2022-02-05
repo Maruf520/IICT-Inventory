@@ -1,5 +1,7 @@
 using IICT_Store.Models;
 using IICT_Store.Models.Users;
+using IICT_Store.Repositories.BookingRepositories;
+using IICT_Store.Repositories.BookingTimeSlotRepositories;
 using IICT_Store.Repositories.CategoryRepositories;
 using IICT_Store.Repositories.DamagedProductRepositories;
 using IICT_Store.Repositories.DamagedProductSerialRepositories;
@@ -9,9 +11,11 @@ using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
+using IICT_Store.Repositories.TimeSlotRepository;
 using IICT_Store.Repositories.UserRepositories;
 using IICT_Store.Services.ApprovalServices;
 using IICT_Store.Services.AuthServices;
+using IICT_Store.Services.BookingServices;
 using IICT_Store.Services.CategoryServices;
 using IICT_Store.Services.DamagedProductServices;
 using IICT_Store.Services.DistributionServices;
@@ -19,6 +23,8 @@ using IICT_Store.Services.PersonServices;
 using IICT_Store.Services.ProductNumberServices;
 using IICT_Store.Services.ProductServices;
 using IICT_Store.Services.PurchaseServices;
+using IICT_Store.Services.TimeSlotService;
+using IICT_Store.Services.TimeSlotServices;
 using IICT_Store.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -83,6 +89,11 @@ namespace IICT_Store.Api
             services.AddScoped<IProductNumberRepository, ProductNumberRepository>();
             services.AddScoped<IProductNumberService, ProductNumberService>();
             services.AddScoped<IApprovalService, ApprovalService>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<ITimeSlotReposiotry, TimeSlotRepository>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ITimeSlotService, TimeSlotService>();
+            services.AddScoped<IBookingTimeSlotRepository, BookingTimeSlotRepository>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -136,6 +147,11 @@ namespace IICT_Store.Api
                     Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
                 swagger.DescribeAllEnumsAsStrings();
+                swagger.MapType<TimeSpan>(() => new OpenApiSchema
+                {
+                    Type = "string",
+                    Example = new Microsoft.OpenApi.Any.OpenApiString("00:00:00")
+                });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
