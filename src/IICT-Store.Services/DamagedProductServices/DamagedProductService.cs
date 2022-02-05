@@ -45,7 +45,7 @@ namespace IICT_Store.Services.DamagedProductServices
         public async Task<ServiceResponse<ProductSerialNoDto>> DamageProduct(long id)
         {
             ServiceResponse<ProductSerialNoDto> response = new();
-            var productSerialNo = productSerialNoRepository.GetById(id);
+            var productSerialNo = await productSerialNoRepository.GetByProductNoId(id);
             if(productSerialNo == null)
             {
                 response.Messages.Add("Not Found.");
@@ -68,7 +68,7 @@ namespace IICT_Store.Services.DamagedProductServices
             damagedProductSerialNos.Add(damagedProductSerialNo);
             damagedProduct.DamagedProductSerialNos = damagedProductSerialNos;
             damagedProductRepository.Insert(damagedProduct);
-            productSerialNoRepository.Delete(id);
+            productSerialNoRepository.Delete(productSerialNo.Id);
             response.Messages.Add("Damaged product added.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

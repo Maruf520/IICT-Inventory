@@ -31,8 +31,24 @@ namespace IICT_Store.Services.ProductNumberServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            var productCount = product.ProductNos.Count();
+            if(product.ProductNos != null)
+            {
+                var productCount = await productNumberRepository.GetByProductId(id);
+                var avaiableAmount = product.QuantityInStock - productCount.Count;
+                if(avaiableAmount < createProductNoDto.ProductNos.Count)
+                {
+                    response.Messages.Add("You have to reduce product item.");
+                    response.StatusCode = System.Net.HttpStatusCode.OK;
+                    return response;
+                }
+            }
 /*            if(product.TotalQuantity >= productCount)*/
+            if(product.QuantityInStock < createProductNoDto.ProductNos.Count)
+            {
+                response.Messages.Add("You have to reduce product item.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
             var checkSerialNo = CheckIfSerialNoExists(id, (List<ProductNoDto>)createProductNoDto.ProductNos);
             if (checkSerialNo.Result == false)
             {

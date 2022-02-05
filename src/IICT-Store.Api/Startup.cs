@@ -10,6 +10,7 @@ using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
 using IICT_Store.Repositories.UserRepositories;
+using IICT_Store.Services.ApprovalServices;
 using IICT_Store.Services.AuthServices;
 using IICT_Store.Services.CategoryServices;
 using IICT_Store.Services.DamagedProductServices;
@@ -81,6 +82,7 @@ namespace IICT_Store.Api
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProductNumberRepository, ProductNumberRepository>();
             services.AddScoped<IProductNumberService, ProductNumberService>();
+            services.AddScoped<IApprovalService, ApprovalService>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -133,6 +135,7 @@ namespace IICT_Store.Api
                     In = ParameterLocation.Header,
                     Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
+                swagger.DescribeAllEnumsAsStrings();
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {

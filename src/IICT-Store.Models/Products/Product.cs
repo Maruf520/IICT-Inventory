@@ -9,10 +9,11 @@ namespace IICT_Store.Models.Products
 {
     public class Product : BaseModel
     {
-/*        public Product()
+        public Product()
         {
-            Category = new Category();
-        }*/
+          /*  Category = new Category();*/
+            ProductNos = new List<ProductNo>();
+        }
         public string Name { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }

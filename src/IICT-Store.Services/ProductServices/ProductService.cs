@@ -128,6 +128,12 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse<GetProductDto> response = new();
             var product =  productRepository.GetById(id);
+            if(product == null)
+            {
+                response.Messages.Add("Product Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
             if (product.ProductNos != null)
             {
                 var checkSerialNo = CheckIfSerialNoExists(id, (List<ProductNoDto>)createProductNoDto.ProductNos);
@@ -139,6 +145,12 @@ namespace IICT_Store.Services.ProductServices
             }
 
             List<ProductNo> nos = new();
+            if(product.TotalQuantity > createProductNoDto.ProductNos.Count)
+            {
+                response.Messages.Add("Please reduce the quantity of serial number.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
             foreach (var item in createProductNoDto.ProductNos)
             {
                 ProductNo productNo = new();

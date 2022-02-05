@@ -61,9 +61,9 @@ namespace IICT_Store.Services.PurchaseServices
 
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToMap.CashMemos = cashMemos;
-            products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
+/*            products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
             products.TotalQuantity = products.TotalQuantity + createPurchaseDto.Quantity;
-            productRepository.Update(products);
+            productRepository.Update(products);*/
             purchaseRepository.Insert(productToMap);
             response.Data = productToReturn;
             response.Messages.Add("Purchased.");

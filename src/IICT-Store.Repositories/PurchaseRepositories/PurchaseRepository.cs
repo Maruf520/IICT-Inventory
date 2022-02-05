@@ -22,5 +22,21 @@ namespace IICT_Store.Repositories.PurchaseRepositories
             var purchase = await context.Purchasheds.Where(x => x.Id == id).Include(x => x.CashMemos).FirstOrDefaultAsync();
             return purchase;
         }
+
+        public async Task<List<Purchashed>> GetPendingPurchased()
+        {
+            var purchase = await context.Purchasheds.Include(x => x.CashMemos).Where(x => x.IsConfirmed == false && x.PurchaseStatus == PurchaseStatus.Pending).ToListAsync();
+            return purchase;
+        }
+        public async Task<List<Purchashed>> GetRejectedPurchased()
+        {
+            var purchase = await context.Purchasheds.Include(x => x.CashMemos).Where(x => x.IsConfirmed == false && x.PurchaseStatus == PurchaseStatus.Rejected).ToListAsync();
+            return purchase;
+        }
+        public async Task<List<Purchashed>> GetConfirmedPurchased()
+        {
+            var purchase = await context.Purchasheds.Include(x => x.CashMemos).Where(x => x.IsConfirmed == true && x.PurchaseStatus == PurchaseStatus.Confirmed).ToListAsync();
+            return purchase;
+        }
     }
 }

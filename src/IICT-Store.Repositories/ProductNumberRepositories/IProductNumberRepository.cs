@@ -9,5 +9,6 @@ namespace IICT_Store.Repositories.ProductNumberRepositories
 {
     public interface IProductNumberRepository : IBaseRepository<ProductNo>
     {
+        Task<List<ProductNo>> GetByProductId(long id);
     }
 }
