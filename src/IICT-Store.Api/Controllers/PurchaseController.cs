@@ -32,5 +32,7 @@ namespace IICT_Store.Api.Controllers
             var purchase = await purchaseService.GetPurchaseById(id);
             return Ok(purchase);
         }
+
+
     }
 }

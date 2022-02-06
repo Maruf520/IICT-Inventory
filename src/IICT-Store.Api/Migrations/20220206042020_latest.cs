@@ -3,10 +3,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations
 {
-    public partial class initial : Migration
+    public partial class latest : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Application = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BookingBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Purposes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -45,6 +64,22 @@ namespace IICT_Store.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TimeSlots",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimeSlots", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -66,6 +101,35 @@ namespace IICT_Store.Api.Migrations
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingTimeSlots",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BookingId = table.Column<long>(type: "bigint", nullable: false),
+                    TimeSlotId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingTimeSlots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookingTimeSlots_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookingTimeSlots_TimeSlots_TimeSlotId",
+                        column: x => x.TimeSlotId,
+                        principalTable: "TimeSlots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -283,6 +347,16 @@ namespace IICT_Store.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingTimeSlots_BookingId",
+                table: "BookingTimeSlots",
+                column: "BookingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingTimeSlots_TimeSlotId",
+                table: "BookingTimeSlots",
+                column: "TimeSlotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CashMemos_PurchashedId1",
                 table: "CashMemos",
                 column: "PurchashedId1");
@@ -341,6 +415,9 @@ namespace IICT_Store.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BookingTimeSlots");
+
+            migrationBuilder.DropTable(
                 name: "CashMemos");
 
             migrationBuilder.DropTable(
@@ -354,6 +431,12 @@ namespace IICT_Store.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductSerialNos");
+
+            migrationBuilder.DropTable(
+                name: "Bookings");
+
+            migrationBuilder.DropTable(
+                name: "TimeSlots");
 
             migrationBuilder.DropTable(
                 name: "Purchasheds");

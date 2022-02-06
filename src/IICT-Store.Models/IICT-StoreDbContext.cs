@@ -1,4 +1,5 @@
 ﻿using IICT_Store.Models.Categories;
+using IICT_Store.Models.Gallery;
 using IICT_Store.Models.Persons;
 using IICT_Store.Models.Products;
 using IICT_Store.Models.Pruchashes;
@@ -25,6 +26,9 @@ namespace IICT_Store.Models
         public DbSet<ProductSerialNo> ProductSerialNos { get; set; }
         public DbSet<ProductNo> ProductNos { get; set; }
         public DbSet<DamagedProductSerialNo> DamagedProductSerialNos { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<TimeSlot> TimeSlots { get; set; }
+        public DbSet<BookingTimeSlot> BookingTimeSlots { get; set; }
         /*        //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext*/
         //dotnet ef database update --context IICT_StoreDbContext
 

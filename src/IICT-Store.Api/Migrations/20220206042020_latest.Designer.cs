@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220127122524_initial")]
-    partial class initial
+    [Migration("20220206042020_latest")]
+    partial class latest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +47,94 @@ namespace IICT_Store.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Gallery.Booking", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Application")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BookingBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Purposes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Gallery.BookingTimeSlot", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("BookingId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("TimeSlotId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("TimeSlotId");
+
+                    b.ToTable("BookingTimeSlots");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Gallery.TimeSlot", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeSlots");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Persons.Person", b =>
@@ -407,6 +495,25 @@ namespace IICT_Store.Api.Migrations
                     b.ToTable("Purchasheds");
                 });
 
+            modelBuilder.Entity("IICT_Store.Models.Gallery.BookingTimeSlot", b =>
+                {
+                    b.HasOne("IICT_Store.Models.Gallery.Booking", "Booking")
+                        .WithMany("BookingTimeSlots")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IICT_Store.Models.Gallery.TimeSlot", "TimeSlot")
+                        .WithMany("BookingTimeSlots")
+                        .HasForeignKey("TimeSlotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("TimeSlot");
+                });
+
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.Product", "Product")
@@ -514,6 +621,16 @@ namespace IICT_Store.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Gallery.Booking", b =>
+                {
+                    b.Navigation("BookingTimeSlots");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Gallery.TimeSlot", b =>
+                {
+                    b.Navigation("BookingTimeSlots");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
