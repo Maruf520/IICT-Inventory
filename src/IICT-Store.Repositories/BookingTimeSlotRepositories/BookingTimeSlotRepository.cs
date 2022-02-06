@@ -1,5 +1,6 @@
 ﻿using IICT_Store.Models;
 using IICT_Store.Models.Gallery;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,12 @@ namespace IICT_Store.Repositories.BookingTimeSlotRepositories
         public BookingTimeSlotRepository(IICT_StoreDbContext context) : base(context)
         {
             this.context = context;
+        }
+
+        public async Task<List<BookingTimeSlot>> GetByDate(DateTime date)
+        {
+            var timeSlots = await context.BookingTimeSlots.Include(x => x.Booking).Where(x => x.Date.Date == date.Date).ToListAsync();
+            return timeSlots;
         }
     }
 }

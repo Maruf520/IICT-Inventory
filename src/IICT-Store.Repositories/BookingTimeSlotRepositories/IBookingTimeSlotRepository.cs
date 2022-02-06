@@ -9,6 +9,6 @@ namespace IICT_Store.Repositories.BookingTimeSlotRepositories
 {
     public interface IBookingTimeSlotRepository : IBaseRepository<BookingTimeSlot>
     {
-
+        Task<List<BookingTimeSlot>> GetByDate(DateTime date);
     }
 }

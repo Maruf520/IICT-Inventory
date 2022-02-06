@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/bookings")]
     [ApiController]
     public class BookingController : ControllerBase
     {
@@ -27,6 +27,27 @@ namespace IICT_Store.Api.Controllers
             var booking = await bookingService.CreateBooking(createBookingDto);
             return Ok(booking);
         }
+
+        [HttpGet("{date}/booking")]
+        public async Task<IActionResult> GetBookingByDate(DateTime date)
+        {
+            var booking = await bookingService.GetBookingByDate(date);
+            return Ok(booking);
+        }
+        [HttpGet("{id}/")]
+        public async Task<IActionResult> GetBookingById(long id)
+        {
+            var booking = await bookingService.GetById(id);
+            return Ok(booking);
+        }
+
+        [HttpGet("available-booking")]
+        public async Task<IActionResult> GetAvailableBooking(DateTime date)
+        {
+            var booking = await bookingService.GetAvailableTimeSlot(date);
+            return Ok(booking);
+        }
+
 
 
     }

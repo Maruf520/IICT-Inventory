@@ -8,6 +8,7 @@ namespace IICT_Store.Models.Gallery
 {
     public class BookingTimeSlot : BaseModel
     {
+        public DateTime Date { get; set; }
         public long BookingId { get; set; }
         public Booking Booking { get; set; }
         public long TimeSlotId { get; set; }
