@@ -29,6 +29,8 @@ namespace IICT_Store.Models
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<BookingTimeSlot> BookingTimeSlots { get; set; }
+        public DbSet<ReturnedProduct> ReturnedProducts { get; set; }
+        public DbSet<ReturnedProductSerialNo> ReturnedProductSerialNos { get; set; }
         /*        //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext*/
         //dotnet ef database update --context IICT_StoreDbContext
 
