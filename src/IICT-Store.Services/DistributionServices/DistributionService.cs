@@ -61,7 +61,7 @@ namespace IICT_Store.Services.DistributionServices
             {
                 foreach(var nos in productSerialNos)
                 {
-                    if(nos.ProductNoId == item.ProductNoId)
+                    if(nos.ProductNoId == item.ProductNoId && createDistributionDto.ProductSerialNo.Count < 2 && nos.ProductNoId !=0  )
                     {
                         response.Messages.Add("This product already has been distributed.");
                         response.StatusCode = System.Net.HttpStatusCode.BadRequest;

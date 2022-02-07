@@ -11,6 +11,8 @@ using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
+using IICT_Store.Repositories.ReturnedProductRepositories;
+using IICT_Store.Repositories.ReturnedProductSerialNoRepositories;
 using IICT_Store.Repositories.TimeSlotRepository;
 using IICT_Store.Repositories.UserRepositories;
 using IICT_Store.Services.ApprovalServices;
@@ -23,6 +25,7 @@ using IICT_Store.Services.PersonServices;
 using IICT_Store.Services.ProductNumberServices;
 using IICT_Store.Services.ProductServices;
 using IICT_Store.Services.PurchaseServices;
+using IICT_Store.Services.ReturnProductServices;
 using IICT_Store.Services.TimeSlotService;
 using IICT_Store.Services.TimeSlotServices;
 using IICT_Store.Services.UserServices;
@@ -94,6 +97,9 @@ namespace IICT_Store.Api
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IBookingTimeSlotRepository, BookingTimeSlotRepository>();
+            services.AddScoped<IReturnedProductRepository, ReturnedProductRepository>();
+            services.AddScoped<IReturnedProductSerialNoRepository, ReturnedProductSerialNoRepository>();
+            services.AddScoped<IReturnProductService, ReturnProductService>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
