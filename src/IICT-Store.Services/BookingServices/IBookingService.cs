@@ -1,5 +1,6 @@
 ﻿using IICT_Store.Dtos.Gallery;
 using IICT_Store.Models;
+using IICT_Store.Models.Gallery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,9 @@ namespace IICT_Store.Services.BookingServices
     {
         Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto);
         Task<ServiceResponse<GetBookingDto>> GetById(long id);
-        Task<ServiceResponse<List<GetBookingDto>>> GetBookingByDate(DateTime date);
-        Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date);
+        Task<ServiceResponse<GetBookingDto>> Delete(long id);
+        Task<ServiceResponse<List<GetBookingDto>>> GetBookingByDate(DateTime date, GalleryNo galleryNo);
+        Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date, GalleryNo galleryNo);
 
     }
 }

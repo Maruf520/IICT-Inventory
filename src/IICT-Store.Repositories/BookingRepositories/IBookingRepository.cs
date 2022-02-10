@@ -9,6 +9,7 @@ namespace IICT_Store.Repositories.BookingRepositories
 {
     public interface IBookingRepository : IBaseRepository<Booking>
     {
-        Task<List<Booking>> GetByDate(DateTime date);
+        Task<List<Booking>> GetByDate(DateTime date, GalleryNo galleryNo);
+/*        Task<List<Booking>> GetByDateOfG2(DateTime date);*/
     }
 }

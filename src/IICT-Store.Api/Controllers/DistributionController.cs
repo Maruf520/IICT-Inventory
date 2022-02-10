@@ -48,11 +48,11 @@ namespace IICT_Store.Api.Controllers
         }
 
         //get all distributions by product Id
-        [HttpGet("product/{id}")]
-        public async Task<IActionResult> GetALlDistributionByProductId(long id)
-        {
-            var distribution = await distributionService.GetAllDistributionByProductId(id);
-            return Ok(distribution);
-        }
+        //[HttpGet("product/{id}")]
+        //public async Task<IActionResult> GetALlDistributionByProductId(long id)
+        //{
+        //    var distribution = await distributionService.GetAllDistributionByProductId(id);
+        //    return Ok(distribution);
+        //}
     }
 }

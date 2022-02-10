@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220206042020_latest")]
-    partial class latest
+    [Migration("20220208072745_MigrationName")]
+    partial class MigrationName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -404,6 +404,81 @@ namespace IICT_Store.Api.Migrations
                     b.ToTable("ProductSerialNos");
                 });
 
+            modelBuilder.Entity("IICT_Store.Models.Products.ReturnedProduct", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("ReceiverId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("SenderId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId1");
+
+                    b.HasIndex("SenderId1");
+
+                    b.ToTable("ReturnedProducts");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.ReturnedProductSerialNo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProductNoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ReturnedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("ReturnedProductId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReturnedProductId1");
+
+                    b.ToTable("ReturnedProductSerialNos");
+                });
+
             modelBuilder.Entity("IICT_Store.Models.Pruchashes.CashMemo", b =>
                 {
                     b.Property<long>("Id")
@@ -595,12 +670,36 @@ namespace IICT_Store.Api.Migrations
             modelBuilder.Entity("IICT_Store.Models.Products.ProductSerialNo", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.Distribution", "Distribution")
-                        .WithMany("ProductSerialNo")
+                        .WithMany()
                         .HasForeignKey("DistributionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Distribution");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.ReturnedProduct", b =>
+                {
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId1");
+
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId1");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.ReturnedProductSerialNo", b =>
+                {
+                    b.HasOne("IICT_Store.Models.Products.ReturnedProduct", "ReturnedProduct")
+                        .WithMany()
+                        .HasForeignKey("ReturnedProductId1");
+
+                    b.Navigation("ReturnedProduct");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Pruchashes.CashMemo", b =>
@@ -636,11 +735,6 @@ namespace IICT_Store.Api.Migrations
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
                 {
                     b.Navigation("DamagedProductSerialNos");
-                });
-
-            modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>
-                {
-                    b.Navigation("ProductSerialNo");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.Product", b =>

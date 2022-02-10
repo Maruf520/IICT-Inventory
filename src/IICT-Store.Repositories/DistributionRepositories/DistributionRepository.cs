@@ -19,19 +19,19 @@ namespace IICT_Store.Repositories.DistributionRepositories
 
         public async Task<Distribution> GetDistributionById(long id)
         {
-            var distribution = await context.Distributions.Include(x => x.ProductSerialNo).Where(x => x.Id == id).FirstOrDefaultAsync();
+            var distribution = await context.Distributions.Where(x => x.Id == id).FirstOrDefaultAsync();
             return distribution;
         }
 
         public async Task<List<Distribution>> GetDistributionByPerson(long personId)
         {
-            var distribution = await context.Distributions.Include(x => x.ProductSerialNo).Where(x => x.ReceiverId == personId).ToListAsync();
+            var distribution = await context.Distributions.Where(x => x.ReceiverId == personId).ToListAsync();
             return distribution;
         }
 
         public async Task<List<Distribution>> GetDistributionByRoomNo(int roomNo)
         {
-            var distribution = await context.Distributions.Include(x => x.ProductSerialNo).Where(x => x.RoomNo == roomNo).ToListAsync();
+            var distribution = await context.Distributions.Where(x => x.RoomNo == roomNo).ToListAsync();
             return distribution;
         }
 
@@ -49,7 +49,12 @@ namespace IICT_Store.Repositories.DistributionRepositories
 
         public async Task<List<Distribution>> GetAllDistributionByProductId(long productId)
         {
-            var distribution = context.Distributions.Include(x => x.ProductSerialNo).Where(x => x.ProductId == productId).ToList();
+            var distribution = context.Distributions.Where(x => x.ProductId == productId).ToList();
+            return distribution;
+        }
+        public async Task<Distribution> GetByRoomIdAndProductId(int roomNo, long productId)
+        {
+            var distribution = await context.Distributions.Where(x => x.RoomNo == roomNo && x.ProductId == productId).FirstOrDefaultAsync();
             return distribution;
         }
     }

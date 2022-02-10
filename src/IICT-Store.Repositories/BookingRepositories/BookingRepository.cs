@@ -17,10 +17,15 @@ namespace IICT_Store.Repositories.BookingRepositories
             this.context = context;
         }
 
-        public async Task<List<Booking>> GetByDate(DateTime date)
+        public async Task<List<Booking>> GetByDate(DateTime date, GalleryNo galleryNo)
         {
-            var booking = await context.Bookings.Include(x => x.BookingTimeSlots).Where(x => x.Date.Date == date.Date).ToListAsync();
+            var booking = await context.Bookings.Include(x => x.BookingTimeSlots).Where(x => x.Date.Date == date.Date && x.GalleryNo == galleryNo).ToListAsync();
             return booking;
         }
+/*        public async Task<List<Booking>> GetByDateOfG2(DateTime date)
+        {
+            var booking = await context.Bookings.Include(x => x.BookingTimeSlots).Where(x => x.Date.Date == date.Date && x.GalleryNo == GalleryNo.Gallery_2).ToListAsync();
+            return booking;
+        }*/
     }
 }

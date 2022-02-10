@@ -5,8 +5,10 @@ using IICT_Store.Models.Gallery;
 using IICT_Store.Repositories.BookingRepositories;
 using IICT_Store.Repositories.BookingTimeSlotRepositories;
 using IICT_Store.Repositories.TimeSlotRepository;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,12 +39,17 @@ namespace IICT_Store.Services.BookingServices
             booking.Note = createBookingDto.Note;
             booking.Purposes = createBookingDto.Purposes;
             booking.CreatedAt = DateTime.Now;
+            booking.Amount = createBookingDto.Amount;
+            booking.MoneyReceiptNo = createBookingDto.MoneyReceiptNo;
+            var upload = await UploadFile(createBookingDto.MoneyReceipt);
+            booking.MoneyReceipt = upload;
             bookingRespository.Insert(booking);
             foreach(var slotId in createBookingDto.TimeSlodId)
             {
                 BookingTimeSlot bookingTimeSLot = new();
                 bookingTimeSLot.TimeSlotId = slotId;
                 bookingTimeSLot.BookingId = booking.Id;
+                bookingTimeSLot.GalleryNo = createBookingDto.GalleryNo;
                 bookingTimeSLot.Date = createBookingDto.Date;
                 bookingTimeSlotRepository.Insert(bookingTimeSLot);
             }
@@ -51,12 +58,30 @@ namespace IICT_Store.Services.BookingServices
             return response;
         }
 
-        public async Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date)
+        public async Task<ServiceResponse<GetBookingDto>> Delete(long id)
+        {
+            ServiceResponse<GetBookingDto> response = new();
+            var booking = bookingRespository.GetById(id);
+            if(booking == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var map = mapper.Map<GetBookingDto>(booking);
+            bookingRespository.Delete(id);
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Messages.Add("Deleted.");
+            response.Data = map;
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date,GalleryNo galleryNo)
         {
 
             ServiceResponse<List<GetTimeSlotDto>> response = new();
             List<GetTimeSlotDto> getTimeSlotDtos = new();
-            var bookingTImeslots =  bookingTimeSlotRepository.GetByDate(date).Result;
+            var bookingTImeslots =  bookingTimeSlotRepository.GetByDate(date,galleryNo).Result;
             if(bookingTImeslots == null)
             {
                 response.Messages.Add("No Booking Found.");
@@ -82,11 +107,13 @@ namespace IICT_Store.Services.BookingServices
             return response;
         }
 
-        public async Task<ServiceResponse<List<GetBookingDto>>> GetBookingByDate(DateTime date)
+        public async Task<ServiceResponse<List<GetBookingDto>>> GetBookingByDate(DateTime date, GalleryNo galleryNo)
         {
             ServiceResponse<List<GetBookingDto>> response = new();
-            var booking = await bookingRespository.GetByDate(date);
-            if( booking == null)
+            var booking = await bookingRespository.GetByDate(date, galleryNo);
+
+
+            if ( booking.Count == 0)
             {
                 response.Messages.Add("No Booking Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -118,5 +145,31 @@ namespace IICT_Store.Services.BookingServices
             return response;
         }
 
+        public async Task<string> UploadFile(IFormFile formFile)
+        {
+            if (formFile.Length > 0)
+            {
+                string fName = Path.GetRandomFileName();
+
+                var getext = Path.GetExtension(formFile.FileName);
+                var filename = Path.ChangeExtension(fName, getext);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "files");
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                filePath = Path.Combine(filePath, filename);
+                var pathdb = "files/" + filename;
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                    stream.Flush();
+                }
+
+                return pathdb;
+
+            }
+            return "enter valid photo";
+        }
     }
 }

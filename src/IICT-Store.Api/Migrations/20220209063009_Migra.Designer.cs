@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220207052431_returnProduct")]
-    partial class returnProduct
+    [Migration("20220209063009_Migra")]
+    partial class Migra
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,6 +56,9 @@ namespace IICT_Store.Api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Application")
                         .HasColumnType("nvarchar(max)");
 
@@ -67,6 +70,15 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("GalleryNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MoneyReceipt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoneyReceiptNo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -97,6 +109,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("GalleryNo")
+                        .HasColumnType("int");
 
                     b.Property<long>("TimeSlotId")
                         .HasColumnType("bigint");
@@ -670,7 +685,7 @@ namespace IICT_Store.Api.Migrations
             modelBuilder.Entity("IICT_Store.Models.Products.ProductSerialNo", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.Distribution", "Distribution")
-                        .WithMany("ProductSerialNo")
+                        .WithMany()
                         .HasForeignKey("DistributionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -696,7 +711,7 @@ namespace IICT_Store.Api.Migrations
             modelBuilder.Entity("IICT_Store.Models.Products.ReturnedProductSerialNo", b =>
                 {
                     b.HasOne("IICT_Store.Models.Products.ReturnedProduct", "ReturnedProduct")
-                        .WithMany("ReturnedProductSerialNos")
+                        .WithMany()
                         .HasForeignKey("ReturnedProductId1");
 
                     b.Navigation("ReturnedProduct");
@@ -737,19 +752,9 @@ namespace IICT_Store.Api.Migrations
                     b.Navigation("DamagedProductSerialNos");
                 });
 
-            modelBuilder.Entity("IICT_Store.Models.Products.Distribution", b =>
-                {
-                    b.Navigation("ProductSerialNo");
-                });
-
             modelBuilder.Entity("IICT_Store.Models.Products.Product", b =>
                 {
                     b.Navigation("ProductNos");
-                });
-
-            modelBuilder.Entity("IICT_Store.Models.Products.ReturnedProduct", b =>
-                {
-                    b.Navigation("ReturnedProductSerialNos");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Pruchashes.Purchashed", b =>
