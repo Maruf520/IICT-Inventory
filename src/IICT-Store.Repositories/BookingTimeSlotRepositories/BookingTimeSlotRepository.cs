@@ -17,9 +17,9 @@ namespace IICT_Store.Repositories.BookingTimeSlotRepositories
             this.context = context;
         }
 
-        public async Task<List<BookingTimeSlot>> GetByDate(DateTime date)
+        public async Task<List<BookingTimeSlot>> GetByDate(DateTime date, GalleryNo galleryNo)
         {
-            var timeSlots = await context.BookingTimeSlots.Include(x => x.Booking).Where(x => x.Date.Date == date.Date).ToListAsync();
+            var timeSlots = await context.BookingTimeSlots.Include(x => x.Booking).Where(x => x.Date.Date == date.Date && x.GalleryNo == galleryNo).ToListAsync();
             return timeSlots;
         }
     }

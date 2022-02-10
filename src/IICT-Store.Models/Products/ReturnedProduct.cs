@@ -15,7 +15,6 @@ namespace IICT_Store.Models.Products
         public Person Receiver { get; set; }
         public int SenderId { get; set; }
         public Person Sender { get; set; }
-        public ICollection<ReturnedProductSerialNo> ReturnedProductSerialNos { get; set; }
         public string Note { get; set; }
     }
 }

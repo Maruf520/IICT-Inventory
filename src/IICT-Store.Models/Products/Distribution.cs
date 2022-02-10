@@ -11,10 +11,10 @@ namespace IICT_Store.Models.Products
 {
     public class Distribution : BaseModel
     {
-        public Distribution()
+/*        public Distribution()
         {
             ProductSerialNo = new List<ProductSerialNo>();
-        }
+        }*/
         public int? RoomNo { get; set; }
         public long  ProductId { get; set; }
         public Product  Product { get; set; }
@@ -31,7 +31,7 @@ namespace IICT_Store.Models.Products
         [ForeignKey("ReceiverId")]
         public long? ReceiverId { get; set; }
         public Person Receiver { get; set; }
-        public ICollection<ProductSerialNo> ProductSerialNo { get; set; }
+/*        public ICollection<ProductSerialNo> ProductSerialNo { get; set; }*/
         public string DistributedTo { get; set; } // to samir sir/ room no 212
         public string SignatureOfReceiver { get; set; }
         public string Note { get; set; }

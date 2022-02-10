@@ -15,5 +15,6 @@ namespace IICT_Store.Repositories.DistributionRepositories
         Task<List<Distribution>> GetAllDistributionByProductId(long productId);
         Task<List<ProductSerialNo>> GetAllSerialNo();
         Task<ProductSerialNo> GetProductBySerialNo(long id);
+        Task<Distribution> GetByRoomIdAndProductId(int roomNo, long productId);
     }
 }

@@ -42,6 +42,7 @@ namespace IICT_Store.Api
             CreateMap<CreateTimeSlotDto, TimeSlot>();
             CreateMap<CreateBookingDto, Booking>();
             CreateMap<Booking, GetBookingDto>();
+            CreateMap<CreateReturnProductDto, ReturnedProduct>();
         }
     }
 }

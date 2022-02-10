@@ -26,8 +26,8 @@ namespace IICT_Store.Services.ReturnProductServices
             this.mapper = mapper;
             this.distributionRepository = distributionRepository;
         }
-/*
-        public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, long id)
+
+        public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, int id)
         {
             ServiceResponse<GetReturnProductDto> response = new();
             var product = productRepository.GetById(id);
@@ -43,18 +43,27 @@ namespace IICT_Store.Services.ReturnProductServices
             returnedProduct.SenderId = createReturnProductDto.SenderId;
             returnedProduct.CreatedAt = DateTime.Now;
             returnedProduct.Note = createReturnProductDto.Note;
-            returnedProduct.ProductId = createReturnProductDto.ProductId;
+            returnedProduct.ProductId = id;
             var map = mapper.Map<ReturnedProduct>(createReturnProductDto);
+           
+            var distribution = await distributionRepository.GetByRoomIdAndProductId(createReturnProductDto.RoomNo,id);
+            if(distribution.Quantity < createReturnProductDto.Quantity)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                response.Messages.Add($"Please Reduce the Quantity. This room has only {distribution.Quantity} item.");
+                return response;
+            }
+            distribution.Quantity = distribution.Quantity - createReturnProductDto.Quantity;
+            distributionRepository.Update(distribution);
             returnProductRepository.Insert(map);
-           var distribution = await distributionRepository.(createReturnProductDto.RoomNo);
-            
+            product.QuantityInStock = product.QuantityInStock + createReturnProductDto.Quantity;
+            productRepository.Update(product);
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Messages.Add("Returned.");
+            return response;
 
 
-        }*/
 
-        public Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto)
-        {
-            throw new NotImplementedException();
         }
     }
 }
