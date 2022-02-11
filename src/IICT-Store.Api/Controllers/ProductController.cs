@@ -42,6 +42,12 @@ namespace IICT_Store.Api.Controllers
             var products = await productService.GetALlProduct();
             return Ok(products);
         }
+        [HttpGet("category/{id}")]
+        public async Task<IActionResult> GetProdctByCategoryId(long id)
+        {
+            var product = await productService.GetProductByCategoryId(id);
+            return Ok(product);
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(CreateProductDto createProductDto, long id)

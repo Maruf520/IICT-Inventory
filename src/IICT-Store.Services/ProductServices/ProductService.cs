@@ -276,5 +276,23 @@ namespace IICT_Store.Services.ProductServices
             return "enter valid photo";
         }
 
+        public async Task<ServiceResponse<List<GetProductDto>>> GetProductByCategoryId(long id)
+        {
+            ServiceResponse < List <GetProductDto >> response = new();
+            var product = await productRepository.GetProductByCategoryId(id);
+            if(product == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+
+            var map = mapper.Map<List<GetProductDto>>(product);
+
+            response.Messages.Add("All products.");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Data = map;
+            return response;
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace IICT_Store.Services.ProductServices
         Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto);
         Task<ServiceResponse<GetProductDto>> GetProductById(long id);
         Task<ServiceResponse<List<GetProductDto>>> GetALlProduct();
+        Task<ServiceResponse<List<GetProductDto>>> GetProductByCategoryId(long id);
         Task<ServiceResponse<CreateProductDto>> UpdateProduct(CreateProductDto createProductDto, long productId);
         Task<ServiceResponse<GetProductDto>> DeleteProduct( long productId);
         Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto);
