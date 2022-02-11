@@ -35,6 +35,13 @@ namespace IICT_Store.Repositories.ProductRepositories
             var productNo = context.ProductNos.Where(x => x.ProductId == id).ToList();
             return productNo;
         }
+
+        public async Task<List<Product>> GetProductByCategoryId(long id)
+        {
+            var product = await context.Products.Include(x => x.Category).Where(x => x.CategoryId == id).ToListAsync();
+            return product;
+        }
+
         public Task<Product> GetProductById(long id)
         {
             var product = context.Products.Include(a => a.Category).FirstOrDefaultAsync(x => x.Id == id);

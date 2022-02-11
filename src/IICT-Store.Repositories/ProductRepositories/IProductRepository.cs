@@ -11,6 +11,7 @@ namespace IICT_Store.Repositories.ProductRepositories
     {
         Task<Product> GetProductById(long id);
         Task<List<Product>> GetAllProduct();
+        Task<List<Product>> GetProductByCategoryId(long id);
         Task<List<ProductNo>> GetAllProductNo();
         Task<List<ProductNo>> GetAllProductNoById(long id);
         Task<ProductNo> GetProductNoById(long id);
