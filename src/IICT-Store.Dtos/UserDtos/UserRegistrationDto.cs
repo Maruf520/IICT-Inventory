@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IICT_Store.Dtos.UserDtos
 {
@@ -16,7 +11,7 @@ namespace IICT_Store.Dtos.UserDtos
         public string Email { get; set; }
         [Required(ErrorMessage = "Designation is required")]
         public string Designation { get; set; }
-        [Required(ErrorMessage ="Phone is required")]
+        [Required(ErrorMessage = "Phone is required")]
         public string Phone { get; set; }
         public IFormFile Image { get; set; }
         [Required(ErrorMessage = "Password is required")]
