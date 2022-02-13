@@ -18,5 +18,6 @@ namespace IICT_Store.Dtos.ProductDtos
         public string Description { get; set; }
         [Required]
         public long CategoryId { get; set; }
+        public bool HasSerial { get; set; }
     }
 }

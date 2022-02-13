@@ -17,8 +17,13 @@ namespace IICT_Store.Repositories.UserRepositories
         }
         public async Task<string> Create(ApplicationUser applicationUser, string pass)
         {
-            var user = await userManager.CreateAsync(applicationUser, pass);
-            return "";
+            await userManager.CreateAsync(applicationUser, pass);
+            return "Created.";
+        }       
+        public async Task<string> Update(ApplicationUser applicationUser)
+        {
+           await userManager.UpdateAsync(applicationUser);
+            return "Updated.";
         }
 
         public async Task<List<ApplicationUser>> GetAll()
@@ -27,6 +32,12 @@ namespace IICT_Store.Repositories.UserRepositories
 /*            List<ApplicationUser> applicationUsers = new();
             applicationUsers = users;*/
             return users;
+        }
+
+        public async Task<ApplicationUser> GetById(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            return user;
         }
     }
 }

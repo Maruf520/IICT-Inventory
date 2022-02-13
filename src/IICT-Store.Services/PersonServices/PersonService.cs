@@ -3,8 +3,10 @@ using IICT_Store.Dtos.PersonDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Persons;
 using IICT_Store.Repositories.PersonRepositories;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,10 +26,20 @@ namespace IICT_Store.Services.PersonServices
         public async Task<ServiceResponse<GetPersonDto>> CreatePerson(CreatePersonDto createPersonDto)
         {
             ServiceResponse<GetPersonDto> response = new();
+            var person = await personRepository.GetByEmailAndPhone(createPersonDto.Email, createPersonDto.Phone);
+            if(person == false)
+            {
+                response.Messages.Add("Person Already Exists.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
+            var uploadImage = await UploadImage(createPersonDto.Image);
             var personToCreate = mapper.Map<Person>(createPersonDto);
             personToCreate.CreatedAt = DateTime.Now;
+            personToCreate.Image = uploadImage;
              personRepository.Insert(personToCreate);
             var personToReturn = mapper.Map<GetPersonDto>(createPersonDto);
+            personToReturn.Image = uploadImage;
             response.Data = personToReturn;
             response.Messages.Add("Person Created.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -106,6 +118,33 @@ namespace IICT_Store.Services.PersonServices
             response.Messages.Add("Peson Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
+        }
+
+        public async Task<string> UploadImage(IFormFile formFile)
+        {
+            if (formFile.Length > 0)
+            {
+                string fName = Path.GetRandomFileName();
+
+                var getext = Path.GetExtension(formFile.FileName);
+                var filename = Path.ChangeExtension(fName, getext);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "files");
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                filePath = Path.Combine(filePath, filename);
+                var pathdb = "files/" + filename;
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                    stream.Flush();
+                }
+
+                return pathdb;
+
+            }
+            return "enter valid photo";
         }
     }
 }

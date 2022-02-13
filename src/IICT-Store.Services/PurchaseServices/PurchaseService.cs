@@ -90,6 +90,23 @@ namespace IICT_Store.Services.PurchaseServices
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByProductId(long id)
+        {
+            ServiceResponse<List<GetPurchaseDto>> response = new();
+            var purchase = await purchaseRepository.GetPurchashedByProductId(id);
+            if (purchase.Count == 0)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var map = mapper.Map<List<GetPurchaseDto>>(purchase);
+            response.Data = map;
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Messages.Add("Purchased Product.");
+            return response;
+        }
+
         public async Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id)
         {
             ServiceResponse<GetPurchaseDto> response = new();

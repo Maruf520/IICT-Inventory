@@ -22,5 +22,6 @@ namespace IICT_Store.Models.Products
         public ICollection<ProductNo> ProductNos { get; set; }
         public long CategoryId { get; set; }
         public Category Category { get; set; }
+        public bool HasSerial { get; set; }
     }
 }

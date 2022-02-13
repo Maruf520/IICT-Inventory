@@ -32,6 +32,12 @@ namespace IICT_Store.Api.Controllers
             var purchase = await purchaseService.GetPurchaseById(id);
             return Ok(purchase);
         }
+        [HttpGet("product/{id}")]
+        public async Task<IActionResult> GetPurchaseByProductId(long id)
+        {
+            var purchase = await purchaseService.GetPurchaseByProductId(id);
+            return Ok(purchase);
+        }
 
 
     }

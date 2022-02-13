@@ -134,6 +134,12 @@ namespace IICT_Store.Services.ProductServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
+            if(product.HasSerial == false)
+            {
+                response.Messages.Add("Sorry, this product doesn't have any serial No.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
             if (product.ProductNos != null)
             {
                 var checkSerialNo = CheckIfSerialNoExists(id, (List<ProductNoDto>)createProductNoDto.ProductNos);
@@ -176,7 +182,15 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse < List < GetProductNoDto >> response = new();
             List <GetProductNoDto> productNos = new();
+            var product = productRepository.GetById(productId);
+            if (product.HasSerial == false)
+            {
+                response.Messages.Add("Sorry, this product doesn't have any serial No.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
             var distribution = await distributionRepository.GetAllSerialNo();
+
             var xx = await productRepository.GetAllProductNoById(productId);
             var productSerial = await productRepository.GetAllProductNoById(productId);
             foreach(var item in productSerial)
@@ -280,7 +294,7 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse < List <GetProductDto >> response = new();
             var product = await productRepository.GetProductByCategoryId(id);
-            if(product == null)
+            if(product.Count == 0 )
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;

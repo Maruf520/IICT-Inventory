@@ -11,5 +11,7 @@ namespace IICT_Store.Repositories.UserRepositories
     {
         Task<string> Create(ApplicationUser applicationUser, string pass);
         Task<List<ApplicationUser>> GetAll();
+        Task<ApplicationUser> GetById(string id);
+        Task<string> Update(ApplicationUser applicationUser);
     }
 }

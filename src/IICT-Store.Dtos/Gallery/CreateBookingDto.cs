@@ -11,7 +11,7 @@ namespace IICT_Store.Dtos.Gallery
     public class CreateBookingDto
     {
         public GalleryNo GalleryNo { get; set; }
-        public string Application { get; set; }
+        public IFormFile Application { get; set; }
         public DateTime Date { get; set; }
         public List<int> TimeSlodId { get; set; }
         public Decimal Amount { get; set; }
