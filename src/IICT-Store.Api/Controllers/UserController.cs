@@ -25,5 +25,12 @@ namespace IICT_Store.Api.Controllers
             var user = await userServcie.CreateUser(registrationDto);
             return Ok(user);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm]UserRegistrationDto userRegistrationDto)
+        {
+            var user = await userServcie.UpdateUser("",userRegistrationDto);
+            return Ok(user);
+        }
     }
 }

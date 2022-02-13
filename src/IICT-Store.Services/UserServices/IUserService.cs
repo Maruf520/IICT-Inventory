@@ -11,5 +11,6 @@ namespace IICT_Store.Services.UserServices
     public interface IUserService
     {
         Task<ServiceResponse<UserRegistrationDto>> CreateUser(UserRegistrationDto userRegistrationDto);
+        Task<ServiceResponse<GetUserDto>> UpdateUser(string id, UserRegistrationDto userRegistrationDto);
     }
 }
