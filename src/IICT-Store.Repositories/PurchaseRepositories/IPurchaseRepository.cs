@@ -10,6 +10,7 @@ namespace IICT_Store.Repositories.PurchaseRepositories
     public interface IPurchaseRepository : IBaseRepository<Purchashed>
     {
         Task<Purchashed> GetPurchashedById(long id);
+        Task<List<Purchashed>> GetPurchashedByProductId(long id);
         Task<List<Purchashed>> GetPendingPurchased();
         Task<List<Purchashed>> GetRejectedPurchased();
         Task<List<Purchashed>> GetConfirmedPurchased();

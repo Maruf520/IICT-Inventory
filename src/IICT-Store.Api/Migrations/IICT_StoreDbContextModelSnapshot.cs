@@ -257,8 +257,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DistributedTo")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DistributedTo")
+                        .HasColumnType("int");
 
                     b.Property<string>("NameOfUser")
                         .HasColumnType("nvarchar(max)");
@@ -342,6 +342,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasSerial")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");

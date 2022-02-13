@@ -20,7 +20,7 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePerson(CreatePersonDto createPersonDto)
+        public async Task<IActionResult> CreatePerson([FromForm]CreatePersonDto createPersonDto)
         {
             var person = await personService.CreatePerson(createPersonDto);
             return Ok(person);

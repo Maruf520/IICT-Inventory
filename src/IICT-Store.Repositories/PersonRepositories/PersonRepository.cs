@@ -15,5 +15,15 @@ namespace IICT_Store.Repositories.PersonRepositories
         {
             this.context = context;
         }
+
+        public async Task<bool> GetByEmailAndPhone(string email, string phone)
+        {
+            var person =  context.Persons.Where(x => x.Email == email || x.Phone == phone).FirstOrDefault();
+            if(person == null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

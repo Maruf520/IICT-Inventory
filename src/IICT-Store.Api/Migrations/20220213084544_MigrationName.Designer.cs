@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220209063009_Migra")]
-    partial class Migra
+    [Migration("20220213084544_MigrationName")]
+    partial class MigrationName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -259,8 +259,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DistributedTo")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DistributedTo")
+                        .HasColumnType("int");
 
                     b.Property<string>("NameOfUser")
                         .HasColumnType("nvarchar(max)");
@@ -344,6 +344,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasSerial")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");

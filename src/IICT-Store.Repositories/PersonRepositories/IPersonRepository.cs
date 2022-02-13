@@ -9,5 +9,6 @@ namespace IICT_Store.Repositories.PersonRepositories
 {
     public interface IPersonRepository : IBaseRepository<Person>
     {
+        Task<bool> GetByEmailAndPhone(string email, string phone);
     }
 }

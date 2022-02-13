@@ -31,7 +31,13 @@ namespace IICT_Store.Services.ProductNumberServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            if(product.ProductNos != null)
+            if (product.HasSerial == false)
+            {
+                response.Messages.Add("Sorry, this product doesn't have any serial No.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
+            if (product.ProductNos != null)
             {
                 var productCount = await productNumberRepository.GetByProductId(id);
                 var avaiableAmount = product.QuantityInStock - productCount.Count;

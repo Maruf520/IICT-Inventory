@@ -13,10 +13,14 @@ namespace IICT_Store.Api.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GalleryNo = table.Column<int>(type: "int", nullable: false),
                     Application = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BookingBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Purposes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MoneyReceipt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MoneyReceiptNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -91,6 +95,7 @@ namespace IICT_Store.Api.Migrations
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
                     TotalQuantity = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<long>(type: "bigint", nullable: false),
+                    HasSerial = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -144,6 +149,7 @@ namespace IICT_Store.Api.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GalleryNo = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BookingId = table.Column<long>(type: "bigint", nullable: false),
                     TimeSlotId = table.Column<long>(type: "bigint", nullable: false),
@@ -203,7 +209,7 @@ namespace IICT_Store.Api.Migrations
                     OrderNo = table.Column<int>(type: "int", nullable: false),
                     SenderId = table.Column<long>(type: "bigint", nullable: false),
                     ReceiverId = table.Column<long>(type: "bigint", nullable: true),
-                    DistributedTo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DistributedTo = table.Column<int>(type: "int", nullable: false),
                     SignatureOfReceiver = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),

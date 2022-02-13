@@ -14,5 +14,6 @@ namespace IICT_Store.Services.PurchaseServices
         Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto);
         Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id);
         Task<ServiceResponse<GetPurchaseDto>> GetPurchaseById(long id);
+        Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByProductId(long id);
     }
 }

@@ -33,7 +33,8 @@ namespace IICT_Store.Services.BookingServices
         {
             ServiceResponse<GetBookingDto> response = new();
             Booking booking = new();
-            booking.Application = createBookingDto.Application;
+            var application = await UploadFile(createBookingDto.Application);
+            booking.Application = application;
             booking.BookingBy = createBookingDto.BookingBy;
             booking.Date = createBookingDto.Date;
             booking.Note = createBookingDto.Note;

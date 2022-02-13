@@ -38,5 +38,12 @@ namespace IICT_Store.Repositories.PurchaseRepositories
             var purchase = await context.Purchasheds.Include(x => x.CashMemos).Where(x => x.IsConfirmed == true && x.PurchaseStatus == PurchaseStatus.Confirmed).ToListAsync();
             return purchase;
         }
+
+        public async Task<List<Purchashed>> GetPurchashedByProductId(long id)
+        {
+            var purchased = await context.Purchasheds.Where(x => x.ProductId == id).ToListAsync();
+            return purchased;
+            
+        }
     }
 }
