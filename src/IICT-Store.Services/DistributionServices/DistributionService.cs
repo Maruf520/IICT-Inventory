@@ -4,6 +4,7 @@ using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
 using IICT_Store.Repositories.DistributionRepositories;
+using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using System;
@@ -20,12 +21,14 @@ namespace IICT_Store.Services.DistributionServices
         private readonly IMapper mapper;
         private readonly IProductRepository productRepository;
         private readonly IProductSerialNoRepository productSerialNoRepository;
-        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository)
+        private readonly IProductNumberRepository productNumberRepository;
+        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository)
         {
             this.distributionRepository = distributionRepository;
             this.mapper = mapper;
             this.productRepository = productRepository;
             this.productSerialNoRepository = productSerialNoRepository;
+            this.productNumberRepository = productNumberRepository;
         }
         public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto)
         {
@@ -54,6 +57,13 @@ namespace IICT_Store.Services.DistributionServices
                 productSerialNo.DistributionId = distributionToCreate.Id;
                 productSerialNos.Add(productSerialNo);
 
+            }
+            foreach (var item in productSerialNos)
+            {
+                var productNo = productNumberRepository.GetById(item.ProductNoId);
+                productNo.ProductStatus = ProductStatus.Assigned;
+
+                productNumberRepository.Update(productNo);
             }
 
             //distributionToCreate.ProductSerialNo = productSerialNos;
@@ -99,6 +109,7 @@ namespace IICT_Store.Services.DistributionServices
                     productSerialNoRepository.Insert(prodyuctSerial);
                 }
             }
+
             var distributionToReturn = mapper.Map<GetDistributionDto>(createDistributionDto);
             response.Data = distributionToReturn;
             response.Messages.Add("Created.");

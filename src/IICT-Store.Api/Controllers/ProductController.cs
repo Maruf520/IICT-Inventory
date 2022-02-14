@@ -73,7 +73,7 @@ namespace IICT_Store.Api.Controllers
         [HttpGet("serial/{id}")]
         public async Task<IActionResult> GetProductBySerialNo(long id)
         {
-            var serial = await productService.GetProductBySerialNo(id);
+            var serial = await productNumberService.GetProductNoByProductId(id);
             return Ok(serial);
         }
 
