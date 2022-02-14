@@ -1,4 +1,5 @@
-﻿using IICT_Store.Dtos.ProductDtos;
+﻿using AutoMapper;
+using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
 using IICT_Store.Repositories.ProductNumberRepositories;
@@ -16,10 +17,12 @@ namespace IICT_Store.Services.ProductNumberServices
     {
         private readonly IProductRepository productRepository;
         private readonly IProductNumberRepository productNumberRepository;
-        public ProductNumberService(IProductNumberRepository productNumberRepository, IProductRepository productRepository)
+        private readonly IMapper mapper;
+        public ProductNumberService(IProductNumberRepository productNumberRepository, IProductRepository productRepository, IMapper mapper)
         {
             this.productNumberRepository = productNumberRepository;
             this.productRepository = productRepository;
+            this.mapper = mapper;
         }
         public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
         {
@@ -93,6 +96,24 @@ namespace IICT_Store.Services.ProductNumberServices
             }
 
             return true;
+        }
+
+        public async Task<ServiceResponse<List<GetProductNoDto>>> GetProductNoByProductId(long productId)
+        {
+            ServiceResponse<List<GetProductNoDto>> response = new();
+            var productsNo = await productNumberRepository.GetByProductId(productId);
+            if(productsNo.Count == 0)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var map = mapper.Map<List<GetProductNoDto>>(productsNo);
+            response.Data = map;
+            response.Messages.Add("All Serial.");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+
         }
     }
 }

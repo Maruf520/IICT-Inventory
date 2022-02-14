@@ -66,6 +66,9 @@ namespace IICT_Store.Services.DamagedProductServices
             damagedProductSerialNo.Name = productNo.Name;
             damagedProductSerialNo.CreatedAt = DateTime.Now;
             damagedProductSerialNos.Add(damagedProductSerialNo);
+            var productNos = productNumberRepository.GetById(damagedProductSerialNo.ProductNoId);
+            productNos.ProductStatus = ProductStatus.Damaged;
+            productNumberRepository.Update(productNos) ;
             damagedProduct.DamagedProductSerialNos = damagedProductSerialNos;
             damagedProductRepository.Insert(damagedProduct);
             productSerialNoRepository.Delete(productSerialNo.Id);

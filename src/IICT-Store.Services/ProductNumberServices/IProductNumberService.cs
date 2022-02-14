@@ -11,5 +11,6 @@ namespace IICT_Store.Services.ProductNumberServices
     public interface IProductNumberService
     {
         Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto);
+        Task<ServiceResponse<List<GetProductNoDto>>> GetProductNoByProductId(long productId);
     }
 }
