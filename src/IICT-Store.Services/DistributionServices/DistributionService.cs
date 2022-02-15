@@ -58,13 +58,23 @@ namespace IICT_Store.Services.DistributionServices
                 productSerialNos.Add(productSerialNo);
 
             }
-            foreach (var item in productSerialNos)
+            if(product.HasSerial == true)
             {
-                var productNo = productNumberRepository.GetById(item.ProductNoId);
-                productNo.ProductStatus = ProductStatus.Assigned;
+                if(productSerialNos.Any(x => x.ProductNoId ==0))
+                {
+                    response.Messages.Add("Please select items to distribute.");
+                    response.StatusCode = System.Net.HttpStatusCode.OK;
+                    return response;
+                }
+                foreach (var item in productSerialNos)
+                {
+                    var productNo = productNumberRepository.GetById(item.ProductNoId);
+                    productNo.ProductStatus = ProductStatus.Assigned;
 
-                productNumberRepository.Update(productNo);
+                    productNumberRepository.Update(productNo);
+                }
             }
+
 
             //distributionToCreate.ProductSerialNo = productSerialNos;
             var IfDistributionExists = await distributionRepository.GetByRoomIdAndProductId(createDistributionDto.RoomNo, createDistributionDto.ProductId);
@@ -237,6 +247,44 @@ namespace IICT_Store.Services.DistributionServices
             response.Data = map;
             response.Messages.Add("All distribution");
             return response;
+        }
+
+        public async Task<ServiceResponse<List<GetDistributionDto>>> GetAllDistributionByProductId(long id)
+        {
+            ServiceResponse<List<GetDistributionDto>> response = new();
+            var product =  productRepository.GetById(id);
+            if(product == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+
+            var distributions = await distributionRepository.GetAllDistributionByProductId(id);
+            var map = mapper.Map<List<GetDistributionDto>>(distributions);
+            response.Messages.Add("All distributions.");
+            response.Data = map;
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+        }
+
+        public async Task<ServiceResponse<GetDistributionDto>> GetDistributionByProductNoId(long id)
+        {
+            ServiceResponse<GetDistributionDto> response = new();
+            var productNo =  productNumberRepository.GetById(id);
+            if (productNo == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var productSerial = await productSerialNoRepository.GetByProductNoId(id);
+            var distribution =  distributionRepository.GetById(productSerial.DistributionId);
+            var map = mapper.Map<GetDistributionDto>(distribution);
+            response.Data = map;
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+
         }
 
     }

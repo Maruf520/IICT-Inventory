@@ -37,19 +37,19 @@ namespace IICT_Store.Repositories.DistributionRepositories
 
         public async Task<List<ProductSerialNo>> GetAllSerialNo()
         {
-            var serialNos =  context.ProductSerialNos.ToList();
+            var serialNos = await  context.ProductSerialNos.ToListAsync();
             return serialNos;
         }
 
-        public async Task<ProductSerialNo> GetProductBySerialNo(long id)
+        public async Task<ProductSerialNo> GetProductByProductNoId(long id)
         {
-            var serial = context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefault();
+            var serial = await context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefaultAsync();
             return serial;
         }
 
         public async Task<List<Distribution>> GetAllDistributionByProductId(long productId)
         {
-            var distribution = context.Distributions.Where(x => x.ProductId == productId).ToList();
+            var distribution = await context.Distributions.Where(x => x.ProductId == productId).ToListAsync();
             return distribution;
         }
         public async Task<Distribution> GetByRoomIdAndProductId(int roomNo, long productId)

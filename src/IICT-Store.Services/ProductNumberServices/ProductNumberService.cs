@@ -2,8 +2,10 @@
 using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
+using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
+using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Services.ProductServices;
 using System;
 using System.Collections.Generic;
@@ -18,11 +20,19 @@ namespace IICT_Store.Services.ProductNumberServices
         private readonly IProductRepository productRepository;
         private readonly IProductNumberRepository productNumberRepository;
         private readonly IMapper mapper;
-        public ProductNumberService(IProductNumberRepository productNumberRepository, IProductRepository productRepository, IMapper mapper)
+        private readonly IProductSerialNoRepository productSerialNoRepository;
+        private readonly IDistributionRepository distributionRepository;
+        public ProductNumberService(IProductNumberRepository productNumberRepository, 
+            IProductRepository productRepository, 
+            IMapper mapper, 
+            IProductSerialNoRepository productSerialNoRepository, 
+            IDistributionRepository distributionRepository)
         {
             this.productNumberRepository = productNumberRepository;
             this.productRepository = productRepository;
             this.mapper = mapper;
+            this.productSerialNoRepository = productSerialNoRepository;
+            this.distributionRepository = distributionRepository;
         }
         public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
         {
@@ -101,6 +111,7 @@ namespace IICT_Store.Services.ProductNumberServices
         public async Task<ServiceResponse<List<GetProductNoDto>>> GetProductNoByProductId(long productId)
         {
             ServiceResponse<List<GetProductNoDto>> response = new();
+            List<GetProductNoDto> productNoDtos = new();
             var productsNo = await productNumberRepository.GetByProductId(productId);
             if(productsNo.Count == 0)
             {
@@ -108,8 +119,30 @@ namespace IICT_Store.Services.ProductNumberServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
+            
+            foreach(var product in productsNo)
+            {
+                GetProductNoDto productNoDto = new();
+                var productserial = await productSerialNoRepository.GetByProductNoId(product.Id);
+                if(productserial != null)
+                {
+                    var distribution = distributionRepository.GetById(productserial.DistributionId);
+                    productNoDto.RoomNo = (int)distribution.RoomNo;
+                    productNoDto.NameOfUser = distribution.NameOfUser;
+                }
+
+
+                productNoDto.Id = product.Id;
+                productNoDto.Name = product.Name;
+                if(productNoDto.NameOfUser == null)
+                {
+                    productNoDto.NameOfUser = "N/A";
+                }
+                
+                productNoDtos.Add(productNoDto);
+            }
             var map = mapper.Map<List<GetProductNoDto>>(productsNo);
-            response.Data = map;
+            response.Data = productNoDtos;
             response.Messages.Add("All Serial.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

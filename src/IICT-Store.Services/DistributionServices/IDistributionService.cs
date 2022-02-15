@@ -14,6 +14,7 @@ namespace IICT_Store.Services.DistributionServices
         Task<ServiceResponse<GetDistributionDto>> GetById(long id);
         Task<ServiceResponse<List<GetDistributionDto>>> GetByRoomNo(int roomNo);
         Task<ServiceResponse<List<GetDistributionDto>>> GetByPersonId(long personId);
-        //Task<ServiceResponse<List<GetDistributionDto>>> GetAllDistributionByProductId(long productId);
+        Task<ServiceResponse<List<GetDistributionDto>>> GetAllDistributionByProductId(long productId);
+        Task<ServiceResponse<GetDistributionDto>> GetDistributionByProductNoId(long id);
     }
 }
