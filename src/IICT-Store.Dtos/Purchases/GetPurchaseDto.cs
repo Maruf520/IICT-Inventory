@@ -1,4 +1,5 @@
-﻿using IICT_Store.Models.Pruchashes;
+﻿using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Models.Pruchashes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace IICT_Store.Dtos.Purchases
     public class GetPurchaseDto
     {
         public long Id { get; set; }
-        public long ProductId { get; set; }
+        public GetProductDto Product { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string Supplier { get; set; }

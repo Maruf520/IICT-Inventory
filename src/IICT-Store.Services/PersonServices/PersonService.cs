@@ -40,6 +40,7 @@ namespace IICT_Store.Services.PersonServices
              personRepository.Insert(personToCreate);
             var personToReturn = mapper.Map<GetPersonDto>(createPersonDto);
             personToReturn.Image = uploadImage;
+            personToReturn.Id = personToCreate.Id;
             response.Data = personToReturn;
             response.Messages.Add("Person Created.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
