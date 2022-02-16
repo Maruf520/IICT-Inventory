@@ -27,12 +27,12 @@ namespace IICT_Store.Repositories.ProductRepositories
 
         public async Task<List<ProductNo>> GetAllProductNo()
         {
-            var productNo = context.ProductNos.ToList();
+            var productNo = await context.ProductNos.ToListAsync();
             return productNo;
         }
         public async Task<List<ProductNo>> GetAllProductNoById(long id)
         {
-            var productNo = context.ProductNos.Where(x => x.ProductId == id).ToList();
+            var productNo = await context.ProductNos.Where(x => x.ProductId == id).ToListAsync();
             return productNo;
         }
 
@@ -50,7 +50,7 @@ namespace IICT_Store.Repositories.ProductRepositories
 
         public async Task<ProductNo> GetProductNoById(long id)
         {
-            var product =  context.ProductNos.Where(x => x.Id == id).FirstOrDefault();
+            var product = await context.ProductNos.Where(x => x.Id == id).FirstOrDefaultAsync();
             return product;
         }
 

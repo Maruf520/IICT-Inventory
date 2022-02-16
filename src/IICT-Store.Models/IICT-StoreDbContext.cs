@@ -31,9 +31,20 @@ namespace IICT_Store.Models
         public DbSet<BookingTimeSlot> BookingTimeSlots { get; set; }
         public DbSet<ReturnedProduct> ReturnedProducts { get; set; }
         public DbSet<ReturnedProductSerialNo> ReturnedProductSerialNos { get; set; }
-        /*        //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext*/
-        //dotnet ef database update --context IICT_StoreDbContext
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CashMemo>()
+                .HasOne(x => x.Purchashed)
+                .WithMany(x => x.CashMemos)
+                .HasForeignKey(x => x.PurchashedId)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
-    }
+
+           base.OnModelCreating(modelBuilder);
+        }
+            /*        //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext*/
+            //dotnet ef database update --context IICT_StoreDbContext
+
+        }
 
 }

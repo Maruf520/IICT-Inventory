@@ -8,7 +8,7 @@ namespace IICT_Store.Models.Pruchashes
 {
     public class CashMemo : BaseModel
     {
-        public int PurchashedId { get; set; }
+        public long PurchashedId { get; set; }
         public Purchashed Purchashed { get; set; }
         public string ImageUrl { get; set; }
     }

@@ -268,6 +268,7 @@ namespace IICT_Store.Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductStatus = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -392,8 +393,7 @@ namespace IICT_Store.Api.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PurchashedId = table.Column<int>(type: "int", nullable: false),
-                    PurchashedId1 = table.Column<long>(type: "bigint", nullable: true),
+                    PurchashedId = table.Column<long>(type: "bigint", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -402,8 +402,8 @@ namespace IICT_Store.Api.Migrations
                 {
                     table.PrimaryKey("PK_CashMemos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CashMemos_Purchasheds_PurchashedId1",
-                        column: x => x.PurchashedId1,
+                        name: "FK_CashMemos_Purchasheds_PurchashedId",
+                        column: x => x.PurchashedId,
                         principalTable: "Purchasheds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -420,9 +420,9 @@ namespace IICT_Store.Api.Migrations
                 column: "TimeSlotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CashMemos_PurchashedId1",
+                name: "IX_CashMemos_PurchashedId",
                 table: "CashMemos",
-                column: "PurchashedId1");
+                column: "PurchashedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DamagedProducts_ProductId",

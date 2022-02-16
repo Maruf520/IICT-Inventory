@@ -511,10 +511,7 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PurchashedId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("PurchashedId1")
+                    b.Property<long>("PurchashedId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -522,7 +519,7 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PurchashedId1");
+                    b.HasIndex("PurchashedId");
 
                     b.ToTable("CashMemos");
                 });
@@ -725,7 +722,9 @@ namespace IICT_Store.Api.Migrations
                 {
                     b.HasOne("IICT_Store.Models.Pruchashes.Purchashed", "Purchashed")
                         .WithMany("CashMemos")
-                        .HasForeignKey("PurchashedId1");
+                        .HasForeignKey("PurchashedId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
                     b.Navigation("Purchashed");
                 });

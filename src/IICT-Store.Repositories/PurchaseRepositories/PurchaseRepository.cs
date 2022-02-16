@@ -19,7 +19,7 @@ namespace IICT_Store.Repositories.PurchaseRepositories
 
         public async Task<Purchashed> GetPurchashedById(long id)
         {
-            var purchase = await context.Purchasheds.Where(x => x.Id == id).Include(x => x.CashMemos).FirstOrDefaultAsync();
+            var purchase = await context.Purchasheds.Include(x => x.CashMemos).Where(x => x.Id == id).FirstOrDefaultAsync();
             return purchase;
         }
 

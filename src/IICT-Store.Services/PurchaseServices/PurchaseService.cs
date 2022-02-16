@@ -58,13 +58,26 @@ namespace IICT_Store.Services.PurchaseServices
                 return response;
             }
             var productToMap = mapper.Map<Purchashed>(createPurchaseDto);
+            List<CashMemoDtos> cashMemoDtos = new();
+            foreach(var cashmemo in cashMemos)
+            {
+                CashMemoDtos cashMemoDto = new();
+                cashMemoDto.CreatedAt = cashmemo.CreatedAt;
+                cashMemoDto.Id = cashmemo.Id;
+                cashMemoDto.ImageUrl = cashmemo.ImageUrl;
+                cashMemoDto.PurchashedId = cashMemoDto.PurchashedId;
+                cashMemoDtos.Add(cashMemoDto);
 
-            var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
+            }
             productToMap.CashMemos = cashMemos;
+            purchaseRepository.Insert(productToMap);
+            var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
+            productToReturn.Id = productToMap.Id;
+            productToReturn.CashMemos = cashMemoDtos;
 /*            products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
             products.TotalQuantity = products.TotalQuantity + createPurchaseDto.Quantity;
             productRepository.Update(products);*/
-            purchaseRepository.Insert(productToMap);
+
             response.Data = productToReturn;
             response.Messages.Add("Purchased.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
