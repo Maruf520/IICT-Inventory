@@ -134,10 +134,9 @@ namespace IICT_Store.Services.ProductNumberServices
                    
                     productNoDto.DistributedTo = distribution.DistributedTo;
                 }
-
-
                 productNoDto.Id = product.Id;
-                productNoDto.Name = product.Name;                
+                productNoDto.Name = product.Name;
+                productNoDto.ProductStatus = product.ProductStatus;
                 productNoDtos.Add(productNoDto);
             }
             var map = mapper.Map<List<GetProductNoDto>>(productsNo);
