@@ -22,6 +22,7 @@ namespace IICT_Store.Models.Products
         public string NameOfUser { get; set; }
         public string Description { get; set; }
         public int OrderNo { get; set; }
+        public int TotalRemainingQuantity { get; set; }
 
         //foreignKey
         [ForeignKey("SenderId")]

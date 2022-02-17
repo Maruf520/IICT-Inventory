@@ -49,12 +49,15 @@ namespace IICT_Store.Services.DistributionServices
             }
             List<ProductSerialNo> productSerialNos = new();
             var distributionToCreate = mapper.Map<Distribution>(createDistributionDto);
+            distributionToCreate.TotalRemainingQuantity = createDistributionDto.Quantity;
+            distributionToCreate.CreatedAt = DateTime.Now;
             foreach (var item in createDistributionDto.ProductSerialNo)
             {
                 ProductSerialNo productSerialNo = new();
                 productSerialNo.ProductNoId = item.ProductNoId;
                 productSerialNo.CreatedAt = DateTime.Now;
                 productSerialNo.DistributionId = distributionToCreate.Id;
+                productSerialNo.ProductStatus = ProductStatus.Assigned;
                 productSerialNos.Add(productSerialNo);
 
             }
@@ -81,6 +84,7 @@ namespace IICT_Store.Services.DistributionServices
             if (IfDistributionExists != null)
             {
                 IfDistributionExists.Quantity = IfDistributionExists.Quantity + createDistributionDto.Quantity;
+                IfDistributionExists.TotalRemainingQuantity = IfDistributionExists.Quantity + createDistributionDto.Quantity;
                 IfDistributionExists.UpdatedAt = DateTime.Now;
                 distributionRepository.Update(IfDistributionExists);
                 product.QuantityInStock = product.QuantityInStock - createDistributionDto.Quantity;
@@ -109,6 +113,7 @@ namespace IICT_Store.Services.DistributionServices
                 productSerialNo.ProductNoId = item.ProductNoId;
                 productSerialNo.CreatedAt = DateTime.Now;
                 productSerialNo.DistributionId = distributionToCreate.Id;
+                productSerialNo.ProductStatus = ProductStatus.Assigned;
                 productSerialNos1.Add(productSerialNo);
 
             }

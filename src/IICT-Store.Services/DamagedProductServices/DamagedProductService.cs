@@ -42,22 +42,133 @@ namespace IICT_Store.Services.DamagedProductServices
             this.productNumberRepository = productNumberRepository;
         }
 
-        public async Task<ServiceResponse<ProductSerialNoDto>> DamageProduct(long id)
+        public async Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProductDto)
         {
-            ServiceResponse<ProductSerialNoDto> response = new();
-            var productSerialNo = await productSerialNoRepository.GetByProductNoId(id);
-            if(productSerialNo == null)
+            ServiceResponse<DamagedProductDto> response = new();
+            var productSerialNo = await productSerialNoRepository.GetByProductNoId(damagedProductDto.SerialId);
+            if(productSerialNo != null)
             {
-                response.Messages.Add("Not Found.");
-                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
+                var serialNoToUpdate = productSerialNoRepository.GetById(productSerialNo.Id);
+                serialNoToUpdate.ProductStatus = ProductStatus.Damaged;
+                serialNoToUpdate.UpdatedAt = DateTime.Now;
+                productSerialNoRepository.Update(serialNoToUpdate);
+                distribution.TotalRemainingQuantity = distribution.Quantity - 1;
+                distribution.UpdatedAt = DateTime.Now;
+                distributionRepository.Update(distribution);
+                DamagedProduct damagedProduct1 = new();
+                damagedProduct1.PersonId = distribution.DistributedTo;
+                damagedProduct1.ProductId = distribution.ProductId;
+                damagedProduct1.Quantity = 1;
+                if(distribution.RoomNo !=null)
+                {
+                    damagedProduct1.RoomNo = (int)distribution.RoomNo;
+                }
+                if(distribution.DistributedTo != 0)
+                {
+                    damagedProduct1.PersonId = distribution.DistributedTo;
+                }
+                damagedProduct1.ReceiverId = 1;
+                damagedProduct1.SenderId = 1;
+                damagedProduct1.UpdatedAt = DateTime.Now;
+                damagedProductRepository.Insert(damagedProduct1);
+                DamagedProductSerialNo damagedProductSerialNo = new();
+                damagedProductSerialNo.CreatedAt = DateTime.Now;
+                damagedProductSerialNo.DamagedProductId = damagedProduct1.Id;
+                damagedProductSerialNo.ProductNoId = damagedProductDto.SerialId;
+                damagedProductSerialNoRepository.Insert(damagedProductSerialNo);
+
+                response.Messages.Add("Created.");
+                response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
             }
-            var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
-            var productNo = productNumberRepository.GetById(productSerialNo.ProductNoId);
+            else if(distributionRepository.GetById(damagedProductDto.DistributionId) != null)
+            {
+                var distribution = distributionRepository.GetById(damagedProductDto.DistributionId);
+                distribution.TotalRemainingQuantity = distribution.Quantity - damagedProductDto.Quantity;
+                distribution.UpdatedAt = DateTime.Now;
+                distributionRepository.Update(distribution);
+                DamagedProduct damagedProduct2 = new();
+                damagedProduct2.PersonId = distribution.DistributedTo;
+                damagedProduct2.ProductId = distribution.ProductId;
+                damagedProduct2.Quantity = damagedProductDto.Quantity;
+                if (distribution.RoomNo != null)
+                {
+                    damagedProduct2.RoomNo = (int)distribution.RoomNo;
+                }
+                if (distribution.DistributedTo != 0)
+                {
+                    damagedProduct2.PersonId = distribution.DistributedTo;
+                }
+                damagedProduct2.ReceiverId = 1;
+                damagedProduct2.SenderId = 1;
+                damagedProduct2.UpdatedAt = DateTime.Now;
+                damagedProductRepository.Insert(damagedProduct2);
+                response.Messages.Add("Created.");
+                response.StatusCode = System.Net.HttpStatusCode.Created;
+                return response;
+            }
+
+                var product = productReository.GetById(damagedProductDto.ProductId);
+                product.QuantityInStock = product.QuantityInStock - 1;
+                productReository.Update(product);
+                DamagedProduct damagedProduct = new();
+                damagedProduct.Quantity = 1;
+                damagedProduct.ProductId = damagedProduct.ProductId;
+                damagedProduct.UpdatedAt = DateTime.Now;
+                damagedProductRepository.Insert(damagedProduct);
+                response.Messages.Add("Created.");
+                response.StatusCode = System.Net.HttpStatusCode.Created;
+                return response;
+       }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
             distribution.Quantity = distribution.Quantity - 1;
             distributionRepository.Update(distribution);
             List<DamagedProductSerialNo> damagedProductSerialNos = new();
-            DamagedProduct damagedProduct = new();
+            DamagedProduct damagedProductt = new();
             damagedProduct.Quantity = 1;
             damagedProduct.ProductId = distribution.ProductId;
             damagedProduct.CreatedAt = DateTime.Now;
@@ -74,9 +185,9 @@ namespace IICT_Store.Services.DamagedProductServices
             productSerialNoRepository.Delete(productSerialNo.Id);
             response.Messages.Add("Damaged product added.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
-            return response;
+            return response;*/
 
-        }
+        
 
         public async Task<ServiceResponse<List<DamagedProductDto>>> GetAllDamagedProduct()
         {

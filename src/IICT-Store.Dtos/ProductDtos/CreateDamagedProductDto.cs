@@ -8,7 +8,10 @@ namespace IICT_Store.Dtos.ProductDtos
 {
     public class CreateDamagedProductDto
     {
-        public string Name { get; set; }
-        public long ProductNoId { get; set; }
+        public long ProductId { get; set; }
+        public long SerialId { get; set; }
+        public int DistributionId { get; set; }
+        public int Quantity { get; set; }
+
     }
 }

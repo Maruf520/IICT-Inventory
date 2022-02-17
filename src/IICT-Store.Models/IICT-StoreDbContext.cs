@@ -42,7 +42,7 @@ namespace IICT_Store.Models
 
            base.OnModelCreating(modelBuilder);
         }
-            /*        //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext*/
+            //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext
             //dotnet ef database update --context IICT_StoreDbContext
 
         }
