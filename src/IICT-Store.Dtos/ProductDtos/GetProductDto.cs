@@ -18,6 +18,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool HasSerial { get; set; }
+        public int NotSerializedProduct { get; set; }
 
     }
 }

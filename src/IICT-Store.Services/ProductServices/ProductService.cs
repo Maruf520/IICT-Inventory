@@ -3,6 +3,7 @@ using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
 using IICT_Store.Repositories.DistributionRepositories;
+using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +22,17 @@ namespace IICT_Store.Services.ProductServices
         private readonly IMapper mapper;
         private readonly IDistributionRepository distributionRepository;
         private readonly IProductSerialNoRepository productSerialNoRepository;
-        public ProductService(IProductRepository productRepository, IMapper mapper, IDistributionRepository distributionRepository, IProductSerialNoRepository productSerialNoRepository)
+        private readonly IProductNumberRepository productNumberRepository;
+        public ProductService(IProductRepository productRepository, 
+            IMapper mapper, IDistributionRepository distributionRepository, 
+            IProductSerialNoRepository productSerialNoRepository,
+            IProductNumberRepository productNumberRepository)
         {
             this.mapper = mapper;
             this.productRepository = productRepository;
             this.distributionRepository = distributionRepository;
             this.productSerialNoRepository = productSerialNoRepository;
+            this.productNumberRepository = productNumberRepository;
         }
 
         public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto)
@@ -50,6 +56,7 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse<GetProductDto> response = new();
             var product = productRepository.GetById(id);
+            var productSerialNo = await productNumberRepository.GetByProductId(id);
             if (product == null)
             {
                 response.Messages.Add("Not Found.");
@@ -59,6 +66,7 @@ namespace IICT_Store.Services.ProductServices
 
             var productToMap = mapper.Map<GetProductDto>(product);
             productToMap.CategoryId = product.CategoryId;
+            productToMap.NotSerializedProduct = product.TotalQuantity - productSerialNo.Count;
             response.Data = productToMap;
             response.Messages.Add("Product");
             response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -294,19 +302,28 @@ namespace IICT_Store.Services.ProductServices
         public async Task<ServiceResponse<List<GetProductDto>>> GetProductByCategoryId(long id)
         {
             ServiceResponse < List <GetProductDto >> response = new();
-            var product = await productRepository.GetProductByCategoryId(id);
-            if(product.Count == 0 )
+            var products = await productRepository.GetProductByCategoryId(id);
+            
+            List<GetProductDto> productDtos = new();
+            if (products.Count == 0 )
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-
-            var map = mapper.Map<List<GetProductDto>>(product);
-
+            foreach(var product in products)
+            {
+                var productNos = await productNumberRepository.GetByProductId(product.Id);
+                var map = mapper.Map<GetProductDto>(product);
+                if(product.HasSerial == true)
+                {
+                    map.NotSerializedProduct = product.TotalQuantity - productNos.Count;
+                }
+                productDtos.Add(map);
+            }
             response.Messages.Add("All products.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
-            response.Data = map;
+            response.Data = productDtos;
             return response;
         }
     }
