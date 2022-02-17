@@ -17,6 +17,12 @@ namespace IICT_Store.Api.Controllers
         {
             this.approvalServices = approvalServices;
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPurchaseById(long id)
+        {
+            var purchase = await approvalServices.GetById(id);
+            return Ok(purchase);
+        }
         [HttpGet("pending")]
         public async Task<IActionResult> GetPendingPurchase()
         {
