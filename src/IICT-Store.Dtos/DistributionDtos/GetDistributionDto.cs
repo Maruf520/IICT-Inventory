@@ -12,6 +12,7 @@ namespace IICT_Store.Dtos.DistributionDtos
         public int RoomNo { get; set; }
         public long ProductId { get; set; }
         public int Quantity { get; set; }
+        public int TotalRemainingQuantity { get; set; }
         public string NameOfUser { get; set; }
         public string Description { get; set; }
         public int OrderNo { get; set; }

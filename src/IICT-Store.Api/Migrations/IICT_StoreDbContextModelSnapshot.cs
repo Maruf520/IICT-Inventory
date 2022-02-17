@@ -196,18 +196,48 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DamagedFrom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("PersonId1")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("ReceiverId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("RoomNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("SenderId1")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PersonId1");
+
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ReceiverId1");
+
+                    b.HasIndex("SenderId1");
 
                     b.ToTable("DamagedProducts");
                 });
@@ -286,6 +316,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<string>("SignatureOfReceiver")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalRemainingQuantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -412,6 +445,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<long>("ProductNoId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("ProductStatus")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -607,13 +643,31 @@ namespace IICT_Store.Api.Migrations
 
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
                 {
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId1");
+
                     b.HasOne("IICT_Store.Models.Products.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId1");
+
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId1");
+
+                    b.Navigation("Person");
+
                     b.Navigation("Product");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProductSerialNo", b =>

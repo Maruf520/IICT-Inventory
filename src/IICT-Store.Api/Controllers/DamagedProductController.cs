@@ -1,4 +1,5 @@
-﻿using IICT_Store.Services.DamagedProductServices;
+﻿using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Services.DamagedProductServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,9 +20,9 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DamagedProduct(long id)
+        public async Task<IActionResult> DamagedProduct(CreateDamagedProductDto createDamageProductDto)
         {
-            var damaged = await damagedProductService.DamageProduct( id);
+            var damaged = await damagedProductService.DamageProduct(createDamageProductDto);
             return Ok(damaged);
         }
 
