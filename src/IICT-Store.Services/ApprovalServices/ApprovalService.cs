@@ -150,5 +150,23 @@ namespace IICT_Store.Services.ApprovalServices
             response.Messages.Add("Purchase Rejected.");
             return response;
         }
-    }
+
+        public async Task<ServiceResponse<GetPurchaseDto>> GetById(long id)
+        {
+            ServiceResponse<GetPurchaseDto> response = new();
+            var purchase = await purchaseRepository.GetPurchashedById(id);
+            if (purchase == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.Messages.Add("Not Found.");
+                return response;
+            }
+            var map = mapper.Map<GetPurchaseDto>(purchase);
+            response.Data = map;
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+        }
+
+
+        }
 }
