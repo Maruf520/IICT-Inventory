@@ -54,7 +54,7 @@ namespace IICT_Store.Services.ProductNumberServices
             {
                 var productCount = await productNumberRepository.GetByProductId(id);
                 var avaiableAmount = product.QuantityInStock - productCount.Count;
-                if(avaiableAmount < createProductNoDto.ProductNos.Count)
+                if(product.TotalQuantity < createProductNoDto.ProductNos.Count)
                 {
                     response.Messages.Add("You have to reduce product item.");
                     response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -62,7 +62,7 @@ namespace IICT_Store.Services.ProductNumberServices
                 }
             }
 /*            if(product.TotalQuantity >= productCount)*/
-            if(product.QuantityInStock < createProductNoDto.ProductNos.Count)
+            if(product.TotalQuantity < createProductNoDto.ProductNos.Count)
             {
                 response.Messages.Add("You have to reduce product item.");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -127,18 +127,17 @@ namespace IICT_Store.Services.ProductNumberServices
                 if(productserial != null)
                 {
                     var distribution = distributionRepository.GetById(productserial.DistributionId);
-                    productNoDto.RoomNo = (int)distribution.RoomNo;
-                    productNoDto.NameOfUser = distribution.NameOfUser;
+                    if(distribution.RoomNo != null)
+                    {
+                        productNoDto.RoomNo = (int)distribution.RoomNo;
+                    }
+                   
+                    productNoDto.DistributedTo = distribution.DistributedTo;
                 }
 
 
                 productNoDto.Id = product.Id;
-                productNoDto.Name = product.Name;
-                if(productNoDto.NameOfUser == null)
-                {
-                    productNoDto.NameOfUser = "N/A";
-                }
-                
+                productNoDto.Name = product.Name;                
                 productNoDtos.Add(productNoDto);
             }
             var map = mapper.Map<List<GetProductNoDto>>(productsNo);

@@ -59,6 +59,10 @@ namespace IICT_Store.Services.DistributionServices
                 productSerialNo.DistributionId = distributionToCreate.Id;
                 productSerialNo.ProductStatus = ProductStatus.Assigned;
                 productSerialNos.Add(productSerialNo);
+                ProductNo productNo = new();
+                var productno = productNumberRepository.GetById(item.ProductNoId);
+                productno.ProductStatus = ProductStatus.Assigned;
+                productNumberRepository.Update(productno);
 
             }
             if(product.HasSerial == true)
@@ -115,6 +119,10 @@ namespace IICT_Store.Services.DistributionServices
                 productSerialNo.DistributionId = distributionToCreate.Id;
                 productSerialNo.ProductStatus = ProductStatus.Assigned;
                 productSerialNos1.Add(productSerialNo);
+                ProductNo productNo = new();
+                var productno = productNumberRepository.GetById(item.ProductNoId);
+                productno.ProductStatus = ProductStatus.Assigned;
+                productNumberRepository.Update(productno);
 
             }
             if (productSerialNos.Count > 0 && productSerialNos.Any(x => x.ProductNoId != 0))
