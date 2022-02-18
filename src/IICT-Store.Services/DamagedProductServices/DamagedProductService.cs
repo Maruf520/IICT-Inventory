@@ -45,11 +45,24 @@ namespace IICT_Store.Services.DamagedProductServices
         public async Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProductDto)
         {
             ServiceResponse<DamagedProductDto> response = new();
+            var product = productReository.GetById(damagedProductDto.ProductId);
             var productSerialNo = await productSerialNoRepository.GetByProductNoId(damagedProductDto.SerialId);
-            if(productSerialNo != null)
+            var productNo  = productNumberRepository.GetById(damagedProductDto.SerialId);
+            if(productNo != null)
+            {
+                product = productReository.GetById(productNo.ProductId);
+            }
+           if(productSerialNo != null)
+            {
+                product = productReository.GetById(productNo.ProductId);
+            } 
+            if (productSerialNo != null && product.HasSerial == true)
             {
                 var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
                 var serialNoToUpdate = productSerialNoRepository.GetById(productSerialNo.Id);
+                var productno = productNumberRepository.GetById(damagedProductDto.SerialId);
+                productno.ProductStatus = ProductStatus.Damaged;
+                productNumberRepository.Update(productno);
                 serialNoToUpdate.ProductStatus = ProductStatus.Damaged;
                 serialNoToUpdate.UpdatedAt = DateTime.Now;
                 productSerialNoRepository.Update(serialNoToUpdate);
@@ -82,7 +95,50 @@ namespace IICT_Store.Services.DamagedProductServices
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
             }
-            else if(distributionRepository.GetById(damagedProductDto.DistributionId) != null)
+            else if(productSerialNo == null && product.HasSerial == true)
+            {
+                var productno = productNumberRepository.GetById(damagedProductDto.SerialId);
+                productno.ProductStatus = ProductStatus.Damaged;
+                productNumberRepository.Update(productno);
+                // var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
+                //  var serialNoToUpdate = productSerialNoRepository.GetById(productSerialNo.Id);
+                //serialNoToUpdate.ProductStatus = ProductStatus.Damaged;
+                // serialNoToUpdate.UpdatedAt = DateTime.Now;
+                //productSerialNoRepository.Update(serialNoToUpdate);
+                //distribution.TotalRemainingQuantity = distribution.Quantity - 1;
+                // distribution.UpdatedAt = DateTime.Now;
+                //distributionRepository.Update(distribution);
+                DamagedProduct damagedProduct1 = new();
+                //damagedProduct1.PersonId = distribution.DistributedTo;
+                //damagedProduct1.ProductId = distribution.ProductId;
+                damagedProduct1.Quantity = 1;
+                //if (distribution.RoomNo != null)
+                //{
+                //    damagedProduct1.RoomNo = (int)distribution.RoomNo;
+                //}
+                //if (distribution.DistributedTo != 0)
+                //{
+                //    damagedProduct1.PersonId = distribution.DistributedTo;
+                //}
+                damagedProduct1.ReceiverId = 1;
+                damagedProduct1.SenderId = 1;
+                damagedProduct1.UpdatedAt = DateTime.Now;
+                damagedProduct1.WasNotDistributed = true;
+                damagedProduct1.ProductId = productNo.ProductId;
+                damagedProductRepository.Insert(damagedProduct1);
+                DamagedProductSerialNo damagedProductSerialNo = new();
+                damagedProductSerialNo.CreatedAt = DateTime.Now;
+                damagedProductSerialNo.DamagedProductId = damagedProduct1.Id;
+                damagedProductSerialNo.ProductNoId = damagedProductDto.SerialId;
+                damagedProductSerialNoRepository.Insert(damagedProductSerialNo);
+                var productNoToUpdate = productNumberRepository.GetById(damagedProductDto.SerialId);
+                productNoToUpdate.ProductStatus = ProductStatus.Damaged;
+                productNumberRepository.Update(productNoToUpdate);
+                response.Messages.Add("Created.");
+                response.StatusCode = System.Net.HttpStatusCode.Created;
+                return response;
+            }
+            else if(distributionRepository.GetById(damagedProductDto.DistributionId) != null && product.HasSerial == false)
             {
                 var distribution = distributionRepository.GetById(damagedProductDto.DistributionId);
                 distribution.TotalRemainingQuantity = distribution.Quantity - damagedProductDto.Quantity;
@@ -103,19 +159,21 @@ namespace IICT_Store.Services.DamagedProductServices
                 damagedProduct2.ReceiverId = 1;
                 damagedProduct2.SenderId = 1;
                 damagedProduct2.UpdatedAt = DateTime.Now;
+                damagedProduct2.WasNotDistributed = false;
                 damagedProductRepository.Insert(damagedProduct2);
                 response.Messages.Add("Created.");
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
             }
 
-                var product = productReository.GetById(damagedProductDto.ProductId);
-                product.QuantityInStock = product.QuantityInStock - 1;
+                //var product = productReository.GetById(damagedProductDto.ProductId);
+                product.QuantityInStock = product.QuantityInStock - damagedProductDto.Quantity;
                 productReository.Update(product);
                 DamagedProduct damagedProduct = new();
                 damagedProduct.Quantity = 1;
-                damagedProduct.ProductId = damagedProduct.ProductId;
+                damagedProduct.ProductId = damagedProductDto.ProductId;
                 damagedProduct.UpdatedAt = DateTime.Now;
+                damagedProduct.WasNotDistributed = true;
                 damagedProductRepository.Insert(damagedProduct);
                 response.Messages.Add("Created.");
                 response.StatusCode = System.Net.HttpStatusCode.Created;

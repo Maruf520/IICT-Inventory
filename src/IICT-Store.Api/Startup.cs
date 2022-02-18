@@ -13,8 +13,10 @@ using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.PurchaseRepositories;
 using IICT_Store.Repositories.ReturnedProductRepositories;
 using IICT_Store.Repositories.ReturnedProductSerialNoRepositories;
+using IICT_Store.Repositories.RoleRepositories;
 using IICT_Store.Repositories.TimeSlotRepository;
 using IICT_Store.Repositories.UserRepositories;
+using IICT_Store.Services.AdministrationServices;
 using IICT_Store.Services.ApprovalServices;
 using IICT_Store.Services.AuthServices;
 using IICT_Store.Services.BookingServices;
@@ -102,9 +104,11 @@ namespace IICT_Store.Api
             services.AddScoped<IReturnedProductRepository, ReturnedProductRepository>();
             services.AddScoped<IReturnedProductSerialNoRepository, ReturnedProductSerialNoRepository>();
             services.AddScoped<IReturnProductService, ReturnProductService>();
+            services.AddScoped<IAdministrationService, AdministrationService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;
             })
@@ -132,6 +136,15 @@ namespace IICT_Store.Api
                     ValidAudience = Configuration["JWT:ValidAudience"],
                     ValidIssuer = Configuration["JWT:ValidIssure"],
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                };
+                option.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var Token = context.Request.Headers["UserCred1"].ToString();
+                        context.Token = Token;
+                        return Task.CompletedTask;
+                    },
                 };
             });
 
