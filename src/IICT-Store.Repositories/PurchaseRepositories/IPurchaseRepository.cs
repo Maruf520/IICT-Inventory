@@ -14,6 +14,7 @@ namespace IICT_Store.Repositories.PurchaseRepositories
         Task<List<Purchashed>> GetPendingPurchased();
         Task<List<Purchashed>> GetRejectedPurchased();
         Task<List<Purchashed>> GetConfirmedPurchased();
+        Task<List<Purchashed>> GetPurchashedByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess);
 
     }
 }

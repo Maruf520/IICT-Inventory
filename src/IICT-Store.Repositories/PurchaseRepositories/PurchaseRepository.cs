@@ -42,8 +42,12 @@ namespace IICT_Store.Repositories.PurchaseRepositories
         public async Task<List<Purchashed>> GetPurchashedByProductId(long id)
         {
             var purchased = await context.Purchasheds.Where(x => x.ProductId == id).ToListAsync();
+            return purchased;  
+        }       
+        public async Task<List<Purchashed>> GetPurchashedByDate(int year,PaymentBy paymentBy, PaymentProcess paymentProcess)
+        {
+            var purchased = await context.Purchasheds.Where(x => x.CreatedAt.Date.Year == year && x.PaymentBy == paymentBy && x.PaymentProcess == paymentProcess).ToListAsync();
             return purchased;
-            
         }
     }
 }

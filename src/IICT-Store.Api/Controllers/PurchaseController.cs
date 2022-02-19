@@ -1,4 +1,5 @@
 ﻿using IICT_Store.Dtos.Purchases;
+using IICT_Store.Models.Pruchashes;
 using IICT_Store.Services.PurchaseServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,13 @@ namespace IICT_Store.Api.Controllers
         public async Task<IActionResult> GetPurchaseByProductId(long id)
         {
             var purchase = await purchaseService.GetPurchaseByProductId(id);
+            return Ok(purchase);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess)
+        {
+            var purchase = await purchaseService.GetPurchaseByDate(year, paymentBy,paymentProcess);
             return Ok(purchase);
         }
 

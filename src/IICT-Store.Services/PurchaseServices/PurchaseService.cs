@@ -138,6 +138,22 @@ namespace IICT_Store.Services.PurchaseServices
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByDate(int year,PaymentBy paymentBy, PaymentProcess paymentProcess)
+        {
+            ServiceResponse<List<GetPurchaseDto>> response = new();
+            var purchase = await purchaseRepository.GetPurchashedByDate(year,paymentBy,paymentProcess);
+            if(purchase.Count == 0)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var map = mapper.Map<List<GetPurchaseDto>>(purchase);
+            response.Messages.Add("All Purchase");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Data = map;
+            return response;
+        }
         public async Task< List<string>> UploadFile(List<IFormFile> formFiles)
         {
             List<String> medias = new();

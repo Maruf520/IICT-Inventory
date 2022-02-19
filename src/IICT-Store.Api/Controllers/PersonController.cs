@@ -1,5 +1,6 @@
 ﻿using IICT_Store.Dtos.PersonDtos;
 using IICT_Store.Services.PersonServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/persons")]
     [ApiController]
+    [Authorize]
     public class PersonController : ControllerBase
     {
         private readonly IPersonService personService;

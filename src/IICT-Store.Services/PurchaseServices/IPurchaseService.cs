@@ -1,6 +1,7 @@
 ﻿using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Dtos.Purchases;
 using IICT_Store.Models;
+using IICT_Store.Models.Pruchashes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace IICT_Store.Services.PurchaseServices
         Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id);
         Task<ServiceResponse<GetPurchaseDto>> GetPurchaseById(long id);
         Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByProductId(long id);
+        Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess);
     }
 }
