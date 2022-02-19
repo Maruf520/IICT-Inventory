@@ -10,6 +10,6 @@ namespace IICT_Store.Services.AuthServices
 {
     public interface IAuthService
     {
-        Task<ServiceResponse<string>> Login(LoginDto loginDto);
+        Task<ServiceResponse<TokenDto>> Login(LoginDto loginDto);
     }
 }
