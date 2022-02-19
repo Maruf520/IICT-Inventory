@@ -8,6 +8,7 @@ namespace IICT_Store.Dtos.UserDtos
 {
     public class GetUserDto
     {
+        public string Id { get; set; }
         public string Names { get; set; }
         public string Email { get; set; }
         public string Designation { get; set; }
