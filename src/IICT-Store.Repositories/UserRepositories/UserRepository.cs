@@ -11,13 +11,17 @@ namespace IICT_Store.Repositories.UserRepositories
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> userManager;
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        private readonly RoleManager<ApplicationRole> roleManager;
+        public UserRepository(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
         }
         public async Task<string> Create(ApplicationUser applicationUser, string pass)
         {
+            var role = await roleManager.FindByNameAsync("User");
             await userManager.CreateAsync(applicationUser, pass);
+            await userManager.AddToRoleAsync(applicationUser, role.Name);
             return "Created.";
         }       
         public async Task<string> Update(ApplicationUser applicationUser)
@@ -43,6 +47,13 @@ namespace IICT_Store.Repositories.UserRepositories
         {
             var user = await userManager.FindByEmailAsync(email);
             return user;
+        }
+
+        public async Task<List<string>> GetUserRoleByEmail(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            var userRoles = await userManager.GetRolesAsync(user);
+            return userRoles.ToList();
         }
     }
 }

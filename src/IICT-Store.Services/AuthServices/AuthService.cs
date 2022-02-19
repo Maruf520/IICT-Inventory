@@ -23,9 +23,9 @@ namespace IICT_Store.Services.AuthServices
             this.configuration = configuration;
             this.userManager = userManager;
         }
-        public async Task<ServiceResponse<string>> Login(LoginDto loginDto)
+        public async Task<ServiceResponse<TokenDto>> Login(LoginDto loginDto)
         {
-            ServiceResponse<string> response = new();
+            ServiceResponse<TokenDto> response = new();
             var user = await userManager.FindByEmailAsync(loginDto.email);
             if(user == null)
             {
@@ -33,6 +33,7 @@ namespace IICT_Store.Services.AuthServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
+            List<string> roleList = new();
             if (user != null && await userManager.CheckPasswordAsync(user, loginDto.password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
@@ -43,6 +44,7 @@ namespace IICT_Store.Services.AuthServices
                 };
                 foreach (var userRole in userRoles)
                 {
+                    roleList.Add(userRole);
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
                 var authSigninKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
@@ -55,7 +57,11 @@ namespace IICT_Store.Services.AuthServices
                     signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256)
                     );
                 var Token = new JwtSecurityTokenHandler().WriteToken(token);
-                response.Data = Token;
+                var role = "".ToList();
+                TokenDto tokenDto = new();
+                tokenDto.Token = Token;
+                tokenDto.Roles = roleList;
+                response.Data = tokenDto;
                 return response;
             }
             response.Messages.Add("Password incorrect.");
