@@ -19,35 +19,35 @@ namespace IICT_Store.Api.Controllers
         {
             this.personService = personService;
         }
-        [Authorize(Roles = "User, Admin")]
+        //[Authorize(Roles = "User, Admin")]
         [HttpPost]
         public async Task<IActionResult> CreatePerson([FromForm]CreatePersonDto createPersonDto)
         {
             var person = await personService.CreatePerson(createPersonDto);
             return Ok(person);
         }
-        [Authorize(Roles = "User, Admin")]
+       // [Authorize(Roles = "User, Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var person = await personService.GetAllPerson();
             return Ok(person);
         }
-        [Authorize(Roles = "User, Admin")]
+       // [Authorize(Roles = "User, Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPersonById(long id)
         {
             var person = await personService.GetPersonById(id);
             return Ok(person);
         }
-        [Authorize(Roles = "User, Admin")]
+       // [Authorize(Roles = "User, Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePerson(long id, CreatePersonDto createPersonDto)
         {
             var person = await personService.UpdatePerson(id, createPersonDto);
             return Ok(person);
         }
-        [Authorize(Roles = "User, Admin")]
+       // [Authorize(Roles = "User, Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerson(long id)
         {
