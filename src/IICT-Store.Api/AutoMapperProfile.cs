@@ -5,11 +5,13 @@ using IICT_Store.Dtos.Gallery;
 using IICT_Store.Dtos.PersonDtos;
 using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Dtos.Purchases;
+using IICT_Store.Dtos.UserDtos;
 using IICT_Store.Models.Categories;
 using IICT_Store.Models.Gallery;
 using IICT_Store.Models.Persons;
 using IICT_Store.Models.Products;
 using IICT_Store.Models.Pruchashes;
+using IICT_Store.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +48,7 @@ namespace IICT_Store.Api
             CreateMap<ProductNo, GetProductNoDto>();
             CreateMap<CreateReturnProductDto, ReturnedProduct>();
             CreateMap<DamagedProduct, GetDamagedProductDto>();
+            CreateMap<ApplicationUser, GetUserDto>();
         }
     }
 }

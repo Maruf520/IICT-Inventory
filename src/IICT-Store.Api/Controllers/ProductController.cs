@@ -1,6 +1,7 @@
 ﻿using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Services.ProductNumberServices;
 using IICT_Store.Services.ProductServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/products")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;

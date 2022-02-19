@@ -32,5 +32,17 @@ namespace IICT_Store.Api.Controllers
             var user = await userServcie.UpdateUser("",userRegistrationDto);
             return Ok(user);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var user = await userServcie.GetUserById(id);
+            return Ok(user);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var user = await userServcie.GetAllUser();
+            return Ok(user);
+        }
     }
 }

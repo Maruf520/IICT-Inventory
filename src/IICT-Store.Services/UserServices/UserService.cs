@@ -52,6 +52,39 @@ namespace IICT_Store.Services.UserServices
             return response;
         }
 
+        public async Task<ServiceResponse<GetUserDto>> GetUserById(string id)
+        {
+            ServiceResponse<GetUserDto> response = new();
+            var user = await userRepository.GetById(id);
+            if (user == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NoContent;
+                return response;
+            }
+            var map = mapper.Map<GetUserDto>(user);
+            response.Messages.Add("user");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Data = map;
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetUserDto>>> GetAllUser()
+        {
+            ServiceResponse<List<GetUserDto>> response = new();
+            var users = await userRepository.GetAll();
+            if(users.Count == 0)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NoContent;
+                return response;
+            }
+            var map = mapper.Map<List<GetUserDto>>(users);
+            response.Data = map;
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+        }
+
         public async Task<ServiceResponse<GetUserDto>> UpdateUser(string id,UserRegistrationDto userRegistrationDto)
         {
             ServiceResponse<GetUserDto> response = new();
