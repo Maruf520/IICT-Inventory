@@ -13,6 +13,6 @@ namespace IICT_Store.Dtos.ProductDtos
         public string Name { get; set; }
         public ProductStatus ProductStatus { get; set; }
         public int RoomNo { get; set; }
-        public int DistributedTo { get; set; }
+        public long DistributedTo { get; set; }
     }
 }

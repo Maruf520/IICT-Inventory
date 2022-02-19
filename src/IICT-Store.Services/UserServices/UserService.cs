@@ -25,16 +25,28 @@ namespace IICT_Store.Services.UserServices
         public async Task<ServiceResponse<UserRegistrationDto>> CreateUser(UserRegistrationDto userRegistrationDto)
         {
             ServiceResponse<UserRegistrationDto> response = new();
-
+            var user = await userRepository.GetByEmail(userRegistrationDto.Email);
+            if(user != null)
+            {
+                response.Messages.Add($"User already exists with {userRegistrationDto.Email}");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
             ApplicationUser applicationUser = new();
             applicationUser.Designation = userRegistrationDto.Designation;
             applicationUser.Email = userRegistrationDto.Email;
             applicationUser.Phone = userRegistrationDto.Phone;
             applicationUser.Image = "";
+            if(userRegistrationDto.Image != null)
+            {
+                var upload = await UploadImage(userRegistrationDto.Image);
+                applicationUser.Image = upload;
+            }
+            
             applicationUser.Names = userRegistrationDto.UserName;
             applicationUser.UserName = userRegistrationDto.Email;
 
-            var user = await userRepository.Create(applicationUser, userRegistrationDto.Password);
+             await userRepository.Create(applicationUser, userRegistrationDto.Password);
             response.Messages.Add("User Created");
             response.StatusCode = System.Net.HttpStatusCode.Created;
             return response;

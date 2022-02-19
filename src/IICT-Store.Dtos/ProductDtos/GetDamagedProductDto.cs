@@ -8,7 +8,20 @@ namespace IICT_Store.Dtos.ProductDtos
 {
     public class GetDamagedProductDto
     {
+        public long Id { get; set; }
+        public long ProductId { get; set; }
+        public long ReceiverId { get; set; }
+        public long SenderId { get; set; }
+        public int RoomNo { get; set; } //Damaged from room
+        public long PersonId { get; set; } //Damaged from single user
+        public DamagedFrom DamagedFrom { get; set; }
         public int Quantity { get; set; }
-        public List<DamagedProductDto> DamagedProducts { get; set; }
+        public bool WasNotDistributed { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+    public enum DamagedFrom
+    {
+        Person,
+        Room
     }
 }

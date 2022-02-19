@@ -9,5 +9,6 @@ namespace IICT_Store.Repositories.DamagedProductRepositories
 {
     public interface IDamagedProductRepository : IBaseRepository<DamagedProduct>
     {
+        Task<List<DamagedProduct>> GetAllDamagedProduct();
     }
 }

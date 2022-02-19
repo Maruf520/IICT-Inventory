@@ -1,5 +1,6 @@
 ﻿using IICT_Store.Models;
 using IICT_Store.Models.Products;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,12 @@ namespace IICT_Store.Repositories.DamagedProductSerialRepositories
         {
             this.context = context;
         }
+
+        public  DamagedProductSerialNo GetDamagedProductByProductNoId(long id)
+        {
+            var product =  context.DamagedProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefault();
+            return product;
+        }
+
     }
 }

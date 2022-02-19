@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations
 {
-    public partial class MigrationName : Migration
+    public partial class Migrmate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -180,15 +180,13 @@ namespace IICT_Store.Api.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
-                    ReceiverId = table.Column<int>(type: "int", nullable: false),
-                    ReceiverId1 = table.Column<long>(type: "bigint", nullable: true),
-                    SenderId = table.Column<int>(type: "int", nullable: false),
-                    SenderId1 = table.Column<long>(type: "bigint", nullable: true),
+                    ReceiverId = table.Column<long>(type: "bigint", nullable: true),
+                    SenderId = table.Column<long>(type: "bigint", nullable: true),
                     RoomNo = table.Column<int>(type: "int", nullable: false),
-                    PersonId = table.Column<int>(type: "int", nullable: false),
-                    PersonId1 = table.Column<long>(type: "bigint", nullable: true),
+                    PersonId = table.Column<long>(type: "bigint", nullable: true),
                     DamagedFrom = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    WasNotDistributed = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -196,20 +194,20 @@ namespace IICT_Store.Api.Migrations
                 {
                     table.PrimaryKey("PK_DamagedProducts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DamagedProducts_Persons_PersonId1",
-                        column: x => x.PersonId1,
+                        name: "FK_DamagedProducts_Persons_PersonId",
+                        column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DamagedProducts_Persons_ReceiverId1",
-                        column: x => x.ReceiverId1,
+                        name: "FK_DamagedProducts_Persons_ReceiverId",
+                        column: x => x.ReceiverId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DamagedProducts_Persons_SenderId1",
-                        column: x => x.SenderId1,
+                        name: "FK_DamagedProducts_Persons_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -236,7 +234,7 @@ namespace IICT_Store.Api.Migrations
                     TotalRemainingQuantity = table.Column<int>(type: "int", nullable: false),
                     SenderId = table.Column<long>(type: "bigint", nullable: false),
                     ReceiverId = table.Column<long>(type: "bigint", nullable: true),
-                    DistributedTo = table.Column<int>(type: "int", nullable: false),
+                    DistributedTo = table.Column<long>(type: "bigint", nullable: false),
                     SignatureOfReceiver = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -376,8 +374,7 @@ namespace IICT_Store.Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductNoId = table.Column<long>(type: "bigint", nullable: false),
-                    DamagedProductId = table.Column<int>(type: "int", nullable: false),
-                    DamagedProductId1 = table.Column<long>(type: "bigint", nullable: true),
+                    DamagedProductId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -385,11 +382,11 @@ namespace IICT_Store.Api.Migrations
                 {
                     table.PrimaryKey("PK_DamagedProductSerialNos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DamagedProductSerialNos_DamagedProducts_DamagedProductId1",
-                        column: x => x.DamagedProductId1,
+                        name: "FK_DamagedProductSerialNos_DamagedProducts_DamagedProductId",
+                        column: x => x.DamagedProductId,
                         principalTable: "DamagedProducts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -453,9 +450,9 @@ namespace IICT_Store.Api.Migrations
                 column: "PurchashedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DamagedProducts_PersonId1",
+                name: "IX_DamagedProducts_PersonId",
                 table: "DamagedProducts",
-                column: "PersonId1");
+                column: "PersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DamagedProducts_ProductId",
@@ -463,19 +460,19 @@ namespace IICT_Store.Api.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DamagedProducts_ReceiverId1",
+                name: "IX_DamagedProducts_ReceiverId",
                 table: "DamagedProducts",
-                column: "ReceiverId1");
+                column: "ReceiverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DamagedProducts_SenderId1",
+                name: "IX_DamagedProducts_SenderId",
                 table: "DamagedProducts",
-                column: "SenderId1");
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DamagedProductSerialNos_DamagedProductId1",
+                name: "IX_DamagedProductSerialNos_DamagedProductId",
                 table: "DamagedProductSerialNos",
-                column: "DamagedProductId1");
+                column: "DamagedProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Distributions_ProductId",

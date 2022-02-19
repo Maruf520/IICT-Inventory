@@ -38,9 +38,23 @@ namespace IICT_Store.Models
                 .WithMany(x => x.CashMemos)
                 .HasForeignKey(x => x.PurchashedId)
                 .OnDelete(DeleteBehavior.ClientCascade);
+            modelBuilder.Entity<DamagedProduct>()
+                .HasOne(e => e.Sender)
+                .WithMany()
+                .HasForeignKey(x =>x.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);          
+            modelBuilder.Entity<DamagedProduct>()
+                .HasOne(e => e.Person)
+                .WithMany()
+                .HasForeignKey(x =>x.PersonId)
+                .OnDelete(DeleteBehavior.Restrict);    
+            modelBuilder.Entity<DamagedProduct>()
+                .HasOne(e => e.Receiver)
+                .WithMany()
+                .HasForeignKey(x =>x.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-
-           base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
         //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext
         //dotnet ef database update --context IICT_StoreDbContext

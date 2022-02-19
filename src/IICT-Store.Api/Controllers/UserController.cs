@@ -20,7 +20,7 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UserRegistrationDto registrationDto)
+        public async Task<IActionResult> Create([FromForm] UserRegistrationDto registrationDto)
         {
             var user = await userServcie.CreateUser(registrationDto);
             return Ok(user);

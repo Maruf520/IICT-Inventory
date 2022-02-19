@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Models.Users
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<Guid>
     {
         public string Names { get; set; }
         public string Designation { get; set; }
