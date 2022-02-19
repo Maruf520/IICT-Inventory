@@ -13,6 +13,7 @@ namespace IICT_Store.Services.DamagedProductServices
     {
         Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProduct);
         Task<ServiceResponse<List<DamagedProductDto>>> GetAllDamagedProduct();
-        Task<ServiceResponse<GetDamagedProductDto>> GetDamagedProductById(long id);
+        Task<ServiceResponse<List<GetDamagedProductDto>>> GetDamagedProductByProductId(long id);
+        Task<ServiceResponse<GetDamagedProductDto>> GetDamagedProductProductNoId(long id);
     }
 }

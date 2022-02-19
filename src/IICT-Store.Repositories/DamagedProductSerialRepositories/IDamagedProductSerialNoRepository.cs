@@ -9,5 +9,6 @@ namespace IICT_Store.Repositories.DamagedProductSerialRepositories
 {
     public interface IDamagedProductSerialNoRepository : IBaseRepository<DamagedProductSerialNo>
     {
+        DamagedProductSerialNo GetDamagedProductByProductNoId(long id);
     }
 }

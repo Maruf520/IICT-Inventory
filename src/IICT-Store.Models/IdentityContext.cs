@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Models
 {
-    public class IdentityContext : IdentityDbContext<ApplicationUser>
+    public class IdentityContext : IdentityDbContext<ApplicationUser,ApplicationRole, Guid>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options): base(options)
         {

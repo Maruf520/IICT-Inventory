@@ -15,12 +15,12 @@ namespace IICT_Store.Models.Products
         }
         public long ProductId { get; set; }
         public Product Product { get; set; }
-        public int ReceiverId { get; set; }
+        public long? ReceiverId { get; set; }
         public Person Receiver { get; set; }
-        public int SenderId { get; set; }
+        public long? SenderId { get; set; }
         public Person Sender { get; set; }
         public int RoomNo { get; set; } //Damaged from room
-        public int PersonId { get; set; } //Damaged from single user
+        public long? PersonId { get; set; } //Damaged from single user
         public Person Person { get; set; }
         public DamagedFrom DamagedFrom { get; set; }
         public int Quantity { get; set; }

@@ -1,4 +1,5 @@
-﻿using IICT_Store.Dtos.DistributionDtos;
+﻿using AutoMapper;
+using IICT_Store.Dtos.DistributionDtos;
 using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
@@ -24,13 +25,15 @@ namespace IICT_Store.Services.DamagedProductServices
         private readonly IProductRepository productReository;
         private readonly IDamagedProductSerialNoRepository damagedProductSerialNoRepository;
         private readonly IProductNumberRepository productNumberRepository;
+        private readonly IMapper mapper;
         public DamagedProductService(
             IProductSerialNoRepository productSerialNoRepository,
             IDamagedProductRepository damagedProductRepository,
             IDistributionRepository distributionRepository, 
             IProductRepository productReository,
             IDamagedProductSerialNoRepository damagedProductSerialNoRepository,
-            IProductNumberRepository productNumberRepository
+            IProductNumberRepository productNumberRepository,
+            IMapper mapper
 
             )
         {
@@ -40,6 +43,7 @@ namespace IICT_Store.Services.DamagedProductServices
             this.productReository = productReository;
             this.damagedProductSerialNoRepository = damagedProductSerialNoRepository;
             this.productNumberRepository = productNumberRepository;
+            this.mapper = mapper;
         }
 
         public async Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProductDto)
@@ -70,7 +74,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 distribution.UpdatedAt = DateTime.Now;
                 distributionRepository.Update(distribution);
                 DamagedProduct damagedProduct1 = new();
-                damagedProduct1.PersonId = distribution.DistributedTo;
+                damagedProduct1.PersonId = 0;
                 damagedProduct1.ProductId = distribution.ProductId;
                 damagedProduct1.Quantity = 1;
                 if(distribution.RoomNo !=null)
@@ -81,8 +85,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 {
                     damagedProduct1.PersonId = distribution.DistributedTo;
                 }
-                damagedProduct1.ReceiverId = 1;
-                damagedProduct1.SenderId = 1;
+                damagedProduct1.ReceiverId = damagedProductDto.ReceiverId;
+                damagedProduct1.SenderId = damagedProductDto.SenderId;
                 damagedProduct1.UpdatedAt = DateTime.Now;
                 damagedProductRepository.Insert(damagedProduct1);
                 DamagedProductSerialNo damagedProductSerialNo = new();
@@ -120,8 +124,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 //{
                 //    damagedProduct1.PersonId = distribution.DistributedTo;
                 //}
-                damagedProduct1.ReceiverId = 1;
-                damagedProduct1.SenderId = 1;
+                damagedProduct1.ReceiverId = damagedProductDto.ReceiverId;
+                damagedProduct1.SenderId = damagedProductDto.SenderId;
                 damagedProduct1.UpdatedAt = DateTime.Now;
                 damagedProduct1.WasNotDistributed = true;
                 damagedProduct1.ProductId = productNo.ProductId;
@@ -156,8 +160,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 {
                     damagedProduct2.PersonId = distribution.DistributedTo;
                 }
-                damagedProduct2.ReceiverId = 1;
-                damagedProduct2.SenderId = 1;
+                damagedProduct2.ReceiverId = damagedProductDto.ReceiverId;
+                damagedProduct2.SenderId = damagedProductDto.SenderId;
                 damagedProduct2.UpdatedAt = DateTime.Now;
                 damagedProduct2.WasNotDistributed = false;
                 damagedProductRepository.Insert(damagedProduct2);
@@ -251,7 +255,13 @@ namespace IICT_Store.Services.DamagedProductServices
         {
             ServiceResponse<List<DamagedProductDto>> response = new();
             List<DamagedProductDto> damagedProductDtos = new();
-            var damagedProducts = damagedProductRepository.GetAll();
+            var damagedProducts = await damagedProductRepository.GetAllDamagedProduct();
+            if(damagedProducts.Count() == 0)  
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
             foreach(var item in damagedProducts)
             {
                 DamagedProductDto damagedProductDto = new();
@@ -271,30 +281,44 @@ namespace IICT_Store.Services.DamagedProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetDamagedProductDto>> GetDamagedProductById(long id)
+        public async Task<ServiceResponse<List<GetDamagedProductDto>>> GetDamagedProductByProductId(long id)
         {
-            ServiceResponse<GetDamagedProductDto> response = new();
-            List<DamagedProductDto> damagedProductDtos = new();
+            ServiceResponse<List<GetDamagedProductDto>> response = new();
+            List<GetDamagedProductDto> damagedProductDtos = new();
             var damagedProduct = damagedProductRepository.GetAll();
             var damagedProducts = damagedProduct.Where(x => x.ProductId == id);
             foreach (var items in damagedProducts)
             {
-                var damagedporductSerialNo = damagedProductSerialNoRepository.GetById(items.Id);
-                DamagedProductDto damagedProductDto = new();
-                damagedProductDto.Id = damagedporductSerialNo.Id;
-                damagedProductDto.Name = damagedporductSerialNo.Name;
-                
-                damagedProductDtos.Add(damagedProductDto);
-
+                GetDamagedProductDto damagedProductDto = new();
+                var map = mapper.Map<GetDamagedProductDto>(items);
+                damagedProductDtos.Add(map);
             }
-            GetDamagedProductDto getDamagedProductDto = new();
-            getDamagedProductDto.Quantity = damagedProductDtos.Count;
-            getDamagedProductDto.DamagedProducts = damagedProductDtos;
-
-            response.Data = getDamagedProductDto;
+            response.Data = damagedProductDtos;
             response.Messages.Add("All Damaged Products");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
         }
-    }
+        public async Task<ServiceResponse<GetDamagedProductDto>> GetDamagedProductProductNoId(long id)
+        {
+            ServiceResponse<GetDamagedProductDto> response = new();
+            var damagedProductSerial = damagedProductSerialNoRepository.GetDamagedProductByProductNoId(id);
+            if(damagedProductSerial == null)
+            {
+                response.Messages.Add("Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var damagedProduct = damagedProductRepository.GetById(damagedProductSerial.DamagedProductId);
+            if(damagedProduct == null)
+            {
+                response.Messages.Add("Damaged Product Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var map = mapper.Map<GetDamagedProductDto>(damagedProduct);
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Data = map;
+            return response;
+        }
+        }
 }

@@ -52,7 +52,7 @@ namespace IICT_Store.Services.AdministrationServices
         {
             List<GetRoleDto> getRoleDtos = new();
             ServiceResponse<List<GetRoleDto>> response = new();
-            var roles = roleManager.Roles.ToList();
+            var roles =  roleManager.Roles.ToList();
             foreach (var role in roles)
             {
                 GetRoleDto getRoleDto = new();

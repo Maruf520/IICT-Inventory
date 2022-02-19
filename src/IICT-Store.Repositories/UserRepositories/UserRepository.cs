@@ -38,6 +38,11 @@ namespace IICT_Store.Repositories.UserRepositories
         {
             var user = await userManager.FindByIdAsync(id);
             return user;
+        }      
+        public async Task<ApplicationUser> GetByEmail(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            return user;
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Models.Users
 {
-    public class ApplicationRole : IdentityRole
+    public class ApplicationRole : IdentityRole<Guid>
     {
     }
 }

@@ -199,10 +199,7 @@ namespace IICT_Store.Api.Migrations
                     b.Property<int>("DamagedFrom")
                         .HasColumnType("int");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("PersonId1")
+                    b.Property<long?>("PersonId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("ProductId")
@@ -211,33 +208,30 @@ namespace IICT_Store.Api.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("ReceiverId1")
+                    b.Property<long?>("ReceiverId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("RoomNo")
                         .HasColumnType("int");
 
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("SenderId1")
+                    b.Property<long?>("SenderId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("WasNotDistributed")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId1");
+                    b.HasIndex("PersonId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ReceiverId1");
+                    b.HasIndex("ReceiverId");
 
-                    b.HasIndex("SenderId1");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("DamagedProducts");
                 });
@@ -252,10 +246,7 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DamagedProductId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("DamagedProductId1")
+                    b.Property<long>("DamagedProductId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
@@ -269,7 +260,7 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DamagedProductId1");
+                    b.HasIndex("DamagedProductId");
 
                     b.ToTable("DamagedProductSerialNos");
                 });
@@ -287,8 +278,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DistributedTo")
-                        .HasColumnType("int");
+                    b.Property<long>("DistributedTo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("NameOfUser")
                         .HasColumnType("nvarchar(max)");
@@ -645,7 +636,8 @@ namespace IICT_Store.Api.Migrations
                 {
                     b.HasOne("IICT_Store.Models.Persons.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId1");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IICT_Store.Models.Products.Product", "Product")
                         .WithMany()
@@ -655,11 +647,13 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasOne("IICT_Store.Models.Persons.Person", "Receiver")
                         .WithMany()
-                        .HasForeignKey("ReceiverId1");
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IICT_Store.Models.Persons.Person", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId1");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Person");
 
@@ -674,7 +668,9 @@ namespace IICT_Store.Api.Migrations
                 {
                     b.HasOne("IICT_Store.Models.Products.DamagedProduct", "DamagedProduct")
                         .WithMany("DamagedProductSerialNos")
-                        .HasForeignKey("DamagedProductId1");
+                        .HasForeignKey("DamagedProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("DamagedProduct");
                 });

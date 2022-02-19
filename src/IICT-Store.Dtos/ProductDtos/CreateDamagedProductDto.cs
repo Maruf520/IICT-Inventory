@@ -12,6 +12,8 @@ namespace IICT_Store.Dtos.ProductDtos
         public long SerialId { get; set; }
         public int DistributionId { get; set; }
         public int Quantity { get; set; }
+        public long SenderId { get; set; }
+        public long ReceiverId { get; set; }
 
     }
 }
