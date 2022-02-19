@@ -13,7 +13,6 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/products")]
     [ApiController]
-    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
@@ -23,68 +22,70 @@ namespace IICT_Store.Api.Controllers
             this.productService = productService;
             this.productNumberService = productNumberService;
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             var product = await productService.CreateProduct(createProductDto);
             return Ok(product);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAction(long id)
         {
             var product = await productService.GetProductById(id);
             return Ok(product);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllProduct()
         {
             var products = await productService.GetALlProduct();
             return Ok(products);
         }
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("category/{id}")]
         public async Task<IActionResult> GetProdctByCategoryId(long id)
         {
             var product = await productService.GetProductByCategoryId(id);
             return Ok(product);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(CreateProductDto createProductDto, long id)
         {
             var product = await productService.UpdateProduct(createProductDto, id);
             return Ok(product);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeteteProduct(long id)
         {
             var product = await productService.DeleteProduct(id);
             return Ok(product);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpPost("{id}/serial")]
         public async Task<IActionResult> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
         {
             var product = await productNumberService.InsertProductNo(id, createProductNoDto);
             return Ok(product);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("serial/{id}")]
         public async Task<IActionResult> GetProductBySerialNo(long id)
         {
             var serial = await productNumberService.GetProductNoByProductId(id);
             return Ok(serial);
         }
-
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("available/{id}")]
         public async Task<IActionResult> GetAvailableProduct(long id)
         {
             var product = await productService.GetAllAvailableProductno(id);
             return Ok(product);
         }
+        [Authorize(Roles = "User, Admin")]
         [HttpGet("return/{id}")]
         public async Task<IActionResult> ReturnTOStock(long id)
         {
