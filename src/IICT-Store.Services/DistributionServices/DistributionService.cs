@@ -51,6 +51,7 @@ namespace IICT_Store.Services.DistributionServices
             var distributionToCreate = mapper.Map<Distribution>(createDistributionDto);
             distributionToCreate.TotalRemainingQuantity = createDistributionDto.Quantity;
             distributionToCreate.CreatedAt = DateTime.Now;
+            if(product.HasSerial == true)
             foreach (var item in createDistributionDto.ProductSerialNo)
             {
                 ProductSerialNo productSerialNo = new();
@@ -111,28 +112,30 @@ namespace IICT_Store.Services.DistributionServices
             productRepository.Update(product);
             distributionRepository.Insert(distributionToCreate);
             List<ProductSerialNo> productSerialNos1 = new();
-            foreach (var item in createDistributionDto.ProductSerialNo)
+            if (product.HasSerial == true)
             {
-                ProductSerialNo productSerialNo = new();
-                productSerialNo.ProductNoId = item.ProductNoId;
-                productSerialNo.CreatedAt = DateTime.Now;
-                productSerialNo.DistributionId = distributionToCreate.Id;
-                productSerialNo.ProductStatus = ProductStatus.Assigned;
-                productSerialNos1.Add(productSerialNo);
-                ProductNo productNo = new();
-                var productno = productNumberRepository.GetById(item.ProductNoId);
-                productno.ProductStatus = ProductStatus.Assigned;
-                productNumberRepository.Update(productno);
-
-            }
-            if (productSerialNos.Count > 0 && productSerialNos.Any(x => x.ProductNoId != 0))
-            {
-                foreach (var prodyuctSerial in productSerialNos1)
+                foreach (var item in createDistributionDto.ProductSerialNo)
                 {
-                    productSerialNoRepository.Insert(prodyuctSerial);
+                    ProductSerialNo productSerialNo = new();
+                    productSerialNo.ProductNoId = item.ProductNoId;
+                    productSerialNo.CreatedAt = DateTime.Now;
+                    productSerialNo.DistributionId = distributionToCreate.Id;
+                    productSerialNo.ProductStatus = ProductStatus.Assigned;
+                    productSerialNos1.Add(productSerialNo);
+                    ProductNo productNo = new();
+                    var productno = productNumberRepository.GetById(item.ProductNoId);
+                    productno.ProductStatus = ProductStatus.Assigned;
+                    productNumberRepository.Update(productno);
+
+                }
+                if (productSerialNos.Count > 0 && productSerialNos.Any(x => x.ProductNoId != 0))
+                {
+                    foreach (var prodyuctSerial in productSerialNos1)
+                    {
+                        productSerialNoRepository.Insert(prodyuctSerial);
+                    }
                 }
             }
-
             var distributionToReturn = mapper.Map<GetDistributionDto>(createDistributionDto);
             response.Data = distributionToReturn;
             response.Messages.Add("Created.");
