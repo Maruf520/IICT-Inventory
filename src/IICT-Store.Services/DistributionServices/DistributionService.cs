@@ -288,13 +288,14 @@ namespace IICT_Store.Services.DistributionServices
         {
             ServiceResponse<GetDistributionDto> response = new();
             var productNo =  productNumberRepository.GetById(id);
-            if (productNo == null)
+            var productSerial = await productSerialNoRepository.GetByProductNoId(id);
+            if (productSerial == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            var productSerial = await productSerialNoRepository.GetByProductNoId(id);
+
             var distribution =  distributionRepository.GetById(productSerial.DistributionId);
             var map = mapper.Map<GetDistributionDto>(distribution);
             response.Data = map;
