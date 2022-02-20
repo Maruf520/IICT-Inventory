@@ -10,5 +10,6 @@ namespace IICT_Store.Repositories.ProductSerialNoRepositories
     public interface IProductSerialNoRepository : IBaseRepository<ProductSerialNo>
     {
         Task<ProductSerialNo> GetByProductNoId(long id);
+        Task<List<ProductSerialNo>> GetProductNoIdByDistributionId(long id);
     }
 }

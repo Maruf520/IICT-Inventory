@@ -295,9 +295,17 @@ namespace IICT_Store.Services.DistributionServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-
+            List<GetProductSerialDto> getProductSerialDtos = new();
             var distribution =  distributionRepository.GetById(productSerial.DistributionId);
+            var productSerials = await productSerialNoRepository.GetProductNoIdByDistributionId(distribution.Id);
+            foreach(var productserial in productSerials)
+            {
+                var productno = productNumberRepository.GetById(productserial.ProductNoId);
+                var productNoToMap = mapper.Map<GetProductSerialDto>(productno);
+                getProductSerialDtos.Add(productNoToMap);
+            }
             var map = mapper.Map<GetDistributionDto>(distribution);
+            map.GetProductSerialNo = getProductSerialDtos;
             response.Data = map;
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

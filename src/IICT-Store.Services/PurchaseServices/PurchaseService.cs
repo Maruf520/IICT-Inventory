@@ -69,6 +69,7 @@ namespace IICT_Store.Services.PurchaseServices
                 cashMemoDtos.Add(cashMemoDto);
 
             }
+            productToMap.CreatedAt = DateTime.Now;
             productToMap.CashMemos = cashMemos;
             purchaseRepository.Insert(productToMap);
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
