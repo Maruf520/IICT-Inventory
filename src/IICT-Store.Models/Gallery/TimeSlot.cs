@@ -8,8 +8,8 @@ namespace IICT_Store.Models.Gallery
 {
     public class TimeSlot : BaseModel
     {
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public ICollection<BookingTimeSlot> BookingTimeSlots { get; set; }
     }
 }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Dtos.Gallery
 {
-    public class GetTimeSlotDto
+    public class TimeSlotDto
     {
-        public long Id { get; set; }
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
+        public List<int> TimeSlot { get; set; }
     }
 }

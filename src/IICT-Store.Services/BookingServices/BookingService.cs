@@ -113,16 +113,39 @@ namespace IICT_Store.Services.BookingServices
             ServiceResponse<List<GetBookingDto>> response = new();
             var booking = await bookingRespository.GetByDate(date, galleryNo);
 
-
+            
             if ( booking.Count == 0)
             {
                 response.Messages.Add("No Booking Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
+           // List<GetTimeSlotDto> timeSlotDtos = new();
+            List < GetBookingDto > GetBookingDtos = new();
+            foreach(var book in booking)
+            {
+                GetBookingDto getBookingDto = new();
+                getBookingDto.Id = book.Id;
+                getBookingDto.Application = book.Application;
+                getBookingDto.BookingBy = book.BookingBy;
+                getBookingDto.Date = book.Date;
+                getBookingDto.Purposes = book.Purposes;
+                getBookingDto.Note = book.Note;
+                GetBookingDtos.Add(getBookingDto);
+                List<GetTimeSlotDto> timeSlotDtos = new();
+                foreach (var timeslotId in book.BookingTimeSlots)
+                {
+                    var timeSlot =  timeSlotRepository.GetById(timeslotId.Id);
+                    GetTimeSlotDto getTimeSlotDto = new();
+                    getTimeSlotDto.Id = timeslotId.Id;
+                    getTimeSlotDto.StartTime = timeSlot.StartTime;
+                    getTimeSlotDto.EndTime = timeSlot.EndTime;
+                    timeSlotDtos.Add(getTimeSlotDto);
 
-            var map = mapper.Map<IEnumerable<GetBookingDto>>(booking);
-            response.Data = (List<GetBookingDto>)map;
+                }
+                getBookingDto.BookingTimeSlots = timeSlotDtos;
+            }
+            response.Data = GetBookingDtos;
             response.Messages.Add("All booking.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

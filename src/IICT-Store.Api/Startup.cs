@@ -168,11 +168,11 @@ namespace IICT_Store.Api
                     Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
                 swagger.DescribeAllEnumsAsStrings();
-                swagger.MapType<TimeSpan>(() => new OpenApiSchema
-                {
-                    Type = "string",
-                    Example = new Microsoft.OpenApi.Any.OpenApiString("00:00:00")
-                });
+                //swagger.MapType<TimeSpan>(() => new OpenApiSchema
+                //{
+                //    Type = "string",
+                //    Example = new Microsoft.OpenApi.Any.OpenApiString("00:00:00")
+                //});
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
