@@ -10,6 +10,6 @@ namespace IICT_Store.Dtos.Gallery
     {
         public long Id { get; set; }
         public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTIme { get; set; }
+        public TimeSpan EndTime { get; set; }
     }
 }

@@ -52,13 +52,6 @@ namespace IICT_Store.Api.Controllers
             return Ok(booking);
         }
        // [Authorize(Roles = "User")]
-        [HttpGet("available/booking")]
-        public async Task<IActionResult> GetAvailableBooking([FromForm] GetAvailable getAvailable)
-        {
-            var booking = await bookingService.GetAvailableTimeSlot(getAvailable.Date, getAvailable.GalleryNo);
-            return Ok(booking);
-        }
-       // [Authorize(Roles = "User")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
