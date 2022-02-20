@@ -13,7 +13,7 @@ namespace IICT_Store.Dtos.Gallery
         public GalleryNo GalleryNo { get; set; }
         public IFormFile Application { get; set; }
         public DateTime Date { get; set; }
-        public List<int> TimeSlodId { get; set; }
+        public List<int> TimeSlotId { get; set; }
         public Decimal Amount { get; set; }
         public IFormFile MoneyReceipt { get; set; }
         public string MoneyReceiptNo { get; set; }
