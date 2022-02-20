@@ -49,6 +49,7 @@ namespace IICT_Store.Api
             CreateMap<CreateReturnProductDto, ReturnedProduct>();
             CreateMap<DamagedProduct, GetDamagedProductDto>();
             CreateMap<ApplicationUser, GetUserDto>();
+            CreateMap<ProductNo, GetProductSerialDto>();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using IICT_Store.Models;
 using IICT_Store.Models.Products;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,12 @@ namespace IICT_Store.Repositories.ProductSerialNoRepositories
         {
             var product = context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefault();
             return product;
+        }
+
+        public async Task<List<ProductSerialNo>> GetProductNoIdByDistributionId(long id)
+        {
+            var productNoId = await context.ProductSerialNos.Where(x => x.DistributionId == id).ToListAsync();
+            return productNoId;
         }
     }
 }
