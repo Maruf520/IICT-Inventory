@@ -161,7 +161,10 @@ namespace IICT_Store.Services.ApprovalServices
                 response.Messages.Add("Not Found.");
                 return response;
             }
+            var product = productRepository.GetById(purchase.ProductId);
+            var productToMap = mapper.Map<GetProductDto>(product);
             var map = mapper.Map<GetPurchaseDto>(purchase);
+            map.Product = productToMap;
             response.Data = map;
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

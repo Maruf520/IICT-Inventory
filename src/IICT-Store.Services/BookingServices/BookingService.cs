@@ -183,30 +183,6 @@ namespace IICT_Store.Services.BookingServices
                 combinedTimeSlotDtos.Add(combinedTimeSlotDto);
             }
             var booking = await bookingRespository.GetByDate(date, galleryNo);
-            // List<GetTimeSlotDto> timeSlotDtos = new();
-            //foreach (var book in booking)
-            //{
-            //    CombinedTimeSlotDto combinedTimeSlotDto1 = new();
-            //    GetBookingDto getBookingDto = new();
-            //    combinedTimeSlotDto1.BookingId = book.Id;
-            //    combinedTimeSlotDto1.Application = book.Application;
-            //    combinedTimeSlotDto1.BookingBy = book.BookingBy;
-            //    combinedTimeSlotDto1.Date = book.Date;
-            //    combinedTimeSlotDto1.Purposes = book.Purposes;
-            //    combinedTimeSlotDto1.Note = book.Note;
-
-            //    //List<GetTimeSlotDto> timeSlotDtos = new();
-            //    foreach (var timeslotId in book.BookingTimeSlots)
-            //    {
-            //        var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
-            //        combinedTimeSlotDto1.StartTime = timeSlot.StartTime;
-            //        combinedTimeSlotDto1.TimeSlotId = timeSlot.Id;
-            //        combinedTimeSlotDto1.EndTime = timeSlot.EndTime;
-
-            //    }
-            //    combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
-            //}
-
             foreach(var book in booking)
             {
                 foreach(var timeslotId in book.BookingTimeSlots)
@@ -219,9 +195,12 @@ namespace IICT_Store.Services.BookingServices
                     combinedTimeSlotDto1.Date = book.Date;
                     combinedTimeSlotDto1.Purposes = book.Purposes;
                     combinedTimeSlotDto1.Note = book.Note;
-                    var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
+                    combinedTimeSlotDto1.Amount = book.Amount;
+                    combinedTimeSlotDto1.MoneyReceiptNo = book.MoneyReceiptNo;
+                    combinedTimeSlotDto1.MoneyReceipt = book.MoneyReceipt;
+                    var timeSlot = timeSlotRepository.GetById(timeslotId.TimeSlotId);
                     combinedTimeSlotDto1.StartTime = timeSlot.StartTime;
-                    combinedTimeSlotDto1.TimeSlotId = timeslotId.Id;
+                    combinedTimeSlotDto1.TimeSlotId = timeSlot.Id;
                     combinedTimeSlotDto1.EndTime = timeSlot.EndTime;
                     combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
                 }
