@@ -12,7 +12,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController :  BaseController
     {
         private readonly IUserService userServcie;
         public UserController(IUserService userServcie)
@@ -37,6 +37,12 @@ namespace IICT_Store.Api.Controllers
         public async Task<IActionResult> GetUserById(string id)
         {
             var user = await userServcie.GetUserById(id);
+            return Ok(user);
+        }       
+        [HttpGet("profile")]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await userServcie.GetUserById(GetuserId());
             return Ok(user);
         }
         [HttpGet]

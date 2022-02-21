@@ -62,6 +62,7 @@ namespace IICT_Store.Services.AuthServices
                 tokenDto.Token = Token;
                 tokenDto.Roles = roleList;
                 response.Data = tokenDto;
+                response.StatusCode = System.Net.HttpStatusCode.OK;
                 return response;
             }
             response.Messages.Add("Password incorrect.");
