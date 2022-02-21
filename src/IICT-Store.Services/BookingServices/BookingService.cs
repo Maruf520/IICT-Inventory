@@ -151,7 +151,69 @@ namespace IICT_Store.Services.BookingServices
             return response;
 
         }
+        public async Task<ServiceResponse<List<CombinedTimeSlotDto>>> GetCombinedBookingByDate(DateTime date, GalleryNo galleryNo)
+        {
+            ServiceResponse<List<CombinedTimeSlotDto>> response = new();
+            List<CombinedTimeSlotDto> combinedTimeSlotDtos = new();
+            var bookingTImeslots = bookingTimeSlotRepository.GetByDate(date, galleryNo).Result;
+            if (bookingTImeslots == null)
+            {
+                response.Messages.Add("No Booking Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var timeslots = timeSlotRepository.GetAll().ToList();
+            foreach (var timeslot in timeslots.ToList())
+            {
+                foreach (var bookingtimeslot in bookingTImeslots)
+                {
+                    if (timeslot.Id == bookingtimeslot.TimeSlotId)
+                    {
+                        var filter = timeslots.FirstOrDefault(x => x.Id == timeslot.Id);
+                        timeslots.Remove(filter);
+                    }
+                }
+            }
+            foreach(var time in timeslots)
+            {
+                CombinedTimeSlotDto combinedTimeSlotDto = new();
+                combinedTimeSlotDto.TimeSlotId = time.Id;
+                combinedTimeSlotDto.StartTime = time.StartTime;
+                combinedTimeSlotDto.EndTime = time.EndTime;
+                combinedTimeSlotDtos.Add(combinedTimeSlotDto);
+            }
+            var booking = await bookingRespository.GetByDate(date, galleryNo);
+            // List<GetTimeSlotDto> timeSlotDtos = new();
+            foreach (var book in booking)
+            {
+                CombinedTimeSlotDto combinedTimeSlotDto1 = new();
+                GetBookingDto getBookingDto = new();
+                combinedTimeSlotDto1.BookingTimeSlotId = book.Id;
+                combinedTimeSlotDto1.Application = book.Application;
+                combinedTimeSlotDto1.BookingBy = book.BookingBy;
+                combinedTimeSlotDto1.Date = book.Date;
+                combinedTimeSlotDto1.Purposes = book.Purposes;
+                combinedTimeSlotDto1.Note = book.Note;
+                combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
+                List<GetTimeSlotDto> timeSlotDtos = new();
+                foreach (var timeslotId in book.BookingTimeSlots)
+                {
+                    var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
+                    GetTimeSlotDto getTimeSlotDto = new();
+                    getTimeSlotDto.Id = timeslotId.Id;
+                    getTimeSlotDto.StartTime = timeSlot.StartTime;
+                    getTimeSlotDto.EndTime = timeSlot.EndTime;
+                    timeSlotDtos.Add(getTimeSlotDto);
 
+                }
+                combinedTimeSlotDto1.BookingTimeSlots = timeSlotDtos;
+            }
+            response.Data = combinedTimeSlotDtos;
+            response.Messages.Add("All booking.");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            return response;
+
+        }
         public async Task<ServiceResponse<GetBookingDto>> GetById(long id)
         {
             ServiceResponse<GetBookingDto> response = new();

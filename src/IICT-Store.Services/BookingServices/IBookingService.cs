@@ -16,6 +16,7 @@ namespace IICT_Store.Services.BookingServices
         Task<ServiceResponse<GetBookingDto>> Delete(long id);
         Task<ServiceResponse<List<GetBookingDto>>> GetBookingByDate(DateTime date, GalleryNo galleryNo);
         Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date, GalleryNo galleryNo);
+        Task<ServiceResponse<List<CombinedTimeSlotDto>>> GetCombinedBookingByDate(DateTime date, GalleryNo galleryNo);
 
     }
 }
