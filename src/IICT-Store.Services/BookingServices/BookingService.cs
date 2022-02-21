@@ -198,9 +198,9 @@ namespace IICT_Store.Services.BookingServices
                     combinedTimeSlotDto1.Amount = book.Amount;
                     combinedTimeSlotDto1.MoneyReceiptNo = book.MoneyReceiptNo;
                     combinedTimeSlotDto1.MoneyReceipt = book.MoneyReceipt;
-                    var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
+                    var timeSlot = timeSlotRepository.GetById(timeslotId.TimeSlotId);
                     combinedTimeSlotDto1.StartTime = timeSlot.StartTime;
-                    combinedTimeSlotDto1.TimeSlotId = timeslotId.Id;
+                    combinedTimeSlotDto1.TimeSlotId = timeSlot.Id;
                     combinedTimeSlotDto1.EndTime = timeSlot.EndTime;
                     combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
                 }
