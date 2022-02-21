@@ -34,7 +34,7 @@ namespace IICT_Store.Api.Controllers
         [HttpGet("{date}/booking")]
         public async Task<IActionResult> GetBookingByDate(DateTime date, GalleryNo galleryNo)
         {
-            var booking = await bookingService.GetBookingByDate(date, galleryNo);
+            var booking = await bookingService.GetCombinedBookingByDate(date, galleryNo);
             return Ok(booking);
         }
        // [Authorize(Roles = "User")]
