@@ -184,30 +184,49 @@ namespace IICT_Store.Services.BookingServices
             }
             var booking = await bookingRespository.GetByDate(date, galleryNo);
             // List<GetTimeSlotDto> timeSlotDtos = new();
-            foreach (var book in booking)
-            {
-                CombinedTimeSlotDto combinedTimeSlotDto1 = new();
-                GetBookingDto getBookingDto = new();
-                combinedTimeSlotDto1.BookingTimeSlotId = book.Id;
-                combinedTimeSlotDto1.Application = book.Application;
-                combinedTimeSlotDto1.BookingBy = book.BookingBy;
-                combinedTimeSlotDto1.Date = book.Date;
-                combinedTimeSlotDto1.Purposes = book.Purposes;
-                combinedTimeSlotDto1.Note = book.Note;
-                combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
-                List<GetTimeSlotDto> timeSlotDtos = new();
-                foreach (var timeslotId in book.BookingTimeSlots)
-                {
-                    var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
-                    GetTimeSlotDto getTimeSlotDto = new();
-                    getTimeSlotDto.Id = timeslotId.Id;
-                    getTimeSlotDto.StartTime = timeSlot.StartTime;
-                    getTimeSlotDto.EndTime = timeSlot.EndTime;
-                    timeSlotDtos.Add(getTimeSlotDto);
+            //foreach (var book in booking)
+            //{
+            //    CombinedTimeSlotDto combinedTimeSlotDto1 = new();
+            //    GetBookingDto getBookingDto = new();
+            //    combinedTimeSlotDto1.BookingId = book.Id;
+            //    combinedTimeSlotDto1.Application = book.Application;
+            //    combinedTimeSlotDto1.BookingBy = book.BookingBy;
+            //    combinedTimeSlotDto1.Date = book.Date;
+            //    combinedTimeSlotDto1.Purposes = book.Purposes;
+            //    combinedTimeSlotDto1.Note = book.Note;
 
+            //    //List<GetTimeSlotDto> timeSlotDtos = new();
+            //    foreach (var timeslotId in book.BookingTimeSlots)
+            //    {
+            //        var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
+            //        combinedTimeSlotDto1.StartTime = timeSlot.StartTime;
+            //        combinedTimeSlotDto1.TimeSlotId = timeSlot.Id;
+            //        combinedTimeSlotDto1.EndTime = timeSlot.EndTime;
+
+            //    }
+            //    combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
+            //}
+
+            foreach(var book in booking)
+            {
+                foreach(var timeslotId in book.BookingTimeSlots)
+                {
+                    CombinedTimeSlotDto combinedTimeSlotDto1 = new();
+                    GetBookingDto getBookingDto = new();
+                    combinedTimeSlotDto1.BookingId = book.Id;
+                    combinedTimeSlotDto1.Application = book.Application;
+                    combinedTimeSlotDto1.BookingBy = book.BookingBy;
+                    combinedTimeSlotDto1.Date = book.Date;
+                    combinedTimeSlotDto1.Purposes = book.Purposes;
+                    combinedTimeSlotDto1.Note = book.Note;
+                    var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
+                    combinedTimeSlotDto1.StartTime = timeSlot.StartTime;
+                    combinedTimeSlotDto1.TimeSlotId = timeslotId.Id;
+                    combinedTimeSlotDto1.EndTime = timeSlot.EndTime;
+                    combinedTimeSlotDtos.Add(combinedTimeSlotDto1);
                 }
-                combinedTimeSlotDto1.BookingTimeSlots = timeSlotDtos;
             }
+
             response.Data = combinedTimeSlotDtos;
             response.Messages.Add("All booking.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
