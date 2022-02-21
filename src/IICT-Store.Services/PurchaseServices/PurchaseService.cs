@@ -70,6 +70,7 @@ namespace IICT_Store.Services.PurchaseServices
 
             }
             productToMap.CreatedAt = DateTime.Now;
+            
             productToMap.CashMemos = cashMemos;
             purchaseRepository.Insert(productToMap);
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
@@ -99,6 +100,7 @@ namespace IICT_Store.Services.PurchaseServices
             var product = productRepository.GetById(purchase.ProductId);
             var map = mapper.Map<GetProductDto>(product);
             var purchaseToMap = mapper.Map<GetPurchaseDto>(purchase);
+            purchaseToMap.PuchasedDate = purchase.CreatedAt;
             purchaseToMap.Product = map;
 
             response.Data = purchaseToMap;
