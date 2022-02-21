@@ -96,7 +96,10 @@ namespace IICT_Store.Services.PurchaseServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
+            var product = productRepository.GetById(purchase.ProductId);
+            var map = mapper.Map<GetProductDto>(product);
             var purchaseToMap = mapper.Map<GetPurchaseDto>(purchase);
+            purchaseToMap.Product = map;
 
             response.Data = purchaseToMap;
             response.Messages.Add("Purcahse.");

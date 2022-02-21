@@ -40,6 +40,7 @@ namespace IICT_Store.Services.BookingServices
             booking.Note = createBookingDto.Note;
             booking.Purposes = createBookingDto.Purposes;
             booking.CreatedAt = DateTime.Now;
+            booking.GalleryNo = createBookingDto.GalleryNo;
             booking.Amount = createBookingDto.Amount;
             booking.MoneyReceiptNo = createBookingDto.MoneyReceiptNo;
             var upload = await UploadFile(createBookingDto.MoneyReceipt);
