@@ -86,7 +86,7 @@ namespace IICT_Store.Services.DistributionServices
 
             //distributionToCreate.ProductSerialNo = productSerialNos;
             var IfDistributionExists = await distributionRepository.GetByRoomIdAndProductId(createDistributionDto.RoomNo, createDistributionDto.ProductId);
-            if (IfDistributionExists != null)
+            if (IfDistributionExists != null && IfDistributionExists.DistributedTo == 0)
             {
                 IfDistributionExists.Quantity = IfDistributionExists.Quantity + createDistributionDto.Quantity;
                 IfDistributionExists.TotalRemainingQuantity = IfDistributionExists.Quantity + createDistributionDto.Quantity;
