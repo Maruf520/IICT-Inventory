@@ -56,7 +56,7 @@ namespace IICT_Store.Repositories.ProductRepositories
 
         public void RemoveProductNo(long id)
         {
-           var product =  context.ProductNos.Where(x => x.Id == id).FirstOrDefault();
+           var product = context.ProductNos.Where(x => x.Id == id);
             context.Remove(product);
             context.SaveChanges();
         }
