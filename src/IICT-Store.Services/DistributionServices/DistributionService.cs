@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper.Internal;
 
 namespace IICT_Store.Services.DistributionServices
 {
@@ -241,6 +242,35 @@ namespace IICT_Store.Services.DistributionServices
             }
 
             var distributionToReturn = mapper.Map<List<GetDistributionDto>>(distribution);
+            foreach (var products in distributionToReturn)
+            {
+                GetProductDto productDto = new();
+                var singleProduct = productRepository.GetById(products.ProductId);
+                productDto.CategoryId = singleProduct.CategoryId;
+                productDto.Name = singleProduct.Name;
+                productDto.Description = singleProduct.Description;
+                productDto.ImageUrl = singleProduct.ImageUrl;
+                productDto.HasSerial = singleProduct.HasSerial;
+                productDto.Id = singleProduct.Id;
+                productDto.TotalQuantity = singleProduct.TotalQuantity;
+                productDto.QuantityInStock = singleProduct.QuantityInStock;
+                productDto.CreatedAt = singleProduct.CreatedAt;
+                productDto.UpdatedAt = singleProduct.UpdatedAt;
+                products.Product = productDto;
+                var productSerial = await productSerialNoRepository.GetProductNoIdByDistributionId(products.Id);
+                List<GetProductSerialDto> getProductSerialDtos = new();
+                foreach (var productserial in productSerial)
+                {
+                    GetProductSerialDto getSerialDto = new();
+                    var productNo = productNumberRepository.GetById(productserial.ProductNoId);
+                    getSerialDto.Name = productNo.Name;
+                    getSerialDto.Id = productNo.Id;
+                    getSerialDto.ProductStatus = productserial.ProductStatus;
+                    getProductSerialDtos.Add(getSerialDto);
+                }
+
+                products.GetProductSerialNo = getProductSerialDtos;
+            }
             response.Data = distributionToReturn;
             response.Messages.Add("All he takes.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -259,8 +289,39 @@ namespace IICT_Store.Services.DistributionServices
                 return response;
             }
             var map = mapper.Map<List<GetDistributionDto>>(product);
-            
-            response.Data = map;
+            foreach (var products in map)
+            {
+                GetProductDto productDto = new();
+                var singleProduct = productRepository.GetById(products.ProductId);
+                productDto.CategoryId = singleProduct.CategoryId;
+                productDto.Name = singleProduct.Name;
+                productDto.Description = singleProduct.Description;
+                productDto.ImageUrl = singleProduct.ImageUrl;
+                productDto.HasSerial = singleProduct.HasSerial;
+                productDto.Id = singleProduct.Id;
+                productDto.TotalQuantity = singleProduct.TotalQuantity;
+                productDto.QuantityInStock = singleProduct.QuantityInStock;
+                productDto.CreatedAt = singleProduct.CreatedAt;
+                productDto.UpdatedAt = singleProduct.UpdatedAt;
+                products.Product = productDto;
+                var productSerial = await productSerialNoRepository.GetProductNoIdByDistributionId(products.Id);
+                List<GetProductSerialDto> getProductSerialDtos = new();
+                foreach (var productserial in productSerial)
+                {
+                    GetProductSerialDto getSerialDto = new();
+                    var productNo = productNumberRepository.GetById(productserial.ProductNoId);
+                    getSerialDto.Name = productNo.Name;
+                    getSerialDto.Id = productNo.Id;
+                    getSerialDto.ProductStatus = productserial.ProductStatus;
+                    getProductSerialDtos.Add(getSerialDto);
+                }
+
+                products.GetProductSerialNo = getProductSerialDtos;
+            }
+
+            var groupby = map.GroupBy(x => x.ProductId).Select(x => x.First()).ToList();
+
+                response.Data = map;
             response.Messages.Add("All distribution");
             return response;
         }

@@ -206,7 +206,7 @@ namespace IICT_Store.Services.ProductServices
             {
                 foreach(var serial in distribution)
                 {
-                    if(!(item.Id == serial.ProductNoId))
+                    if(item.Id != serial.ProductNoId)
                     {
                         GetProductNoDto getProductNoDto = new();
                         getProductNoDto.Id = item.Id;
