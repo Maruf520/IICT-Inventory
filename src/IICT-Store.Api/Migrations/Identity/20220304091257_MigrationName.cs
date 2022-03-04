@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations.Identity
 {
-    public partial class MigraonName : Migration
+    public partial class MigrationName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -50,6 +50,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IICT_Store.Repositories.MaintananceProductSerialNoRepositories;
+using IICT_Store.Repositories.MaintananceReposiotories;
+using IICT_Store.Repositories.TestRepo;
+using IICT_Store.Services.MaintananceProductService;
 
 namespace IICT_Store.Api
 {
@@ -105,9 +109,14 @@ namespace IICT_Store.Api
             services.AddScoped<IReturnedProductSerialNoRepository, ReturnedProductSerialNoRepository>();
             services.AddScoped<IReturnProductService, ReturnProductService>();
             services.AddScoped<IAdministrationService, AdministrationService>();
+            services.AddScoped<IMaintanancePeoductSerialNoRepository, MaintananceProductSerialNoRepository>();
+            services.AddScoped<IMaintananceProductService, MaintananceProductService>();
+            services.AddScoped<IMaintananceRepository, MaintananceRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddScoped<IDamagedProductSerialNoRepository, DamagedProductSerialNoRepository>();
+
+            services.AddScoped<IBaseRepo, BaseRepo>();
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;

@@ -10,6 +10,7 @@ namespace IICT_Store.Models.Products
     {
         Unassigned,
         Assigned,
-        Damaged
+        Damaged,
+        Maintanance
     }
 }

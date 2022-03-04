@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace IICT_Store.Api.Controllers
 {
@@ -13,17 +16,29 @@ namespace IICT_Store.Api.Controllers
     [ApiController]
     public class DistributionController : ControllerBase
     {
+        private readonly ILogger<DistributionController> logger;
         private readonly IDistributionService distributionService;
-        public DistributionController(IDistributionService distributionService)
+        public DistributionController(IDistributionService distributionService, ILogger<DistributionController> logger)
         {
             this.distributionService = distributionService;
+            this.logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDistribution(CreateDistributionDto createDistributionDto)
+        public async Task<IActionResult> CreateDistribution([FromBody] CreateDistributionDto createDistributionDto)
         {
-            var distribution = await distributionService.Create(createDistributionDto);
-            return Ok(distribution);
+            this.logger.LogInformation($"CreateDistribution STARTED with requestBody: {JsonConvert.SerializeObject(createDistributionDto)}");
+            var distribution = await distributionService.CreateNew(createDistributionDto);
+            if (distribution.StatusCode == HttpStatusCode.OK)
+            {
+                this.logger.LogInformation($"CreateDistribution ENDED with OK response");
+                return Ok(distribution);
+            }
+            else
+            {
+                this.logger.LogInformation($"CreateDistribution ENDED with BadRequest response");
+                return BadRequest(distribution);
+            }
         }
         
         [HttpGet("{id}")]

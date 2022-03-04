@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IICT_Store.Repositories.TestRepo;
 
 namespace IICT_Store.Services.ProductNumberServices
 {
@@ -22,17 +23,19 @@ namespace IICT_Store.Services.ProductNumberServices
         private readonly IMapper mapper;
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IDistributionRepository distributionRepository;
+        private readonly IBaseRepo baseRepo;
         public ProductNumberService(IProductNumberRepository productNumberRepository, 
             IProductRepository productRepository, 
             IMapper mapper, 
             IProductSerialNoRepository productSerialNoRepository, 
-            IDistributionRepository distributionRepository)
+            IDistributionRepository distributionRepository, IBaseRepo baseRepo)
         {
             this.productNumberRepository = productNumberRepository;
             this.productRepository = productRepository;
             this.mapper = mapper;
             this.productSerialNoRepository = productSerialNoRepository;
             this.distributionRepository = distributionRepository;
+            this.baseRepo = baseRepo;
         }
         public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
         {
@@ -111,40 +114,48 @@ namespace IICT_Store.Services.ProductNumberServices
         public async Task<ServiceResponse<List<GetProductNoDto>>> GetProductNoByProductId(long productId)
         {
             ServiceResponse<List<GetProductNoDto>> response = new();
-            List<GetProductNoDto> productNoDtos = new();
-            var productsNo = await productNumberRepository.GetByProductId(productId);
-            if(productsNo.Count == 0)
+            try
             {
-                response.Messages.Add("Not Found.");
-                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                List<GetProductNoDto> productNoDtos = new();
+                var productsNo = await productNumberRepository.GetByProductId(productId);
+                if (productsNo.Count == 0)
+                {
+                    response.Messages.Add("Not Found.");
+                    response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    return response;
+                }
+
+                foreach (var product in productsNo)
+                {
+                    GetProductNoDto productNoDto = new();
+                    var productserial2 = await productSerialNoRepository.GetByProductNoId(product.Id);
+                    var t = baseRepo.GetItems<ProductSerialNo>(e => e.ProductNoId == product.Id).ToList();
+                    var productserial = t.OrderByDescending(e => e.Id).FirstOrDefault();
+                    if (productserial != null)
+                    {
+                        var distribution = distributionRepository.GetById(productserial.DistributionId);
+                        if (distribution.RoomNo != null)
+                        {
+                            productNoDto.RoomNo = (int)distribution.RoomNo;
+                        }
+
+                        productNoDto.DistributedTo = distribution.DistributedTo;
+                    }
+                    productNoDto.Id = product.Id;
+                    productNoDto.Name = product.Name;
+                    productNoDto.ProductStatus = product.ProductStatus;
+                    productNoDtos.Add(productNoDto);
+                }
+                var map = mapper.Map<List<GetProductNoDto>>(productsNo);
+                response.Data = productNoDtos;
+                response.Messages.Add("All Serial.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
                 return response;
             }
-            
-            foreach(var product in productsNo)
+            catch (Exception e)
             {
-                GetProductNoDto productNoDto = new();
-                var productserial = await productSerialNoRepository.GetByProductNoId(product.Id);
-                if(productserial != null)
-                {
-                    var distribution = distributionRepository.GetById(productserial.DistributionId);
-                    if(distribution.RoomNo != null)
-                    {
-                        productNoDto.RoomNo = (int)distribution.RoomNo;
-                    }
-                   
-                    productNoDto.DistributedTo = distribution.DistributedTo;
-                }
-                productNoDto.Id = product.Id;
-                productNoDto.Name = product.Name;
-                productNoDto.ProductStatus = product.ProductStatus;
-                productNoDtos.Add(productNoDto);
+                return response;
             }
-            var map = mapper.Map<List<GetProductNoDto>>(productsNo);
-            response.Data = productNoDtos;
-            response.Messages.Add("All Serial.");
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            return response;
-
         }
     }
 }
