@@ -22,7 +22,7 @@ namespace IICT_Store.Dtos.DistributionDtos
         public long ReceiverId { get; set; }
         public ICollection<ProductSerialNoDto> ProductSerialNo { get; set; }
         public ICollection<GetProductSerialDto> GetProductSerialNo { get; set; }
-        public string DistributedTo { get; set; } // to samir sir/ room no 212
+        public int DistributedTo { get; set; } // to samir sir/ room no 212
         public string SignatureOfReceiver { get; set; }
         public string Note { get; set; }
         public DateTime CreatedAt { get; set; }
