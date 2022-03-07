@@ -76,5 +76,12 @@ namespace IICT_Store.Api.Controllers
             var distribution = await distributionService.GetDistributionByProductNoId(id);
             return Ok(distribution);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDistribution([FromQuery] long productId, [FromQuery] long personId, [FromQuery] int roomNo)
+        {
+            var distritution = await distributionService.GetDirstribution(productId, personId, roomNo);
+            return Ok(distritution);
+        }
     }
 }

@@ -278,10 +278,106 @@ namespace IICT_Store.Services.DistributionServices
 
             var distributions = await distributionRepository.GetAllDistributionByProductId(id);
             var map = mapper.Map<List<GetDistributionDto>>(distributions);
+            var xxx = map.GroupBy(x => x.RoomNo | x.DistributedTo).ToList();
             response.Messages.Add("All distributions.");
             response.Data = map;
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
+        }
+
+
+        public async Task<ServiceResponse<List<GetDistributionDto>>> GetDirstribution(long productId = 0,long personId = 0,int roomNo = 0)
+        {
+            ServiceResponse<List<GetDistributionDto>> response = new();
+            var distribution = distributionRepository.GetAll();
+            if (personId > 0)
+            {
+                var distributionToPerson =
+                    distribution.Where(x => x.DistributedTo == personId && x.ProductId == productId);
+                if (productId == 0)
+                {
+                    distributionToPerson = distribution.Where(x => x.DistributedTo == personId);
+                }
+                var distributionToReturn = mapper.Map<List<GetDistributionDto>>(distributionToPerson);
+                foreach (var products in distributionToReturn)
+                {
+                    GetProductDto productDto = new();
+                    var singleProduct = productRepository.GetById(products.ProductId);
+                    productDto.CategoryId = singleProduct.CategoryId;
+                    productDto.Name = singleProduct.Name;
+                    productDto.Description = singleProduct.Description;
+                    productDto.ImageUrl = singleProduct.ImageUrl;
+                    productDto.HasSerial = singleProduct.HasSerial;
+                    productDto.Id = singleProduct.Id;
+                    productDto.TotalQuantity = singleProduct.TotalQuantity;
+                    productDto.QuantityInStock = singleProduct.QuantityInStock;
+                    productDto.CreatedAt = singleProduct.CreatedAt;
+                    productDto.UpdatedAt = singleProduct.UpdatedAt;
+                    products.Product = productDto;
+                    var productSerial = await productSerialNoRepository.GetProductNoIdByDistributionId(products.Id);
+                    List<GetProductSerialDto> getProductSerialDtos = new();
+                    foreach (var productserial in productSerial)
+                    {
+                        GetProductSerialDto getSerialDto = new();
+                        var productNo = productNumberRepository.GetById(productserial.ProductNoId);
+                        getSerialDto.Name = productNo.Name;
+                        getSerialDto.Id = productNo.Id;
+                        getSerialDto.ProductStatus = productserial.ProductStatus;
+                        getProductSerialDtos.Add(getSerialDto);
+                    }
+
+                    products.GetProductSerialNo = getProductSerialDtos;
+                }
+
+                response.Data = distributionToReturn;
+                response.StatusCode = HttpStatusCode.OK;
+                return response;
+            } 
+            if(roomNo > 0)
+            {
+                var distributionToRoom = distribution.Where(x => x.RoomNo == roomNo && x.ProductId == productId);
+                if (productId == 0)
+                {
+                    distributionToRoom = distribution.Where(x => x.RoomNo == roomNo);
+                }
+                var distributionToReturn = mapper.Map<List<GetDistributionDto>>(distributionToRoom);
+                foreach (var products in distributionToReturn)
+                {
+                    GetProductDto productDto = new();
+                    var singleProduct = productRepository.GetById(products.ProductId);
+                    productDto.CategoryId = singleProduct.CategoryId;
+                    productDto.Name = singleProduct.Name;
+                    productDto.Description = singleProduct.Description;
+                    productDto.ImageUrl = singleProduct.ImageUrl;
+                    productDto.HasSerial = singleProduct.HasSerial;
+                    productDto.Id = singleProduct.Id;
+                    productDto.TotalQuantity = singleProduct.TotalQuantity;
+                    productDto.QuantityInStock = singleProduct.QuantityInStock;
+                    productDto.CreatedAt = singleProduct.CreatedAt;
+                    productDto.UpdatedAt = singleProduct.UpdatedAt;
+                    products.Product = productDto;
+                    var productSerial = await productSerialNoRepository.GetProductNoIdByDistributionId(products.Id);
+                    List<GetProductSerialDto> getProductSerialDtos = new();
+                    foreach (var productserial in productSerial)
+                    {
+                        GetProductSerialDto getSerialDto = new();
+                        var productNo = productNumberRepository.GetById(productserial.ProductNoId);
+                        getSerialDto.Name = productNo.Name;
+                        getSerialDto.Id = productNo.Id;
+                        getSerialDto.ProductStatus = productserial.ProductStatus;
+                        getProductSerialDtos.Add(getSerialDto);
+                    }
+
+                    products.GetProductSerialNo = getProductSerialDtos;
+                }
+
+                response.Data = distributionToReturn;
+                response.StatusCode = HttpStatusCode.OK;
+                return response;
+            }
+            response.StatusCode = HttpStatusCode.BadRequest;
+            return response;
+
         }
 
         public async Task<ServiceResponse<GetDistributionDto>> GetDistributionByProductNoId(long id)
