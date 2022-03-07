@@ -6,7 +6,7 @@ namespace IICT_Store.Services.MaintananceProductService
 {
     public interface IMaintananceProductService
     {
-        Task<ServiceResponse<GetMaintananceProductDto>> Create(
-            CreateMaintananceProductDto createMaintananceProduct);
+        Task<ServiceResponse<GetMaintananceProductDto>> Create(CreateMaintananceProductDto createMaintananceProduct);
+        Task<ServiceResponse<GetMaintananceProductDto>> RepairOrDamage(CreateMaintananceProductDto maintananceProduct);
     }
 }

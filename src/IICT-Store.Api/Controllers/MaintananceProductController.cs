@@ -26,5 +26,11 @@ namespace IICT_Store.Api.Controllers
             var maintanaceProduct = await maintananceProductService.Create(createMaintananceProduct);
             return Ok(maintanaceProduct);
         }
+        [HttpPost("repair")]
+        public async Task<IActionResult> RepairOrDamage(CreateMaintananceProductDto createMaintananceProduct)
+        {
+            var maintanaceProduct = await maintananceProductService.RepairOrDamage(createMaintananceProduct);
+            return Ok(maintanaceProduct);
+        }
     }
 }

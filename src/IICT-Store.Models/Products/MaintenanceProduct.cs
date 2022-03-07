@@ -10,6 +10,7 @@ namespace IICT_Store.Models.Products
     public class MaintenanceProduct : BaseModel
     {
         public long ProductId { get; set; }
+        public long DistributionId { get; set; }
         public Product Product { get; set; }
         public long ReceiverId { get; set; }
         public Person Receiver { get; set; }
