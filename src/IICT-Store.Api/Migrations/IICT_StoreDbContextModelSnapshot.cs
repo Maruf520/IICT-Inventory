@@ -225,8 +225,6 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
-
                     b.HasIndex("ProductId");
 
                     b.HasIndex("ReceiverId");
@@ -335,11 +333,23 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<long>("ReceiverId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SenderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SenderId1")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -348,7 +358,41 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("SenderId");
+
+                    b.HasIndex("SenderId1");
+
                     b.ToTable("MaintenanceProducts");
+                });
+
+            modelBuilder.Entity("IICT_Store.Models.Products.MaintenanceProductSerialNo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRepaired")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("MaintananceProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProductNoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MaintenanceProductSerialNo");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.Product", b =>
@@ -460,6 +504,12 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FromPerson")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FromRoom")
+                        .HasColumnType("int");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
@@ -509,10 +559,7 @@ namespace IICT_Store.Api.Migrations
                     b.Property<long>("ProductNoId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("ReturnedProductId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("ReturnedProductId1")
+                    b.Property<long>("ReturnedProductId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -520,7 +567,7 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReturnedProductId1");
+                    b.HasIndex("ReturnedProductId");
 
                     b.ToTable("ReturnedProductSerialNos");
                 });
@@ -634,11 +681,6 @@ namespace IICT_Store.Api.Migrations
 
             modelBuilder.Entity("IICT_Store.Models.Products.DamagedProduct", b =>
                 {
-                    b.HasOne("IICT_Store.Models.Persons.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("IICT_Store.Models.Products.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -654,8 +696,6 @@ namespace IICT_Store.Api.Migrations
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Person");
 
                     b.Navigation("Product");
 
@@ -708,7 +748,21 @@ namespace IICT_Store.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IICT_Store.Models.Persons.Person", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId1");
+
                     b.Navigation("Product");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("IICT_Store.Models.Products.Product", b =>
@@ -763,7 +817,9 @@ namespace IICT_Store.Api.Migrations
                 {
                     b.HasOne("IICT_Store.Models.Products.ReturnedProduct", "ReturnedProduct")
                         .WithMany()
-                        .HasForeignKey("ReturnedProductId1");
+                        .HasForeignKey("ReturnedProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ReturnedProduct");
                 });

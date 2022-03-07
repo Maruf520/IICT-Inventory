@@ -57,5 +57,10 @@ namespace IICT_Store.Repositories.DistributionRepositories
             var distribution = await context.Distributions.Where(x => x.RoomNo == roomNo && x.ProductId == productId).FirstOrDefaultAsync();
             return distribution;
         }
+        public async Task<Distribution> GetByProductId(long productId)
+        {
+            var distribution = await context.Distributions.Where(x => x.ProductId == productId).FirstOrDefaultAsync();
+            return distribution;
+        }
     }
 }

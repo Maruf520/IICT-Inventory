@@ -15,6 +15,8 @@ namespace IICT_Store.Models.Products
         public Person Receiver { get; set; }
         public int SenderId { get; set; }
         public Person Sender { get; set; }
+        public int FromRoom { get; set; }
+        public int FromPerson { get; set; }
         public string Note { get; set; }
     }
 }

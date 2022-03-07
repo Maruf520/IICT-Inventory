@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +40,12 @@ namespace IICT_Store.Repositories
         public T GetById(long id)
         {
             T entity = entities.Find(id);
+            return entity;
+        }
+
+        public async Task<List<T>> GetItems(Expression<Func<T, bool>> filter)
+        {
+            var entity = await entities.Where(filter).ToListAsync();
             return entity;
         }
 

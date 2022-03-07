@@ -10,9 +10,12 @@ using IICT_Store.Repositories.ProductSerialNoRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.Internal;
+using IICT_Store.Repositories.TestRepo;
+using Microsoft.Extensions.Logging;
 
 namespace IICT_Store.Services.DistributionServices
 {
@@ -23,13 +26,17 @@ namespace IICT_Store.Services.DistributionServices
         private readonly IProductRepository productRepository;
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IProductNumberRepository productNumberRepository;
-        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository)
+        private readonly ILogger<DistributionService> logger;
+        private readonly IBaseRepo baseRepo;
+        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository, ILogger<DistributionService> logger, IBaseRepo baseRepo)
         {
             this.distributionRepository = distributionRepository;
             this.mapper = mapper;
             this.productRepository = productRepository;
             this.productSerialNoRepository = productSerialNoRepository;
             this.productNumberRepository = productNumberRepository;
+            this.logger = logger;
+            this.baseRepo = baseRepo;
         }
         public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto)
         {
@@ -143,74 +150,6 @@ namespace IICT_Store.Services.DistributionServices
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
         }
-
-        //        public async Task<ServiceResponse<List<GetDistributionDto>>> GetAllDistributionByProductId(long productId)
-        //        {
-        //            ServiceResponse<List<GetDistributionDto>> response = new();
-        //            var distributions = await distributionRepository.GetAllDistributionByProductId(productId);
-        //            List<int>rooms = new();
-        //            List<ProductSerialNoDto> productSerialNoDtos = new();
-        //            List<ProductSerialNo> productSerialNos = new();
-        //            if(distributions == null)
-        //            {
-        //                response.Messages.Add("Not Found.");
-        //                response.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //                return response;
-        //            }
-        //            foreach(var items in distributions)
-        //            {
-        //                rooms.Add((int)items.RoomNo);
-        //            }
-        ///*            foreach(var item in distributions)
-        //            {
-        //                foreach(var rom in rooms )
-        //                {
-        //                    if(item.RoomNo == rom)
-        //                    {
-        //                        var x = item.ProductSerialNo.Count;
-        //*//*                        for(int y = 0; y < x;y++)
-        //                        {
-        //                            ProductSerialNoDto productSerialNo = new();
-        //                            productSerialNo.ProductNoId = item.ProductSerialNo
-        //                        productSerialNos.Add(item.ProductSerialNo);
-        //                        }*//*
-        //                        foreach(var z in item.ProductSerialNo)
-        //                        {
-        //                            ProductSerialNoDto productSerialNo = new();
-        //                            productSerialNo.ProductNoId = z.ProductNoId;
-        //                            productSerialNoDtos.Add(productSerialNo);
-
-        //                        }
-
-        //                       *//* productSerialNoDtos.Add((ProductSerialNoDto)item.ProductSerialNo);*//*
-        //                    }
-        //                }
-        //            }*/
-        //            foreach(var rom in rooms)
-        //            {
-        //                var x = distributions.Where(x =>x.RoomNo == rom).ToList();
-        //                foreach(var serial in x)
-        //                {
-
-        //                    foreach(var y in serial.ProductSerialNo)
-        //                    {
-        //                        SerialDistributionDto serialDistributionDto = new();
-        //                        serialDistributionDto.RoomNo = (int)serial.RoomNo;
-
-        //                        ProductSerialNoDto productSerialNo = new();
-        //                        productSerialNo.ProductNoId = y.ProductNoId;
-        ///*                        serialDistributionDto.ProductSerialNoDtos.Add(serialDistributionDto);*/
-        //                    }
-        //                }
-
-        //            }
-        //            var distributionTomap = mapper.Map<List<GetDistributionDto>>(distributions);
-        //            response.Messages.Add("all products");
-        //            response.Data = distributionTomap;
-        //            response.StatusCode = System.Net.HttpStatusCode.OK;
-        //            return response;
-
-        //        }
 
         public async Task<ServiceResponse<GetDistributionDto>> GetById(long id)
         {
@@ -349,7 +288,9 @@ namespace IICT_Store.Services.DistributionServices
         {
             ServiceResponse<GetDistributionDto> response = new();
             var productNo =  productNumberRepository.GetById(id);
-            var productSerial = await productSerialNoRepository.GetByProductNoId(id);
+            var productSeria = await productSerialNoRepository.GetByProductNoId(id);
+            var x = baseRepo.GetItems<ProductSerialNo>(x => x.ProductNoId == productNo.Id).ToList();
+            var productSerial = x.OrderByDescending(x => x.Id).FirstOrDefault();
             if (productSerial == null)
             {
                 response.Messages.Add("Not Found.");
@@ -373,5 +314,78 @@ namespace IICT_Store.Services.DistributionServices
 
         }
 
+        public async Task<ServiceResponse<GetDistributionDto>> CreateNew(CreateDistributionDto createDistributionDto)
+        {
+            this.logger.LogInformation($"CreateNew Service STARTED");
+            ServiceResponse<GetDistributionDto> response = new();
+            try
+            {
+                var product = productRepository.GetById(createDistributionDto.ProductId);
+                if (product == null)
+                {
+                    this.logger.LogInformation($"CreateNew Service ENDED with Not Found");
+                    response.SetMessage();
+                    return response;
+                }
+
+                if (product.QuantityInStock < createDistributionDto.Quantity)
+                {
+                    this.logger.LogInformation($"CreateNew Service Ended with Message: Please reduce the quantity of this product. This product has {product.QuantityInStock} items in stock.");
+                    response.Messages.Add($"Please reduce the quantity of this product. This product has {product.QuantityInStock} items in stock.");
+                    response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    return response;
+                }
+                List<ProductSerialNo> productSerialNos = new();
+                var distributionToCreate = mapper.Map<Distribution>(createDistributionDto);
+                distributionToCreate.TotalRemainingQuantity = createDistributionDto.Quantity;
+                distributionToCreate.CreatedAt = DateTime.Now;
+                if (createDistributionDto.RoomNo != 0)
+                {
+                    distributionToCreate.RoomNo = createDistributionDto.RoomNo;
+                }
+
+                if (createDistributionDto.DistributedTo != 0)
+                {
+                    distributionToCreate.DistributedTo = createDistributionDto.DistributedTo;
+                }
+
+                distributionToCreate.SenderId = createDistributionDto.SenderId;
+                distributionToCreate.ReceiverId = createDistributionDto.ReceiverId;
+                distributionToCreate.OrderNo = createDistributionDto.OrderNo;
+                distributionToCreate.Description = createDistributionDto.Description;
+                distributionToCreate.NameOfUser = createDistributionDto.NameOfUser;
+                distributionRepository.Insert(distributionToCreate);
+                product.QuantityInStock = product.QuantityInStock - createDistributionDto.Quantity;
+                productRepository.Update(product);
+                if (product.HasSerial == true)
+                {
+                    foreach (var item in createDistributionDto.ProductSerialNo)
+                    {
+                        ProductSerialNo productSerialNo = new();
+                        productSerialNo.ProductNoId = item.ProductNoId;
+                        productSerialNo.CreatedAt = DateTime.Now;
+                        productSerialNo.DistributionId = distributionToCreate.Id;
+                        productSerialNo.ProductStatus = ProductStatus.Assigned;
+                        productSerialNos.Add(productSerialNo);
+                        ProductNo productNo = new();
+                        var productno = productNumberRepository.GetById(item.ProductNoId);
+                        productno.ProductStatus = ProductStatus.Assigned;
+                        productNumberRepository.Update(productno);
+                        productSerialNoRepository.Insert(productSerialNo);
+                    }
+                }
+                var distributionToReturn = mapper.Map<GetDistributionDto>(createDistributionDto);
+                response.Data = distributionToReturn;
+                response.Messages.Add("Created.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError($"CreateNew Service Exception: {e.Message}");
+                response.SetMessage(new List<string>{e.Message}, HttpStatusCode.InternalServerError);
+                return response;
+            }
+        }
     }
 }

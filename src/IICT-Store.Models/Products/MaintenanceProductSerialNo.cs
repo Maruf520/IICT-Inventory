@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace IICT_Store.Models.Products
 {
-    public class ReturnedProductSerialNo : BaseModel
+    public class MaintenanceProductSerialNo : BaseModel
     {
         public string Name { get; set; }
         public long ProductNoId { get; set; }
-        public long ReturnedProductId { get; set; }
-        public ReturnedProduct ReturnedProduct { get; set; }
+        public bool IsRepaired { get; set; }
+        public long MaintananceProductId { get; set; }
     }
 }

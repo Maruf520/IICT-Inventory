@@ -21,7 +21,7 @@ namespace IICT_Store.Models.Products
         public Person Sender { get; set; }
         public int RoomNo { get; set; } //Damaged from room
         public long? PersonId { get; set; } //Damaged from single user
-        public Person Person { get; set; }
+ //       public Person Person { get; set; }
         public DamagedFrom DamagedFrom { get; set; }
         public int Quantity { get; set; }
         public bool WasNotDistributed { get; set; }

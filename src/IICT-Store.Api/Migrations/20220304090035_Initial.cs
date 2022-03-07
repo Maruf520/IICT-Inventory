@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations
 {
-    public partial class MigrationName : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,24 @@ namespace IICT_Store.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MaintenanceProductSerialNo",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductNoId = table.Column<long>(type: "bigint", nullable: false),
+                    IsRepaired = table.Column<bool>(type: "bit", nullable: false),
+                    MaintananceProductId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MaintenanceProductSerialNo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,6 +140,8 @@ namespace IICT_Store.Api.Migrations
                     ReceiverId1 = table.Column<long>(type: "bigint", nullable: true),
                     SenderId = table.Column<int>(type: "int", nullable: false),
                     SenderId1 = table.Column<long>(type: "bigint", nullable: true),
+                    FromRoom = table.Column<int>(type: "int", nullable: false),
+                    FromPerson = table.Column<int>(type: "int", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -194,12 +214,6 @@ namespace IICT_Store.Api.Migrations
                 {
                     table.PrimaryKey("PK_DamagedProducts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DamagedProducts_Persons_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Persons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_DamagedProducts_Persons_ReceiverId",
                         column: x => x.ReceiverId,
                         principalTable: "Persons",
@@ -270,13 +284,29 @@ namespace IICT_Store.Api.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    ReceiverId = table.Column<long>(type: "bigint", nullable: false),
+                    SenderId = table.Column<long>(type: "bigint", nullable: false),
+                    SenderId1 = table.Column<long>(type: "bigint", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MaintenanceProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MaintenanceProducts_Persons_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MaintenanceProducts_Persons_SenderId1",
+                        column: x => x.SenderId1,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_MaintenanceProducts_Products_ProductId",
                         column: x => x.ProductId,
@@ -350,8 +380,7 @@ namespace IICT_Store.Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductNoId = table.Column<long>(type: "bigint", nullable: false),
-                    ReturnedProductId = table.Column<int>(type: "int", nullable: false),
-                    ReturnedProductId1 = table.Column<long>(type: "bigint", nullable: true),
+                    ReturnedProductId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -359,11 +388,11 @@ namespace IICT_Store.Api.Migrations
                 {
                     table.PrimaryKey("PK_ReturnedProductSerialNos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReturnedProductSerialNos_ReturnedProducts_ReturnedProductId1",
-                        column: x => x.ReturnedProductId1,
+                        name: "FK_ReturnedProductSerialNos_ReturnedProducts_ReturnedProductId",
+                        column: x => x.ReturnedProductId,
                         principalTable: "ReturnedProducts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -450,11 +479,6 @@ namespace IICT_Store.Api.Migrations
                 column: "PurchashedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DamagedProducts_PersonId",
-                table: "DamagedProducts",
-                column: "PersonId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DamagedProducts_ProductId",
                 table: "DamagedProducts",
                 column: "ProductId");
@@ -495,6 +519,16 @@ namespace IICT_Store.Api.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MaintenanceProducts_SenderId",
+                table: "MaintenanceProducts",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MaintenanceProducts_SenderId1",
+                table: "MaintenanceProducts",
+                column: "SenderId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductNos_ProductId",
                 table: "ProductNos",
                 column: "ProductId");
@@ -525,9 +559,9 @@ namespace IICT_Store.Api.Migrations
                 column: "SenderId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnedProductSerialNos_ReturnedProductId1",
+                name: "IX_ReturnedProductSerialNos_ReturnedProductId",
                 table: "ReturnedProductSerialNos",
-                column: "ReturnedProductId1");
+                column: "ReturnedProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -543,6 +577,9 @@ namespace IICT_Store.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "MaintenanceProducts");
+
+            migrationBuilder.DropTable(
+                name: "MaintenanceProductSerialNo");
 
             migrationBuilder.DropTable(
                 name: "ProductNos");

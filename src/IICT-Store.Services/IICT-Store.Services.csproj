@@ -14,4 +14,8 @@
     <ProjectReference Include="..\IICT-Store.Repositories\IICT-Store.Repositories.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MaintananceProductService\" />
+  </ItemGroup>
+
 </Project>

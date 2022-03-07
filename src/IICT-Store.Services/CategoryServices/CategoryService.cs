@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IICT_Store.Repositories.TestRepo;
 
 namespace IICT_Store.Services.CategoryServices
 {
@@ -17,10 +18,12 @@ namespace IICT_Store.Services.CategoryServices
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
-        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
+        private readonly IBaseRepo repo;
+        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper, IBaseRepo repo)
         {
             this.categoryRepository = categoryRepository;
             this.mapper = mapper;
+            this.repo = repo;
         }
 
         public async Task<ServiceResponse<GetCategoryDto>> CreateCategory(CategoryDto categoryDto)
@@ -67,7 +70,8 @@ namespace IICT_Store.Services.CategoryServices
         public async Task<ServiceResponse<GetCategoryDto>> GetCategoryById(long id)
         {
             ServiceResponse<GetCategoryDto> response = new();
-            var category = categoryRepository.GetById(id);
+            // var category = categoryRepository.GetById(id);
+            var category = repo.GetItems<Category>(e => e.Id == id).FirstOrDefault();
             if(category == null)
             {
                 response.Messages.Add("Not Found.");

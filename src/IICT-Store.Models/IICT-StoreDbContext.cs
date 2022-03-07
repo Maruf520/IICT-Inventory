@@ -27,6 +27,7 @@ namespace IICT_Store.Models
         public DbSet<ProductNo> ProductNos { get; set; }
         public DbSet<DamagedProductSerialNo> DamagedProductSerialNos { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<MaintenanceProductSerialNo>MaintenanceProductSerialNo { get; set; }
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<BookingTimeSlot> BookingTimeSlots { get; set; }
         public DbSet<ReturnedProduct> ReturnedProducts { get; set; }
@@ -43,15 +44,25 @@ namespace IICT_Store.Models
                 .WithMany()
                 .HasForeignKey(x =>x.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);          
-            modelBuilder.Entity<DamagedProduct>()
+/*            modelBuilder.Entity<DamagedProduct>()
                 .HasOne(e => e.Person)
                 .WithMany()
                 .HasForeignKey(x =>x.PersonId)
-                .OnDelete(DeleteBehavior.Restrict);    
+                .OnDelete(DeleteBehavior.Restrict); */   
             modelBuilder.Entity<DamagedProduct>()
                 .HasOne(e => e.Receiver)
                 .WithMany()
                 .HasForeignKey(x =>x.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MaintenanceProduct>()
+                .HasOne(e => e.Receiver)
+                .WithMany()
+                .HasForeignKey(x => x.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MaintenanceProduct>()
+                .HasOne(e => e.Receiver)
+                .WithMany()
+                .HasForeignKey(x => x.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
