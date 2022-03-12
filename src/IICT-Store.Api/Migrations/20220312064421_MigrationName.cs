@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations
 {
-    public partial class Initial : Migration
+    public partial class MigrationName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -284,9 +284,9 @@ namespace IICT_Store.Api.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    DistributionId = table.Column<long>(type: "bigint", nullable: false),
                     ReceiverId = table.Column<long>(type: "bigint", nullable: false),
                     SenderId = table.Column<long>(type: "bigint", nullable: false),
-                    SenderId1 = table.Column<long>(type: "bigint", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -296,14 +296,14 @@ namespace IICT_Store.Api.Migrations
                 {
                     table.PrimaryKey("PK_MaintenanceProducts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MaintenanceProducts_Persons_SenderId",
-                        column: x => x.SenderId,
+                        name: "FK_MaintenanceProducts_Persons_ReceiverId",
+                        column: x => x.ReceiverId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MaintenanceProducts_Persons_SenderId1",
-                        column: x => x.SenderId1,
+                        name: "FK_MaintenanceProducts_Persons_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -519,14 +519,14 @@ namespace IICT_Store.Api.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MaintenanceProducts_ReceiverId",
+                table: "MaintenanceProducts",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MaintenanceProducts_SenderId",
                 table: "MaintenanceProducts",
                 column: "SenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MaintenanceProducts_SenderId1",
-                table: "MaintenanceProducts",
-                column: "SenderId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductNos_ProductId",

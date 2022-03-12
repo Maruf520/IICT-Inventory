@@ -31,7 +31,8 @@ namespace IICT_Store.Repositories.TestRepo
 
         public void Insert<T>(T entity) where T : BaseModel
         {
-            throw new System.NotImplementedException();
+            DbSet<T> dbSet = context.Set<T>();
+            context.SaveChanges();
         }
 
         public void Update<T>(T entity) where T : BaseModel
