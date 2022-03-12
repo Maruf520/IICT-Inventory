@@ -12,7 +12,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/persons")]
     [ApiController]
-    public class PersonController : ControllerBase
+    public class PersonController : BaseController
     {
         private readonly IPersonService personService;
         public PersonController(IPersonService personService)
@@ -23,7 +23,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePerson([FromForm]CreatePersonDto createPersonDto)
         {
-            var person = await personService.CreatePerson(createPersonDto);
+            var person = await personService.CreatePerson(createPersonDto, GetuserId());
             return Ok(person);
         }
        // [Authorize(Roles = "User, Admin")]
@@ -44,7 +44,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePerson(long id, CreatePersonDto createPersonDto)
         {
-            var person = await personService.UpdatePerson(id, createPersonDto);
+            var person = await personService.UpdatePerson(id, createPersonDto, GetuserId());
             return Ok(person);
         }
        // [Authorize(Roles = "User, Admin")]

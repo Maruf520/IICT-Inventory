@@ -11,7 +11,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApprovalController : ControllerBase
+    public class ApprovalController : BaseController
     {
         private readonly IApprovalService approvalServices;
         public ApprovalController(IApprovalService approvalServices)
@@ -50,14 +50,14 @@ namespace IICT_Store.Api.Controllers
         [HttpPost("confirm")]
         public async Task<IActionResult> ConfirmPurchased(long id)
         {
-            var purchase = await approvalServices.ConfirmStatus(id);
+            var purchase = await approvalServices.ConfirmStatus(id, GetuserId());
             return Ok(purchase);
         }
        // [Authorize(Roles = "Admin")]
         [HttpPost("reject")]
         public async Task<IActionResult> RejectPurchased(long id)
         {
-            var purchase = await approvalServices.RejectStatus(id);
+            var purchase = await approvalServices.RejectStatus(id, GetuserId());
             return Ok(purchase);
         }
 

@@ -10,6 +10,6 @@ namespace IICT_Store.Services.ReturnProductServices
 {
     public interface IReturnProductService
     {
-        Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, int id);
+        Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, int id, string userId);
     }
 }

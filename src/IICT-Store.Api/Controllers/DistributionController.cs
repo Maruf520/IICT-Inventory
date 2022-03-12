@@ -14,7 +14,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/distributions")]
     [ApiController]
-    public class DistributionController : ControllerBase
+    public class DistributionController : BaseController
     {
         private readonly ILogger<DistributionController> logger;
         private readonly IDistributionService distributionService;
@@ -28,7 +28,7 @@ namespace IICT_Store.Api.Controllers
         public async Task<IActionResult> CreateDistribution([FromBody] CreateDistributionDto createDistributionDto)
         {
             this.logger.LogInformation($"CreateDistribution STARTED with requestBody: {JsonConvert.SerializeObject(createDistributionDto)}");
-            var distribution = await distributionService.CreateNew(createDistributionDto);
+            var distribution = await distributionService.CreateNew(createDistributionDto, GetuserId());
             if (distribution.StatusCode == HttpStatusCode.OK)
             {
                 this.logger.LogInformation($"CreateDistribution ENDED with OK response");

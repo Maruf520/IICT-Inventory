@@ -29,7 +29,7 @@ namespace IICT_Store.Services.BookingServices
             this.bookingTimeSlotRepository = bookingTimeSlotRepository;
         }
 
-        public async Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto)
+        public async Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto, string userId)
         {
             ServiceResponse<GetBookingDto> response = new();
             Booking booking = new();
@@ -42,6 +42,7 @@ namespace IICT_Store.Services.BookingServices
             booking.CreatedAt = DateTime.Now;
             booking.GalleryNo = createBookingDto.GalleryNo;
             booking.Amount = createBookingDto.Amount;
+            booking.CreatedBy = userId;
             booking.MoneyReceiptNo = createBookingDto.MoneyReceiptNo;
             var upload = await UploadFile(createBookingDto.MoneyReceipt);
             booking.MoneyReceipt = upload;

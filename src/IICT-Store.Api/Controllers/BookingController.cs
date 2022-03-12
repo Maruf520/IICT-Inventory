@@ -1,21 +1,15 @@
 ﻿using IICT_Store.Dtos.Gallery;
 using IICT_Store.Models.Gallery;
 using IICT_Store.Services.BookingServices;
-using IICT_Store.Services.TimeSlotServices;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IICT_Store.Api.Controllers
 {
     [Route("api/bookings")]
     [ApiController]
-    public class BookingController : ControllerBase
+    public class BookingController : BaseController
     {
 
         private readonly IBookingService bookingService;
@@ -27,7 +21,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromForm] CreateBookingDto createBookingDto)
         {
-            var booking = await bookingService.CreateBooking(createBookingDto);
+            var booking = await bookingService.CreateBooking(createBookingDto, GetuserId());
             return Ok(booking);
         }
        // [Authorize(Roles = "User")]

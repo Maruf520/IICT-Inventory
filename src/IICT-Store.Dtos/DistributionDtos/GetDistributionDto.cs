@@ -26,5 +26,7 @@ namespace IICT_Store.Dtos.DistributionDtos
         public string SignatureOfReceiver { get; set; }
         public string Note { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

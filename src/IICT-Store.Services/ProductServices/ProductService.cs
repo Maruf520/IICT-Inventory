@@ -35,7 +35,7 @@ namespace IICT_Store.Services.ProductServices
             this.productNumberRepository = productNumberRepository;
         }
 
-        public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto)
+        public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto, string userId)
         {
             ServiceResponse<GetProductDto> response = new();
             var productToCreate = mapper.Map<Product>(createProductDto);
@@ -44,6 +44,7 @@ namespace IICT_Store.Services.ProductServices
 
             var uploadImage = await UploadImage(createProductDto.Image);
             productToCreate.ImageUrl = uploadImage;
+            productToCreate.CreatedBy = userId;
             productRepository.Insert(productToCreate);
             var productToMap = mapper.Map<GetProductDto>(productToCreate);
             response.Messages.Add("Created");
@@ -90,7 +91,7 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<CreateProductDto>> UpdateProduct(CreateProductDto createProductDto, long id)
+        public async Task<ServiceResponse<CreateProductDto>> UpdateProduct(CreateProductDto createProductDto, long id, string userId)
         {
             ServiceResponse<CreateProductDto> response = new();
             var product = await productRepository.GetProductById(id);
@@ -104,6 +105,7 @@ namespace IICT_Store.Services.ProductServices
             product.Description = createProductDto.Description;
             product.Name = createProductDto.Name;
             product.UpdatedAt = DateTime.Now;
+            product.UpdatedBy = userId;
             productRepository.Update(product);
 
             response.Data = createProductDto;
@@ -132,7 +134,7 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id,CreateProductNoDto createProductNoDto)
+        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id,CreateProductNoDto createProductNoDto,string userId)
         {
             ServiceResponse<GetProductDto> response = new();
             var product =  productRepository.GetById(id);
@@ -171,10 +173,11 @@ namespace IICT_Store.Services.ProductServices
                 productNo.Name = item.Name;
                 productNo.CreatedAt = DateTime.Now;
                 productNo.ProductStatus = ProductStatus.Unassigned;
+                productNo.CreatedBy = userId;
                 nos.Add(productNo);
             }
             product.ProductNos = nos;
-
+            product.UpdatedBy = userId;
             productRepository.Update(product);
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Messages.Add("Product Number Added.");
@@ -212,8 +215,6 @@ namespace IICT_Store.Services.ProductServices
                         getProductNoDto.Id = item.Id;
                         getProductNoDto.Name = item.Name;
                         productNos.Add(getProductNoDto);
-                       
-                        
                         xx.Remove(productSerial.Find(x =>x.Id == serial.ProductNoId));
                     }
                 }
@@ -250,7 +251,7 @@ namespace IICT_Store.Services.ProductServices
             return true;
         }
 
-        public async Task<ServiceResponse<GetProductNoDto>> ReturnProductToStore(long productNoId)
+        public async Task<ServiceResponse<GetProductNoDto>> ReturnProductToStore(long productNoId, string userId)
         {
             ServiceResponse<GetProductNoDto> response = new();
             var getProductNo = await productSerialNoRepository.GetByProductNoId(productNoId);
@@ -263,7 +264,9 @@ namespace IICT_Store.Services.ProductServices
             productSerialNoRepository.Delete(getProductNo.Id);
             var distribution =  distributionRepository.GetById(getProductNo.DistributionId);
             var product = productRepository.GetById(distribution.ProductId);
-
+            distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
+            distribution.UpdatedBy = userId;
+            distributionRepository.Update(distribution);
             product.QuantityInStock = product.QuantityInStock + 1;
             productRepository.Update(product);
             response.Messages.Add(" Product returned to stock.");

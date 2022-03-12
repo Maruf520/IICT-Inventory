@@ -10,9 +10,9 @@ namespace IICT_Store.Services.PersonServices
 {
     public interface IPersonService 
     {
-        Task<ServiceResponse<GetPersonDto>> CreatePerson(CreatePersonDto createPersonDto);
+        Task<ServiceResponse<GetPersonDto>> CreatePerson(CreatePersonDto createPersonDto, string userId);
         Task<ServiceResponse<GetPersonDto>> GetPersonById(long id);
-        Task<ServiceResponse<GetPersonDto>> UpdatePerson(long id, CreatePersonDto createPersonDto);
+        Task<ServiceResponse<GetPersonDto>> UpdatePerson(long id, CreatePersonDto createPersonDto, string userId);
         Task<ServiceResponse<GetPersonDto>> DeletePerson(long id);
         Task<ServiceResponse<List<GetPersonDto>>> GetAllPerson();
     }

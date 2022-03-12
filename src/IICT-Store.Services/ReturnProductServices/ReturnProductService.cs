@@ -33,7 +33,7 @@ namespace IICT_Store.Services.ReturnProductServices
             this.returnedProductSerialNoRepository = returnedProductSerialNoRepository;
         }
 
-        public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, int id)
+        public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, int id, string userId)
         {
             ServiceResponse<GetReturnProductDto> response = new();
 
@@ -49,6 +49,7 @@ namespace IICT_Store.Services.ReturnProductServices
             returnedProduct.ReceiverId = createReturnProductDto.ReceiverId;
             returnedProduct.SenderId = createReturnProductDto.SenderId;
             returnedProduct.CreatedAt = DateTime.Now;
+            returnedProduct.CreatedBy = userId;
             returnedProduct.Note = createReturnProductDto.Note;
             returnedProduct.ProductId = id;
             var map = mapper.Map<ReturnedProduct>(createReturnProductDto);
@@ -87,7 +88,7 @@ namespace IICT_Store.Services.ReturnProductServices
 
             var distribution = await distributionRepository.GetByProductId(createReturnProductDto.ProductId);
 
-            distribution.Quantity = distribution.Quantity - createReturnProductDto.Quantity;
+            distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - createReturnProductDto.Quantity;
             distributionRepository.Update(distribution);
 
             product.QuantityInStock = product.QuantityInStock + createReturnProductDto.Quantity;

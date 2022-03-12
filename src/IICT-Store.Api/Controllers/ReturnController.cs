@@ -11,7 +11,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReturnController : ControllerBase
+    public class ReturnController : BaseController
     {
         private readonly IReturnProductService returnProductService;
         public ReturnController(IReturnProductService returnProductService)
@@ -22,7 +22,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReturn(CreateReturnProductDto createReturnDto, int id)
         {
-            var returnProduct  = await returnProductService.CreateReturnProduct(createReturnDto, id);
+            var returnProduct  = await returnProductService.CreateReturnProduct(createReturnDto, id, GetuserId());
             return Ok(returnProduct);
         }
     }

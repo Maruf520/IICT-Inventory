@@ -11,7 +11,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/categories")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService categoryService;
         public CategoryController(ICategoryService categoryService)
@@ -22,7 +22,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]CategoryDto categoryDto)
         {
-            var category = await categoryService.CreateCategory(categoryDto);
+            var category = await categoryService.CreateCategory(categoryDto,GetuserId());
             return Ok(category);
         }
 
@@ -36,7 +36,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(CategoryDto categoryDto, long id)
         {
-            var category = await categoryService.UpdateCategory(categoryDto, id);
+            var category = await categoryService.UpdateCategory(categoryDto, id, GetuserId());
             return Ok(category);
 
         }

@@ -23,7 +23,7 @@ namespace IICT_Store.Services.PersonServices
             this.mapper = mapper;
         }
 
-        public async Task<ServiceResponse<GetPersonDto>> CreatePerson(CreatePersonDto createPersonDto)
+        public async Task<ServiceResponse<GetPersonDto>> CreatePerson(CreatePersonDto createPersonDto, string userId)
         {
             ServiceResponse<GetPersonDto> response = new();
             var person = await personRepository.GetByEmailAndPhone(createPersonDto.Email, createPersonDto.Phone);
@@ -39,6 +39,8 @@ namespace IICT_Store.Services.PersonServices
             {
                 personToCreate.Image = await UploadImage(createPersonDto.Image);
             }
+
+            personToCreate.CreatedBy = userId;
             personRepository.Insert(personToCreate);
             var personToReturn = mapper.Map<GetPersonDto>(createPersonDto);
             personToReturn.Id = personToCreate.Id;
@@ -98,7 +100,7 @@ namespace IICT_Store.Services.PersonServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetPersonDto>> UpdatePerson(long id, CreatePersonDto createPersonDto)
+        public async Task<ServiceResponse<GetPersonDto>> UpdatePerson(long id, CreatePersonDto createPersonDto, string userId)
         {
             ServiceResponse<GetPersonDto> response = new();
             var person = personRepository.GetById(id);
@@ -113,6 +115,7 @@ namespace IICT_Store.Services.PersonServices
             person.Phone = createPersonDto.Phone;
             person.Designation = createPersonDto.Designation;
             person.UpdatedAt = DateTime.Now;
+            person.UpdatedBy = userId;
             person.Email = createPersonDto.Email;
             personRepository.Update(person);
             var personToReturn = mapper.Map<GetPersonDto>(createPersonDto);

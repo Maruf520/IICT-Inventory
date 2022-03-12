@@ -25,6 +25,8 @@ namespace IICT_Store.Dtos.Purchases
         public int ConfirmedBy { get; set; }
         public DateTime PuchasedDate { get; set; }
         public DateTime ConfirmDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public bool IsConfirmed { get; set; }
         public string Note { get; set; }
     }

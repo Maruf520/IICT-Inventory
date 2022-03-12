@@ -11,7 +11,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TimeSlotController : ControllerBase
+    public class TimeSlotController : BaseController
     {
         private readonly ITimeSlotService timeslotService;
         public TimeSlotController(ITimeSlotService timeslotService)
@@ -22,7 +22,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTimeSlot(CreateTimeSlotDto createTimeSlotDto)
         {
-            var timeslot = await timeslotService.CreaateTimeSlot(createTimeSlotDto);
+            var timeslot = await timeslotService.CreaateTimeSlot(createTimeSlotDto,GetuserId());
             return Ok(timeslot);
         }
 
@@ -43,7 +43,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(CreateTimeSlotDto createTimeSlotDto, long id)
         {
-            var timeSLot = await timeslotService.Update(createTimeSlotDto, id);
+            var timeSLot = await timeslotService.Update(createTimeSlotDto, id, GetuserId());
             return Ok(timeSLot);
         }
 

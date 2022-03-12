@@ -17,6 +17,8 @@ namespace IICT_Store.Dtos.ProductDtos
         public long CategoryId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public bool HasSerial { get; set; }
         public int NotSerializedProduct { get; set; }
 

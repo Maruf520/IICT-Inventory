@@ -46,7 +46,7 @@ namespace IICT_Store.Services.DamagedProductServices
             this.mapper = mapper;
         }
 
-        public async Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProductDto)
+        public async Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProductDto, string userId)
         {
             ServiceResponse<DamagedProductDto> response = new();
             var product = productReository.GetById(damagedProductDto.ProductId);
@@ -87,7 +87,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 }
                 damagedProduct1.ReceiverId = damagedProductDto.ReceiverId;
                 damagedProduct1.SenderId = damagedProductDto.SenderId;
-                damagedProduct1.UpdatedAt = DateTime.Now;
+                damagedProduct1.CreatedAt = DateTime.Now;
+                damagedProduct1.CreatedBy = userId;
                 damagedProductRepository.Insert(damagedProduct1);
                 DamagedProductSerialNo damagedProductSerialNo = new();
                 damagedProductSerialNo.CreatedAt = DateTime.Now;
@@ -126,7 +127,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 //}
                 damagedProduct1.ReceiverId = damagedProductDto.ReceiverId;
                 damagedProduct1.SenderId = damagedProductDto.SenderId;
-                damagedProduct1.UpdatedAt = DateTime.Now;
+                damagedProduct1.CreatedAt = DateTime.Now;
+                damagedProduct1.CreatedBy = userId;
                 damagedProduct1.WasNotDistributed = true;
                 damagedProduct1.ProductId = productNo.ProductId;
                 damagedProductRepository.Insert(damagedProduct1);
@@ -162,7 +164,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 }
                 damagedProduct2.ReceiverId = damagedProductDto.ReceiverId;
                 damagedProduct2.SenderId = damagedProductDto.SenderId;
-                damagedProduct2.UpdatedAt = DateTime.Now;
+                damagedProduct2.CreatedAt = DateTime.Now;
+                damagedProduct2.CreatedBy = userId;
                 damagedProduct2.WasNotDistributed = false;
                 damagedProductRepository.Insert(damagedProduct2);
                 response.Messages.Add("Created.");
@@ -176,7 +179,8 @@ namespace IICT_Store.Services.DamagedProductServices
                 DamagedProduct damagedProduct = new();
                 damagedProduct.Quantity = 1;
                 damagedProduct.ProductId = damagedProductDto.ProductId;
-                damagedProduct.UpdatedAt = DateTime.Now;
+                damagedProduct.CreatedAt = DateTime.Now;
+                damagedProduct.CreatedBy = userId;
                 damagedProduct.WasNotDistributed = true;
                 damagedProductRepository.Insert(damagedProduct);
                 response.Messages.Add("Created.");

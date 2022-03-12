@@ -29,7 +29,7 @@ namespace IICT_Store.Services.PurchaseServices
             this.mapper = mapper;
             this.productRepository = productRepository;
         }
-        public async Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto)
+        public async Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto, string userId)
         {
             ServiceResponse<GetPurchaseDto> response = new();
 
@@ -70,7 +70,7 @@ namespace IICT_Store.Services.PurchaseServices
 
             }
             productToMap.CreatedAt = DateTime.Now;
-            
+            productToMap.CreatedBy = userId;
             productToMap.CashMemos = cashMemos;
             purchaseRepository.Insert(productToMap);
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
@@ -126,7 +126,7 @@ namespace IICT_Store.Services.PurchaseServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id)
+        public async Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id, string userId)
         {
             ServiceResponse<GetPurchaseDto> response = new();
             var purchase = await purchaseRepository.GetPurchashedById(id);
@@ -138,6 +138,7 @@ namespace IICT_Store.Services.PurchaseServices
             }
 
             purchase.Note = createPurchaseDto.Note;
+            purchase.UpdatedBy = userId;
             purchaseRepository.Update(purchase);
             response.Messages.Add("Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;

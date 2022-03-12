@@ -12,7 +12,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PurchaseController : ControllerBase
+    public class PurchaseController : BaseController
     {
         private readonly IPurchaseService purchaseService;
         public PurchaseController(IPurchaseService purchaseService)
@@ -23,7 +23,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePurchase([FromForm]CreatePurchasedDto createPurchaseDto)
         {
-            var purchase = await purchaseService.CreatePurchase(createPurchaseDto);
+            var purchase = await purchaseService.CreatePurchase(createPurchaseDto, GetuserId());
             return Ok(purchase);
         }
         

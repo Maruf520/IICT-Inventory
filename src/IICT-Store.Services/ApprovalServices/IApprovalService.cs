@@ -13,8 +13,8 @@ namespace IICT_Store.Services.ApprovalServices
         Task<ServiceResponse<List<GetPurchaseDto>>> GetPendingPurchase();
         public  Task<ServiceResponse<List<GetPurchaseDto>>> GetRejectedPurchase();
         public  Task<ServiceResponse<List<GetPurchaseDto>>> GetConfirmedPurchase();
-        public  Task<ServiceResponse<GetPurchaseDto>> ConfirmStatus(long id);
-        public  Task<ServiceResponse<GetPurchaseDto>> RejectStatus(long id);
+        public  Task<ServiceResponse<GetPurchaseDto>> ConfirmStatus(long id, string userId);
+        public  Task<ServiceResponse<GetPurchaseDto>> RejectStatus(long id, string userId);
         Task<ServiceResponse<GetPurchaseDto>> GetById(long id);
 
     }
