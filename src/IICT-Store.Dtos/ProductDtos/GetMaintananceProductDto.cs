@@ -1,7 +1,18 @@
-﻿namespace IICT_Store.Dtos.ProductDtos
+﻿using System.Collections.Generic;
+using IICT_Store.Models.Products;
+
+namespace IICT_Store.Dtos.ProductDtos
 {
     public class GetMaintananceProductDto
     {
-        
+        public long Id { get; set; }
+        public long ProductId { get; set; }
+        public GetProductDto Product { get; set; }
+        public long DistributionId { get; set; }
+        public long ReceiverId { get; set; }
+        public long SenderId { get; set; }
+        public int Quantity { get; set; }
+        public string Note { get; set; }
+        public List<MaintenanceProductSerialNo> MaintananceProductSerial { get; set; }
     }
 }

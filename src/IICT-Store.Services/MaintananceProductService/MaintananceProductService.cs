@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
 using IICT_Store.Dtos.ProductDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
@@ -25,13 +26,14 @@ namespace IICT_Store.Services.MaintananceProductService
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IDistributionRepository distributionRepository;
         private readonly IBaseRepo baseRepo;
+        private readonly IMapper mapper;
 
         public MaintananceProductService(IMaintanancePeoductSerialNoRepository iMaintanancePeoductSerialNoRepository, 
             IMaintananceRepository maintananceRepository, 
             IMaintanancePeoductSerialNoRepository maintanancePeoductSerialNoRepository, 
             IProductNumberRepository productNumberRepository, 
             IProductRepository productRepository, 
-            IProductSerialNoRepository productSerialNoRepository, IDistributionRepository distributionRepository, IBaseRepo baseRepo)
+            IProductSerialNoRepository productSerialNoRepository, IDistributionRepository distributionRepository, IBaseRepo baseRepo, IMapper mapper)
         {
             this.maintananceRepository = maintananceRepository;
             this.maintanancePeoductSerialNoRepository = maintanancePeoductSerialNoRepository;
@@ -40,6 +42,7 @@ namespace IICT_Store.Services.MaintananceProductService
             this.productSerialNoRepository = productSerialNoRepository;
             this.distributionRepository = distributionRepository;
             this.baseRepo = baseRepo;
+            this.mapper = mapper;
         }
 
         public async Task<ServiceResponse<GetMaintananceProductDto>> Create(CreateMaintananceProductDto createMaintananceProduct)
@@ -141,6 +144,34 @@ namespace IICT_Store.Services.MaintananceProductService
                 response.SetMessage(new List<string> { e.Message }, HttpStatusCode.BadRequest);
                 return response;
             }
+        }
+
+        public async Task<ServiceResponse<GetMaintananceProductDto>> GetByProductSerial(long productId, long serialId)
+        {
+            ServiceResponse<GetMaintananceProductDto> response = new();
+            var products = baseRepo.GetItems<MaintenanceProduct>(x => x.ProductId == productId);
+            var product = products.OrderByDescending(x =>x.ProductId).FirstOrDefault();
+            if (product == null)
+            {
+                response.SetNotFoundMessage();
+                return response;
+            }
+            var mainTananceProduct = baseRepo.GetItems<MaintenanceProduct>(x => x.ProductId == productId).FirstOrDefault();
+            if (mainTananceProduct == null)
+            {
+                response.SetNotFoundMessage();
+                return response;
+            }
+            var maintananceProductSerial = baseRepo.GetItems<MaintenanceProductSerialNo>(x =>
+                x.ProductNoId == serialId && x.MaintananceProductId == mainTananceProduct.Id);
+            var productDto = productRepository.GetById(productId);
+            var productMap = mapper.Map<GetProductDto>(productDto);
+            var productToMap = mapper.Map<GetMaintananceProductDto>(mainTananceProduct);
+            productToMap.MaintananceProductSerial = maintananceProductSerial.ToList();
+            productToMap.Product = productMap;
+            response.Data = productToMap;
+            response.SetOkMessage();
+            return response;
         }
     }
 
