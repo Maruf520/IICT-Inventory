@@ -32,5 +32,12 @@ namespace IICT_Store.Api.Controllers
             var maintanaceProduct = await maintananceProductService.RepairOrDamage(createMaintananceProduct);
             return Ok(maintanaceProduct);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByProductIdAndSerial(long productId, long serialId)
+        {
+            var product = await maintananceProductService.GetByProductSerial(productId, serialId);
+            return Ok(product);
+        }
     }
 }

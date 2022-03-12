@@ -33,13 +33,14 @@ namespace IICT_Store.Services.PersonServices
                 response.StatusCode = System.Net.HttpStatusCode.OK;
                 return response;
             }
-            var uploadImage = await UploadImage(createPersonDto.Image);
             var personToCreate = mapper.Map<Person>(createPersonDto);
             personToCreate.CreatedAt = DateTime.Now;
-            personToCreate.Image = uploadImage;
-             personRepository.Insert(personToCreate);
+            if (personToCreate.Image != null)
+            {
+                personToCreate.Image = await UploadImage(createPersonDto.Image);
+            }
+            personRepository.Insert(personToCreate);
             var personToReturn = mapper.Map<GetPersonDto>(createPersonDto);
-            personToReturn.Image = uploadImage;
             personToReturn.Id = personToCreate.Id;
             response.Data = personToReturn;
             response.Messages.Add("Person Created.");
