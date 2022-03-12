@@ -12,8 +12,8 @@ namespace IICT_Store.Services.PurchaseServices
 {
     public interface IPurchaseService
     {
-        Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto);
-        Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id);
+        Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto, string userId);
+        Task<ServiceResponse<GetPurchaseDto>> UpdatePurchase(CreatePurchasedDto createPurchaseDto, long id, string userId);
         Task<ServiceResponse<GetPurchaseDto>> GetPurchaseById(long id);
         Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByProductId(long id);
         Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess);

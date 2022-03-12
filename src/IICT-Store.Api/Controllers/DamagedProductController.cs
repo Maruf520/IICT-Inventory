@@ -11,7 +11,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DamagedProductController : ControllerBase
+    public class DamagedProductController : BaseController
     {
         private readonly IDamagedProductService damagedProductService;
         public DamagedProductController(IDamagedProductService damagedProductService)
@@ -22,7 +22,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> DamagedProduct(CreateDamagedProductDto createDamageProductDto)
         {
-            var damaged = await damagedProductService.DamageProduct(createDamageProductDto);
+            var damaged = await damagedProductService.DamageProduct(createDamageProductDto, GetuserId());
             return Ok(damaged);
         }
 

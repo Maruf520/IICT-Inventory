@@ -37,7 +37,7 @@ namespace IICT_Store.Services.ProductNumberServices
             this.distributionRepository = distributionRepository;
             this.baseRepo = baseRepo;
         }
-        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
+        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto, string userId)
         {
             ServiceResponse<GetProductDto> response = new();
             var product = productRepository.GetById(id);
@@ -84,6 +84,7 @@ namespace IICT_Store.Services.ProductNumberServices
                 productNo.Name = item.Name;
                 productNo.ProductId = id;
                 productNo.CreatedAt = DateTime.Now;
+                productNo.CreatedBy = userId;
                 productNumberRepository.Insert(productNo);
             }
 

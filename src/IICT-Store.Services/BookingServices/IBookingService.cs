@@ -11,7 +11,7 @@ namespace IICT_Store.Services.BookingServices
 {
     public interface IBookingService
     {
-        Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto);
+        Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto, string userId);
         Task<ServiceResponse<GetBookingDto>> GetById(long id);
         Task<ServiceResponse<GetBookingDto>> Delete(long id);
         Task<ServiceResponse<List<GetBookingDto>>> GetBookingByDate(DateTime date, GalleryNo galleryNo);

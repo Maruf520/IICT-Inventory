@@ -101,7 +101,7 @@ namespace IICT_Store.Services.ApprovalServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetPurchaseDto>> ConfirmStatus(long id)
+        public async Task<ServiceResponse<GetPurchaseDto>> ConfirmStatus(long id, string userId)
         {
             ServiceResponse<GetPurchaseDto> response = new();
             var purchase = await purchaseRepository.GetPurchashedById(id);
@@ -115,6 +115,7 @@ namespace IICT_Store.Services.ApprovalServices
             purchase.ConfirmDate = DateTime.Now;
             purchase.ConfirmedBy = 1;
             purchase.IsConfirmed = true;
+            purchase.CreatedBy = userId;
             purchase.PurchaseStatus = Models.Pruchashes.PurchaseStatus.Confirmed;
             var product =  productRepository.GetById(purchase.ProductId);
             product.QuantityInStock = product.QuantityInStock + purchase.Quantity;
@@ -128,7 +129,7 @@ namespace IICT_Store.Services.ApprovalServices
             response.Messages.Add("Purchase Confirmed.");
             return response;
         }        
-        public async Task<ServiceResponse<GetPurchaseDto>> RejectStatus(long id)
+        public async Task<ServiceResponse<GetPurchaseDto>> RejectStatus(long id, string userId)
         {
             ServiceResponse<GetPurchaseDto> response = new();
             var purchase = purchaseRepository.GetById(id);
@@ -140,6 +141,7 @@ namespace IICT_Store.Services.ApprovalServices
             }
 
             purchase.IsConfirmed = false;
+            purchase.CreatedBy = userId;
             purchase.PurchaseStatus = Models.Pruchashes.PurchaseStatus.Rejected;
             purchaseRepository.Update(purchase);
             var product = productRepository.GetById(purchase.ProductId);

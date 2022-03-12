@@ -13,7 +13,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/products")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : BaseController
     {
         private readonly IProductService productService;
         private readonly IProductNumberService productNumberService;
@@ -26,7 +26,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductDto createProductDto)
         {
-            var product = await productService.CreateProduct(createProductDto);
+            var product = await productService.CreateProduct(createProductDto, GetuserId());
             return Ok(product);
         }
         //[Authorize(Roles = "User, Admin")]
@@ -54,7 +54,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(CreateProductDto createProductDto, long id)
         {
-            var product = await productService.UpdateProduct(createProductDto, id);
+            var product = await productService.UpdateProduct(createProductDto, id, GetuserId());
             return Ok(product);
         }
         //[Authorize(Roles = "User, Admin")]
@@ -68,7 +68,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost("{id}/serial")]
         public async Task<IActionResult> InsertProductNo(long id, CreateProductNoDto createProductNoDto)
         {
-            var product = await productNumberService.InsertProductNo(id, createProductNoDto);
+            var product = await productNumberService.InsertProductNo(id, createProductNoDto, GetuserId());
             return Ok(product);
         }
        // [Authorize(Roles = "User, Admin")]
@@ -89,7 +89,7 @@ namespace IICT_Store.Api.Controllers
         [HttpGet("return/{id}")]
         public async Task<IActionResult> ReturnTOStock(long id)
         {
-            var product = await productService.ReturnProductToStore(id);
+            var product = await productService.ReturnProductToStore(id, GetuserId());
             return Ok(product);
         }
     }

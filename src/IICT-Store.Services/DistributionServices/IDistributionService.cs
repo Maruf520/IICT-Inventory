@@ -10,7 +10,7 @@ namespace IICT_Store.Services.DistributionServices
 {
     public interface IDistributionService
     {
-        Task<ServiceResponse<GetDistributionDto>> CreateNew(CreateDistributionDto createDistributionDto);
+        Task<ServiceResponse<GetDistributionDto>> CreateNew(CreateDistributionDto createDistributionDto, string userId);
         Task<ServiceResponse<GetDistributionDto>> GetById(long id);
         Task<ServiceResponse<List<GetDistributionDto>>> GetByRoomNo(int roomNo);
         Task<ServiceResponse<List<GetDistributionDto>>> GetByPersonId(long personId);

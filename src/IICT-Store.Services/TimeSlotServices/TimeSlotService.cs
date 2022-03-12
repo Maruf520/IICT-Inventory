@@ -21,7 +21,7 @@ namespace IICT_Store.Services.TimeSlotService
             this.timeSlotReposiotry = timeSlotReposiotry;
             this.mapper = mapper;
         }
-        public async Task<ServiceResponse<GetTimeSlotDto>> CreaateTimeSlot(CreateTimeSlotDto createTimeSlotDto)
+        public async Task<ServiceResponse<GetTimeSlotDto>> CreaateTimeSlot(CreateTimeSlotDto createTimeSlotDto, string userId)
         {
             ServiceResponse<GetTimeSlotDto> response = new();
             var timeSlots = timeSlotReposiotry.GetAll();
@@ -41,6 +41,8 @@ namespace IICT_Store.Services.TimeSlotService
                 }
             }
            var  timeSlotToCreate = mapper.Map<TimeSlot>(createTimeSlotDto);
+           timeSlotToCreate.CreatedAt = DateTime.Now;
+           timeSlotToCreate.CreatedBy = userId;
             var timeslotToReturn = mapper.Map<GetTimeSlotDto>(createTimeSlotDto);
             timeSlotReposiotry.Insert(timeSlotToCreate);
             response.StatusCode = System.Net.HttpStatusCode.Created;
@@ -104,7 +106,7 @@ namespace IICT_Store.Services.TimeSlotService
             return response;
         }
 
-        public async Task<ServiceResponse<GetTimeSlotDto>> Update(CreateTimeSlotDto createTimeSlotDto, long id)
+        public async Task<ServiceResponse<GetTimeSlotDto>> Update(CreateTimeSlotDto createTimeSlotDto, long id, string userId)
         {
             ServiceResponse<GetTimeSlotDto> response = new();
             var timeSlot = timeSlotReposiotry.GetById(id);
@@ -114,8 +116,9 @@ namespace IICT_Store.Services.TimeSlotService
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-
             var map = mapper.Map<TimeSlot>(createTimeSlotDto);
+            map.UpdatedAt = DateTime.Now;
+            map.UpdatedBy = userId;
             timeSlotReposiotry.Update(map);
             response.Messages.Add("Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;

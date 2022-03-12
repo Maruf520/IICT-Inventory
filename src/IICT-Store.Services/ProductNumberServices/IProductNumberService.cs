@@ -10,7 +10,7 @@ namespace IICT_Store.Services.ProductNumberServices
 {
     public interface IProductNumberService
     {
-        Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto);
+        Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto, string userId);
         Task<ServiceResponse<List<GetProductNoDto>>> GetProductNoByProductId(long productId);
     }
 }

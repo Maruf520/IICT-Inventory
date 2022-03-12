@@ -26,7 +26,7 @@ namespace IICT_Store.Services.CategoryServices
             this.repo = repo;
         }
 
-        public async Task<ServiceResponse<GetCategoryDto>> CreateCategory(CategoryDto categoryDto)
+        public async Task<ServiceResponse<GetCategoryDto>> CreateCategory(CategoryDto categoryDto, string userId)
         {
             ServiceResponse<GetCategoryDto> response = new();
             Category category = new();
@@ -40,6 +40,7 @@ namespace IICT_Store.Services.CategoryServices
             category.CreatedAt = DateTime.Now;
             category.Description = categoryDto.Discription;
             category.Image = uploadImage;
+            category.CreatedBy = userId;
             categoryRepository.Insert(category);
             var categoryToMap = mapper.Map<GetCategoryDto>(category);
             response.Messages.Add("Category Added.");
@@ -84,7 +85,7 @@ namespace IICT_Store.Services.CategoryServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(CategoryDto categoryDto, long id)
+        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(CategoryDto categoryDto, long id, string userId)
         {
             ServiceResponse<GetCategoryDto> response = new();
             var category = categoryRepository.GetById(id);
@@ -94,7 +95,8 @@ namespace IICT_Store.Services.CategoryServices
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            
+
+            category.UpdatedBy = userId;
             category.UpdatedAt = DateTime.Now;
             category.Name = categoryDto.Name;
             categoryRepository.Update(category);

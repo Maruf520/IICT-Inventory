@@ -38,7 +38,7 @@ namespace IICT_Store.Services.DistributionServices
             this.logger = logger;
             this.baseRepo = baseRepo;
         }
-        public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto)
+        public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto, string userId)
         {
             ServiceResponse<GetDistributionDto> response = new();
             var product = productRepository.GetById(createDistributionDto.ProductId);
@@ -59,6 +59,7 @@ namespace IICT_Store.Services.DistributionServices
             var distributionToCreate = mapper.Map<Distribution>(createDistributionDto);
             distributionToCreate.TotalRemainingQuantity = createDistributionDto.Quantity;
             distributionToCreate.CreatedAt = DateTime.Now;
+            distributionToCreate.CreatedBy = userId;
             if(product.HasSerial == true)
             foreach (var item in createDistributionDto.ProductSerialNo)
             {
@@ -453,7 +454,7 @@ namespace IICT_Store.Services.DistributionServices
 
         }
 
-        public async Task<ServiceResponse<GetDistributionDto>> CreateNew(CreateDistributionDto createDistributionDto)
+        public async Task<ServiceResponse<GetDistributionDto>> CreateNew(CreateDistributionDto createDistributionDto, string userId)
         {
             this.logger.LogInformation($"CreateNew Service STARTED");
             ServiceResponse<GetDistributionDto> response = new();
@@ -478,6 +479,7 @@ namespace IICT_Store.Services.DistributionServices
                 var distributionToCreate = mapper.Map<Distribution>(createDistributionDto);
                 distributionToCreate.TotalRemainingQuantity = createDistributionDto.Quantity;
                 distributionToCreate.CreatedAt = DateTime.Now;
+                distributionToCreate.CreatedBy = userId;
                 if (createDistributionDto.RoomNo != 0)
                 {
                     distributionToCreate.RoomNo = createDistributionDto.RoomNo;

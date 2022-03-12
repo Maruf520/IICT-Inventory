@@ -71,6 +71,7 @@ namespace IICT_Store.Models
         //dotnet ef database update --context IICT_StoreDbContext
         //export PATH="$PATH:$HOME/.dotnet/tools/"
         //Update-Database -Context 
+        //IdentityContext
     }
 
 }
