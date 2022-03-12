@@ -52,8 +52,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using IICT_Store.Repositories.MaintananceProductSerialNoRepositories;
 using IICT_Store.Repositories.MaintananceReposiotories;
+using IICT_Store.Repositories.RoomRepositories;
 using IICT_Store.Repositories.TestRepo;
 using IICT_Store.Services.MaintananceProductService;
+using IICT_Store.Services.RoomServices;
 
 namespace IICT_Store.Api
 {
@@ -93,6 +95,8 @@ namespace IICT_Store.Api
             services.AddScoped<IDistributionRepository, DistributionRepository>();
             services.AddScoped<IDistributionService, DistributionService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDamagedProductService, DamagedProductService>();
             services.AddScoped<IDamagedProductRepository, DamagedProductRepository>();
             services.AddScoped<IProductSerialNoRepository, ProductSerialNoRepository>();

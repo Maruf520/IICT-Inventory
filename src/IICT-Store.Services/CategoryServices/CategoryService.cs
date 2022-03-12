@@ -30,12 +30,17 @@ namespace IICT_Store.Services.CategoryServices
         {
             ServiceResponse<GetCategoryDto> response = new();
             Category category = new();
+            var categories = categoryRepository.GetAll();
+            if (categories.Any(x => x.Name == categoryDto.Name))
+            {
+                response.SetMessage(new List<string>{new ("Category already exists.")});
+                return response;
+            }
             var uploadImage = "";
             if(categoryDto.Image != null)
             {
                 uploadImage = await UploadImage(categoryDto.Image);
             }
-            
             category.Name = categoryDto.Name;
             category.CreatedAt = DateTime.Now;
             category.Description = categoryDto.Discription;
