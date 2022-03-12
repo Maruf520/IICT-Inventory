@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220304090035_Initial")]
-    partial class Initial
+    [Migration("20220312064421_MigrationName")]
+    partial class MigrationName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -335,6 +335,9 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("DistributionId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
@@ -350,9 +353,6 @@ namespace IICT_Store.Api.Migrations
                     b.Property<long>("SenderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("SenderId1")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -360,9 +360,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("ReceiverId");
 
-                    b.HasIndex("SenderId1");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("MaintenanceProducts");
                 });
@@ -752,13 +752,15 @@ namespace IICT_Store.Api.Migrations
 
                     b.HasOne("IICT_Store.Models.Persons.Person", "Receiver")
                         .WithMany()
-                        .HasForeignKey("SenderId")
+                        .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IICT_Store.Models.Persons.Person", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId1");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Product");
 

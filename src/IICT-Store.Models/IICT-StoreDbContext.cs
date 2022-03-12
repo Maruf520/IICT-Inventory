@@ -60,7 +60,7 @@ namespace IICT_Store.Models
                 .HasForeignKey(x => x.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<MaintenanceProduct>()
-                .HasOne(e => e.Receiver)
+                .HasOne(e => e.Sender)
                 .WithMany()
                 .HasForeignKey(x => x.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
