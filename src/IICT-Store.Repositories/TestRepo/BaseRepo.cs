@@ -17,7 +17,8 @@ namespace IICT_Store.Repositories.TestRepo
         }
         public IEnumerable<T> GetAll<T>() where T : BaseModel
         {
-            throw new System.NotImplementedException();
+            DbSet<T> dbSet = context.Set<T>();
+            return dbSet;
         }
 
         public T GetById<T>(long id) where T : BaseModel
@@ -32,12 +33,15 @@ namespace IICT_Store.Repositories.TestRepo
         public void Insert<T>(T entity) where T : BaseModel
         {
             DbSet<T> dbSet = context.Set<T>();
+            dbSet.Add(entity);
             context.SaveChanges();
         }
 
         public void Update<T>(T entity) where T : BaseModel
         {
-            throw new System.NotImplementedException();
+            DbSet<T> dbSet = context.Set<T>();
+            dbSet.Update(entity);
+            context.SaveChanges();
         }
 
         public void Delete<T>(long id) where T : BaseModel

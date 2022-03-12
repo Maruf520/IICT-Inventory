@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IICT_Store.Dtos.Rooms;
+using IICT_Store.Models;
 
 namespace IICT_Store.Api
 {
@@ -53,6 +55,7 @@ namespace IICT_Store.Api
             CreateMap<BookingTimeSlot, GetTimeSlotDto>();
             CreateMap<ProductSerialNo, GetProductSerialDto>();
             CreateMap<MaintenanceProduct, GetMaintananceProductDto>();
+            CreateMap<Room, GetRoomDto>();
         }
     }
 }

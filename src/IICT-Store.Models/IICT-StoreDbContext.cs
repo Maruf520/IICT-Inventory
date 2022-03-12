@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IICT_Store.Models
 {
@@ -23,6 +24,7 @@ namespace IICT_Store.Models
         public DbSet<Purchashed> Purchasheds { get; set; }
         public DbSet<CashMemo> CashMemos { get; set; }
         public DbSet<Person> Persons { get; set; }
+        public DbSet<Room> Rooms   { get; set; }
         public DbSet<ProductSerialNo> ProductSerialNos { get; set; }
         public DbSet<ProductNo> ProductNos { get; set; }
         public DbSet<DamagedProductSerialNo> DamagedProductSerialNos { get; set; }
