@@ -42,7 +42,7 @@ namespace IICT_Store.Api.Controllers
         }
        // [Authorize(Roles = "User, Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePerson(long id, CreatePersonDto createPersonDto)
+        public async Task<IActionResult> UpdatePerson(long id,[FromForm] CreatePersonDto createPersonDto)
         {
             var person = await personService.UpdatePerson(id, createPersonDto, GetuserId());
             return Ok(person);

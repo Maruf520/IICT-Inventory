@@ -34,7 +34,7 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(CategoryDto categoryDto, long id)
+        public async Task<IActionResult> UpdateCategory([FromForm]CategoryDto categoryDto, long id)
         {
             var category = await categoryService.UpdateCategory(categoryDto, id, GetuserId());
             return Ok(category);
