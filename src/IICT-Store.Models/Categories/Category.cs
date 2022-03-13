@@ -9,7 +9,6 @@ namespace IICT_Store.Models.Categories
 {
     public class Category : BaseModel
     {
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }

@@ -12,11 +12,9 @@ namespace IICT_Store.Dtos.PersonDtos
     {
         [Required]
         public string Name { get; set; }
-        [Required]
         public string Designation { get; set; }
         [Required]
         public string Phone { get; set; }
-        [Required]
         public string Email { get; set; }
         public IFormFile Image { get; set; }
         [Required]
