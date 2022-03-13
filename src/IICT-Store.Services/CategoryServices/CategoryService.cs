@@ -43,7 +43,7 @@ namespace IICT_Store.Services.CategoryServices
             }
             category.Name = categoryDto.Name;
             category.CreatedAt = DateTime.Now;
-            category.Description = categoryDto.Discription;
+            category.Description = categoryDto.Description;
             category.Image = uploadImage;
             category.CreatedBy = userId;
             categoryRepository.Insert(category);
@@ -104,6 +104,7 @@ namespace IICT_Store.Services.CategoryServices
             category.UpdatedBy = userId;
             category.UpdatedAt = DateTime.Now;
             category.Name = categoryDto.Name;
+            category.Description = category.Description;
             categoryRepository.Update(category);
             var categoryToMap = mapper.Map<GetCategoryDto>(category);
             response.Data = categoryToMap;
