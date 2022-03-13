@@ -120,6 +120,7 @@ namespace IICT_Store.Services.PersonServices
             person.Email = createPersonDto.Email;
             personRepository.Update(person);
             var personToReturn = mapper.Map<GetPersonDto>(createPersonDto);
+            personToReturn.Id = id;
             response.Data = personToReturn;
             response.Messages.Add("Peson Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
