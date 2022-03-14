@@ -20,5 +20,8 @@ namespace IICT_Store.Services.ProductServices
         Task<ServiceResponse<GetProductDto>> GetProductBySerialNo(long serialNo);
         Task<ServiceResponse<List<GetProductNoDto>>> GetAllAvailableProductno(long productId);
         Task<ServiceResponse<GetProductNoDto>> ReturnProductToStore(long productNo, string userId);
+
+        Task<ServiceResponse<GetProductDto>> InsertProductNoMultiple(long id, FileUploadDto fileUploadDto,
+            string userId);
     }
 }

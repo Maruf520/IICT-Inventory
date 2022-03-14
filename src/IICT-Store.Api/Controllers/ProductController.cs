@@ -92,5 +92,12 @@ namespace IICT_Store.Api.Controllers
             var product = await productService.ReturnProductToStore(id, GetuserId());
             return Ok(product);
         }
+        // 
+        [HttpPost("{id}/multiple-serial")]
+        public async Task<IActionResult> AddMultipleSerial(long id,[FromForm] FileUploadDto fileDto)
+        {
+            var file = await productService.InsertProductNoMultiple(id, fileDto, GetuserId());
+            return Ok(file);
+        }
     }
 }

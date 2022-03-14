@@ -47,6 +47,8 @@ namespace IICT_Store.Services.RoomServices
                     
                 };
                 roomRepository.Insert(room);
+                var roomToReturn = mapper.Map<GetRoomDto>(room);
+                response.Data = roomToReturn;
                 response.SetMessage(new List<string> {new("Room Created.")}, HttpStatusCode.OK);
                 return response;
             }
@@ -75,6 +77,8 @@ namespace IICT_Store.Services.RoomServices
                 rooms.UpdatedAt = DateTime.Now;
                 rooms.UpdatedBy = userId;
                 roomRepository.Update(rooms);
+                var roomToReturn = mapper.Map<GetRoomDto>(rooms);
+                response.Data = roomToReturn;
                 response.SetMessage(new List<string> { new("Room Updated.") }, HttpStatusCode.OK);
                 return response;
             }

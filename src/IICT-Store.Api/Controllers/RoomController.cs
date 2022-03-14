@@ -42,7 +42,7 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateRoom(CreateRoomDto createRoomDto, int id)
+        public IActionResult UpdateRoom([FromForm]CreateRoomDto createRoomDto, int id)
         {
             var room = roomService.UpdateRoom(createRoomDto, id, GetuserId());
             return Ok(room);
