@@ -268,11 +268,8 @@ namespace IICT_Store.Services.ProductServices
                 productNo.CreatedAt = DateTime.Now;
                 productNo.ProductStatus = ProductStatus.Unassigned;
                 productNo.CreatedBy = userId;
-                nos.Add(productNo);
+                productNumberRepository.Insert(productNo);
             }
-            product.ProductNos = nos;
-            product.UpdatedBy = userId;
-            productRepository.Update(product);
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Messages.Add("Product Number Added.");
             return response;
