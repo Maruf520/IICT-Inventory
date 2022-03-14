@@ -7,12 +7,15 @@ using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace IICT_Store.Services.ProductServices
 {
@@ -183,6 +186,97 @@ namespace IICT_Store.Services.ProductServices
             response.Messages.Add("Product Number Added.");
             return response;
         }
+        private static ServiceResponse<List<string>> ParseFile(string filePath)
+        {
+            ServiceResponse<List<string>> response = new();
+            var fileInfo = new FileInfo(filePath);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            List<string> list = new();
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                var workbook = package.Workbook;
+                var worksheet = workbook.Worksheets.First();
+                var colCount = worksheet.Dimension.End.Column; //get Column Count
+                var rowCount = worksheet.Dimension.End.Row;
+                if (colCount > 1 || colCount == 0 || rowCount == 0)
+                {
+                    response.Messages.Add("Please enter a valid xlxs file.");
+                    response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    return response;
+                }
+
+                for (var row = 2; row <= rowCount; row++)
+                {
+                    list.Add(worksheet.Cells[row, 1].Value.ToString());
+                }
+            }
+
+            response.Data = list;
+            return response;
+        }
+
+        public async Task<ServiceResponse<GetProductDto>> InsertProductNoMultiple(long id, FileUploadDto fileUploadDto,string userId)
+        {
+            ServiceResponse<GetProductDto> response = new();
+            var product =  productRepository.GetById(id);
+            List<string> list = new();
+            if (fileUploadDto.File.Length > 0)
+            {
+                var path = await UploadImage(fileUploadDto.File);
+                var parseFile =  ParseFile(path);
+                list = parseFile.Data;
+                if (parseFile.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    response.Messages = parseFile.Messages;
+                    return response;
+                }
+            }
+            if(product == null)
+            {
+                response.Messages.Add("Product Not Found.");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            if(product.HasSerial == false)
+            {
+                response.Messages.Add("Sorry, this product doesn't have any serial No.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
+            if (list != null)
+            {
+                var checkSerialNo = CheckIfSerialMultipeNoExists(id, list);
+                if (checkSerialNo.Result == false)
+                {
+                    response.Messages.Add("Please set unique serial no.");
+                    return response;
+                }
+            }
+
+            List<ProductNo> nos = new();
+            if(product.TotalQuantity < list.Count)
+            {
+                response.Messages.Add("Please reduce the quantity of serial number.");
+                response.StatusCode = System.Net.HttpStatusCode.OK;
+                return response;
+            }
+            foreach (var item in list)
+            {
+                ProductNo productNo = new();
+                productNo.Name = item;
+                productNo.CreatedAt = DateTime.Now;
+                productNo.ProductStatus = ProductStatus.Unassigned;
+                productNo.CreatedBy = userId;
+                nos.Add(productNo);
+            }
+            product.ProductNos = nos;
+            product.UpdatedBy = userId;
+            productRepository.Update(product);
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Messages.Add("Product Number Added.");
+            return response;
+        }
 
         public async Task<ServiceResponse<GetProductDto>> GetProductBySerialNo(long serialNo)
         {
@@ -242,6 +336,23 @@ namespace IICT_Store.Services.ProductServices
                 foreach (var serialno in productSerialNo)
                 {
                     if (serialno.Name == name[i].Name)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+        public async Task<bool> CheckIfSerialMultipeNoExists(long productId, List<string> name)
+        {
+            var productSerialNo = await productRepository.GetAllProductNoById(productId);
+            var nameCount = name.Count;
+            for (int i = 0; i < nameCount; i++)
+            {
+                foreach (var serialno in productSerialNo)
+                {
+                    if (serialno.Name == name[i])
                     {
                         return false;
                     }
