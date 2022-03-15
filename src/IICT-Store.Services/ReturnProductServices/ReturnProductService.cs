@@ -8,6 +8,7 @@ using IICT_Store.Repositories.ReturnedProductRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using IICT_Store.Repositories.ProductNumberRepositories;
@@ -33,11 +34,11 @@ namespace IICT_Store.Services.ReturnProductServices
             this.returnedProductSerialNoRepository = returnedProductSerialNoRepository;
         }
 
-        public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, int id, string userId)
+        public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, string userId)
         {
             ServiceResponse<GetReturnProductDto> response = new();
 
-            var product = productRepository.GetById(id);
+            var product = productRepository.GetById(createReturnProductDto.ProductId);
             if (product == null)
             {
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -51,7 +52,7 @@ namespace IICT_Store.Services.ReturnProductServices
             returnedProduct.CreatedAt = DateTime.Now;
             returnedProduct.CreatedBy = userId;
             returnedProduct.Note = createReturnProductDto.Note;
-            returnedProduct.ProductId = id;
+            returnedProduct.ProductId = createReturnProductDto.ProductId;
             var map = mapper.Map<ReturnedProduct>(createReturnProductDto);
             returnProductRepository.Insert(map);
             if (product.HasSerial == true)
@@ -81,7 +82,7 @@ namespace IICT_Store.Services.ReturnProductServices
                     distributions.UpdatedAt = DateTime.Now;
                     distributionRepository.Update(distributions);
                 }
-
+                response.SetMessage(new List<string>{new string("Product Returned.")},HttpStatusCode.OK);
                 return response;
 
             }
