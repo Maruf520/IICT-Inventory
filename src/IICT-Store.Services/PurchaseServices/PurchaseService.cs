@@ -13,6 +13,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IICT_Store.Repositories.UserRepositories;
+using IICT_Store.Services.MailServices;
 
 namespace IICT_Store.Services.PurchaseServices
 {
@@ -22,12 +24,16 @@ namespace IICT_Store.Services.PurchaseServices
         private readonly IPurchaseRepository purchaseRepository;
         private readonly IProductService productService;
         private readonly IProductRepository productRepository;
-        public PurchaseService(IPurchaseRepository purchaseRepository, IProductService productService, IMapper mapper, IProductRepository productRepository)
+        private readonly IMailService mailService;
+        private readonly IUserRepository userRepository;
+        public PurchaseService(IPurchaseRepository purchaseRepository, IProductService productService, IMapper mapper, IProductRepository productRepository, IMailService mailService, IUserRepository userRepository)
         {
             this.purchaseRepository = purchaseRepository;
             this.productService = productService;
             this.mapper = mapper;
             this.productRepository = productRepository;
+            this.mailService = mailService;
+            this.userRepository = userRepository;
         }
         public async Task<ServiceResponse<GetPurchaseDto>> CreatePurchase(CreatePurchasedDto createPurchaseDto, string userId)
         {
@@ -73,6 +79,12 @@ namespace IICT_Store.Services.PurchaseServices
             productToMap.CreatedBy = userId;
             productToMap.CashMemos = cashMemos;
             purchaseRepository.Insert(productToMap);
+            var users = await userRepository.GetUserByRole("Approval Admin");
+            foreach (var mail in users)
+            {
+                var user = await userRepository.GetByEmail(mail);
+                await mailService.SendEmail(mail, "IICT Inventory", "Sir, There is a pending approval request on IICT Inventory.. Please check it and take your step." ,$"{user.UserName}");
+            }
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToReturn.Id = productToMap.Id;
             productToReturn.CashMemos = cashMemoDtos;

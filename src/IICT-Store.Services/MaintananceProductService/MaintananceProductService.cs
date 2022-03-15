@@ -57,7 +57,7 @@ namespace IICT_Store.Services.MaintananceProductService
                     return response;
                 }
 
-                var productSerialNo = productSerialNoRepository.GetById(createMaintananceProduct.ProductSerialId);
+                var productSerialNo = await productSerialNoRepository.GetByProductNoId(createMaintananceProduct.ProductSerialId);
                 var productNo = productNumberRepository.GetById(productSerialNo.ProductNoId);
                 var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
                 if (productNo == null)
@@ -77,7 +77,7 @@ namespace IICT_Store.Services.MaintananceProductService
                     Note = createMaintananceProduct.Note
                 };
                 maintananceRepository.Insert(maintananceProduct);
-                distribution.Quantity = distribution.Quantity - 1;
+                distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
                 distributionRepository.Update(distribution);
                 productNo.ProductStatus = ProductStatus.Maintanance;
                 productNo.UpdatedAt = DateTime.Now;
