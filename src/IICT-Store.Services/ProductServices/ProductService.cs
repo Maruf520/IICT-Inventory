@@ -265,6 +265,7 @@ namespace IICT_Store.Services.ProductServices
             {
                 ProductNo productNo = new();
                 productNo.Name = item;
+                productNo.ProductId = id;
                 productNo.CreatedAt = DateTime.Now;
                 productNo.ProductStatus = ProductStatus.Unassigned;
                 productNo.CreatedBy = userId;

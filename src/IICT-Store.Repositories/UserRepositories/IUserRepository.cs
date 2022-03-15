@@ -15,5 +15,6 @@ namespace IICT_Store.Repositories.UserRepositories
         Task<string> Update(ApplicationUser applicationUser);
         Task<ApplicationUser> GetByEmail(string email);
         Task<List<string>> GetUserRoleByEmail(string email);
+        Task<List<string>> GetUserByRole(string roleName);
     }
 }

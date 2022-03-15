@@ -54,6 +54,7 @@ using IICT_Store.Repositories.MaintananceProductSerialNoRepositories;
 using IICT_Store.Repositories.MaintananceReposiotories;
 using IICT_Store.Repositories.RoomRepositories;
 using IICT_Store.Repositories.TestRepo;
+using IICT_Store.Services.MailServices;
 using IICT_Store.Services.MaintananceProductService;
 using IICT_Store.Services.RoomServices;
 
@@ -107,6 +108,7 @@ namespace IICT_Store.Api
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<ITimeSlotReposiotry, TimeSlotRepository>();
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IMailService, MailService >();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IBookingTimeSlotRepository, BookingTimeSlotRepository>();
             services.AddScoped<IReturnedProductRepository, ReturnedProductRepository>();

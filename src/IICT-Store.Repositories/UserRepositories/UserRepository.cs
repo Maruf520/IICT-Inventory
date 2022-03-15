@@ -55,5 +55,16 @@ namespace IICT_Store.Repositories.UserRepositories
             var userRoles = await userManager.GetRolesAsync(user);
             return userRoles.ToList();
         }
+
+        public async Task<List<string>> GetUserByRole(string roleName)
+        {
+            List<string> userList = new();
+;            var user = await userManager.GetUsersInRoleAsync(roleName);
+            foreach (var userMail in user)
+            {
+                userList.Add(userMail.Email);
+            }
+            return userList;
+        }
     }
 }
