@@ -70,7 +70,7 @@ namespace IICT_Store.Services.ReturnProductServices
                     productNumber.ProductStatus = ProductStatus.Unassigned;
                     productNumberRepository.Update(productNumber);
                     returnedProductSerialNoRepository.Insert(returnedProductSerialNo);
-                    var productNo = await distributionRepository.GetProductByProductNoId(serial);
+                    var productNo = await distributionRepository.GetLastProductByProductNoId(serial);
                     var distributions = distributionRepository.GetById(productNo.DistributionId);
                     if (distributions.Quantity < createReturnProductDto.Quantity)
                     {
@@ -81,6 +81,8 @@ namespace IICT_Store.Services.ReturnProductServices
                     distributions.Quantity = distributions.Quantity - createReturnProductDto.Quantity;
                     distributions.UpdatedAt = DateTime.Now;
                     distributionRepository.Update(distributions);
+                    product.QuantityInStock = product.QuantityInStock + createReturnProductDto.Quantity;
+                    productRepository.Update(product);
                 }
                 response.SetMessage(new List<string>{new string("Product Returned.")},HttpStatusCode.OK);
                 return response;
