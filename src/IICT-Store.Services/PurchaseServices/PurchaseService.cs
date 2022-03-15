@@ -83,7 +83,7 @@ namespace IICT_Store.Services.PurchaseServices
             foreach (var mail in users)
             {
                 var user = await userRepository.GetByEmail(mail);
-                await mailService.SendEmail(mail, "IICT Inventory", "Sir, There is a pending approval request on IICT Inventory.. Please check it and take your step." ,$"{user.UserName}");
+                await mailService.SendEmail(mail, "IICT Inventory", "Sir, There is a pending request on IICT Inventory.. Please check it and take your step." ,$"{user.UserName}");
             }
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToReturn.Id = productToMap.Id;

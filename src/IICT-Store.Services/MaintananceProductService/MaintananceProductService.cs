@@ -128,7 +128,7 @@ namespace IICT_Store.Services.MaintananceProductService
                 productSerialNo.UpdatedAt = DateTime.Now;
                 productNo.UpdatedAt = DateTime.Now;
                 var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
-                distribution.Quantity = distribution.Quantity + 1;
+                distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity + 1;
                 productNumberRepository.Update(productNo);
                 productSerialNoRepository.Update(productSerialNo);
                 distributionRepository.Update(distribution);

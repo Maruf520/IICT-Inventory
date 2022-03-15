@@ -20,9 +20,9 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateReturn(CreateReturnProductDto createReturnDto, int id)
+        public async Task<IActionResult> CreateReturn(CreateReturnProductDto createReturnDto)
         {
-            var returnProduct  = await returnProductService.CreateReturnProduct(createReturnDto, id, GetuserId());
+            var returnProduct  = await returnProductService.CreateReturnProduct(createReturnDto, GetuserId());
             return Ok(returnProduct);
         }
     }
