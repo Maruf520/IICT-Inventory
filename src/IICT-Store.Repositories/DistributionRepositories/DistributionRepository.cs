@@ -46,6 +46,11 @@ namespace IICT_Store.Repositories.DistributionRepositories
             var serial = await context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefaultAsync();
             return serial;
         }
+        public async Task<ProductSerialNo> GetLastProductByProductNoId(long id)
+        {
+            var serial =   context.ProductSerialNos.Where(x =>x.ProductNoId == id).OrderBy(x =>x.CreatedAt).LastOrDefault();
+            return serial;
+        }
 
         public async Task<List<Distribution>> GetAllDistributionByProductId(long productId)
         {
