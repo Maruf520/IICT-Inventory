@@ -44,8 +44,10 @@ namespace IICT_Store.Services.BookingServices
             booking.Amount = createBookingDto.Amount;
             booking.CreatedBy = userId;
             booking.MoneyReceiptNo = createBookingDto.MoneyReceiptNo;
-            var upload = await UploadFile(createBookingDto.MoneyReceipt);
-            booking.MoneyReceipt = upload;
+            if (createBookingDto.MoneyReceipt.Length > 0)
+            {
+                booking.MoneyReceipt = await UploadFile(createBookingDto.MoneyReceipt);
+            }
             bookingRespository.Insert(booking);
             foreach(var slotId in createBookingDto.TimeSlotId)
             {
