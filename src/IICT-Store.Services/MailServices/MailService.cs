@@ -27,7 +27,7 @@ namespace IICT_Store.Services.MailServices
             };
             using var client = new SmtpClient();
             await client.ConnectAsync("smtp.gmail.com", 587, false);
-            await client.AuthenticateAsync("md.maruf5201@gmail.com", "MahiKeyaMaruf@0124");
+            await client.AuthenticateAsync("iict.sust.edu@gmail.com", "MahiKeya0124");
 
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
