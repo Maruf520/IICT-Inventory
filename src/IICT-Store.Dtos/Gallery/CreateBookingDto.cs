@@ -20,7 +20,6 @@ namespace IICT_Store.Dtos.Gallery
         public List<int> TimeSlotId { get; set; }
         [Required]
         public Decimal Amount { get; set; }
-        [Required]
         public IFormFile MoneyReceipt { get; set; }
         [Required]
         public string MoneyReceiptNo { get; set; }
