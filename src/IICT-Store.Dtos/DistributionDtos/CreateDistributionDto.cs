@@ -16,7 +16,6 @@ namespace IICT_Store.Dtos.DistributionDtos
         public int Quantity { get; set; }
         public string NameOfUser { get; set; }
         public string Description { get; set; }
-        [Required]
         public int OrderNo { get; set; }
         [Required]
         public long SenderId { get; set; } //rakesh account reference

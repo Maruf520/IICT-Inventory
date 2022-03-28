@@ -13,15 +13,15 @@ namespace IICT_Store.Dtos.Gallery
     {
         [Required]
         public GalleryNo GalleryNo { get; set; }
+        [Required]
         public IFormFile Application { get; set; }
         [Required]
         public DateTime Date { get; set; }
         [Required]
         public List<int> TimeSlotId { get; set; }
-        [Required]
         public Decimal Amount { get; set; }
         public IFormFile MoneyReceipt { get; set; }
-        [Required]
+
         public string MoneyReceiptNo { get; set; }
         [Required]
         public string BookingBy { get; set; }

@@ -14,5 +14,6 @@ namespace IICT_Store.Services.UserServices
         Task<ServiceResponse<GetUserDto>> UpdateUser(string id, UserRegistrationDto userRegistrationDto);
         Task<ServiceResponse<GetUserDto>> GetUserById(string id);
         Task<ServiceResponse<List<GetUserDto>>> GetAllUser();
+        Task<ServiceResponse<GetUserDto>> GetProfile(string userId);
     }
 }

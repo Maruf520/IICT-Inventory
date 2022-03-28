@@ -47,6 +47,12 @@ namespace IICT_Store.Api.Controllers
             return Ok(purchase);
         }
 
+        [HttpGet("report")]
+        public async Task<IActionResult> GetReport([FromQuery] int year, int productId)
+        {
+            var report = await purchaseService.GetPurchaseHistory(year, productId);
+            return Ok(report);
+        }
 
     }
 }

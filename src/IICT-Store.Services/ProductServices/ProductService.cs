@@ -15,6 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IICT_Store.Models.Pruchashes;
+using IICT_Store.Repositories.TestRepo;
 using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace IICT_Store.Services.ProductServices
@@ -26,16 +28,18 @@ namespace IICT_Store.Services.ProductServices
         private readonly IDistributionRepository distributionRepository;
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IProductNumberRepository productNumberRepository;
+        private readonly IBaseRepo baseRepo;
         public ProductService(IProductRepository productRepository, 
             IMapper mapper, IDistributionRepository distributionRepository, 
             IProductSerialNoRepository productSerialNoRepository,
-            IProductNumberRepository productNumberRepository)
+            IProductNumberRepository productNumberRepository, IBaseRepo baseRepo)
         {
             this.mapper = mapper;
             this.productRepository = productRepository;
             this.distributionRepository = distributionRepository;
             this.productSerialNoRepository = productSerialNoRepository;
             this.productNumberRepository = productNumberRepository;
+            this.baseRepo = baseRepo;
         }
 
         public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto, string userId)
@@ -436,6 +440,49 @@ namespace IICT_Store.Services.ProductServices
             response.Messages.Add("All products.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Data = productDtos;
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<ProductReportDto>>> GetProductDetaills(int year)
+        {
+            ServiceResponse<List<ProductReportDto>> response = new();
+            var allProducts = await productRepository.GetAllProduct();
+            List<ProductReportDto> reportDtos = new();
+            foreach (var singleProduct in allProducts)
+            {
+                ProductReportDto productReport = new();
+                var product = productRepository.GetById(singleProduct.Id);
+                var productMap = mapper.Map<GetProductDto>(product);
+                var distributedProduct = baseRepo.GetItems<Distribution>(x =>
+                    x.ProductId == singleProduct.Id && x.TotalRemainingQuantity > 0);
+                var totalRemainingQuantity = distributedProduct.Select(x => x.TotalRemainingQuantity).Sum();
+                var damagedProduct = baseRepo.GetItems<DamagedProduct>(x => x.ProductId == singleProduct.Id);
+                var totalDamagedQuantity = damagedProduct.Select(x => x.Quantity).Sum();
+                var maintananceProducts = baseRepo.GetItems<MaintenanceProduct>(x => x.ProductId == singleProduct.Id);
+                int maintananceProductQuantity = 0;
+                foreach (var maintenanceProduct in maintananceProducts)
+                {
+                    var maintananaceproductCount = baseRepo.GetItems<MaintenanceProductSerialNo>(x =>
+                        x.MaintananceProductId == maintenanceProduct.Id && x.IsRepaired == false).Count();
+                        maintananceProductQuantity += maintananaceproductCount;
+                }
+
+                if (year > 0)
+                {
+                    var boughtProductOfYear = baseRepo.GetItems<Purchashed>(x=>x.CreatedAt.Year == year && x.ProductId == singleProduct.Id && x.IsConfirmed).Select(x =>x.Quantity).Sum();
+                    productReport.TotalBoughtProduct = boughtProductOfYear;
+                }
+                productReport.Product = productMap;
+                productReport.TotalProduct = product.TotalQuantity;
+                productReport.ProductInStock = product.QuantityInStock;
+                productReport.TotalDistributedProduct = totalRemainingQuantity;
+                productReport.TotalDamagedProduct = totalDamagedQuantity;
+                productReport.TotalMaintenanceProduct = maintananceProductQuantity;
+                reportDtos.Add(productReport);
+            }
+
+            response.SetMessage(new List<string>{new ("All")});
+            response.Data = reportDtos;
             return response;
         }
     }

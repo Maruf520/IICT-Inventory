@@ -53,6 +53,13 @@ namespace IICT_Store.Api.Controllers
             return Ok(booking);
         }
 
+        [HttpGet("report")]
+        public async Task<IActionResult> GetBookingReport(DateTime startDate, DateTime endDate)
+        {
+            var report = await bookingService.GetReport(startDate, endDate);
+            return Ok(report);
+        }
+
 
 
     }

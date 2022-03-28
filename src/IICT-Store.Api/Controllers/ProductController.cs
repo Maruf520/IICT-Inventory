@@ -99,5 +99,12 @@ namespace IICT_Store.Api.Controllers
             var file = await productService.InsertProductNoMultiple(id, fileDto, GetuserId());
             return Ok(file);
         }
+
+        [HttpGet("report")]
+        public async Task<IActionResult> GetProductReport(int year)
+        {
+            var report = await productService.GetProductDetaills(year);
+            return Ok(report);
+        }
     }
 }

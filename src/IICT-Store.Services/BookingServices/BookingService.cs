@@ -10,8 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using IICT_Store.Repositories.TestRepo;
 
 namespace IICT_Store.Services.BookingServices
 {
@@ -21,14 +23,15 @@ namespace IICT_Store.Services.BookingServices
         private readonly ITimeSlotReposiotry timeSlotRepository;
         private readonly IBookingRepository bookingRespository;
         private readonly IBookingTimeSlotRepository bookingTimeSlotRepository;
-        public BookingService(ITimeSlotReposiotry timeSlotRepository, IBookingRepository bookingRespository, IMapper mapper, IBookingTimeSlotRepository bookingTimeSlotRepository)
+        private readonly IBaseRepo baseRepo;
+        public BookingService(ITimeSlotReposiotry timeSlotRepository, IBookingRepository bookingRespository, IMapper mapper, IBookingTimeSlotRepository bookingTimeSlotRepository, IBaseRepo baseRepo)
         {
             this.bookingRespository = bookingRespository;
             this.timeSlotRepository = timeSlotRepository;
             this.mapper = mapper;
             this.bookingTimeSlotRepository = bookingTimeSlotRepository;
+            this.baseRepo = baseRepo;
         }
-
         public async Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto, string userId)
         {
             ServiceResponse<GetBookingDto> response = new();
@@ -44,7 +47,7 @@ namespace IICT_Store.Services.BookingServices
             booking.Amount = createBookingDto.Amount;
             booking.CreatedBy = userId;
             booking.MoneyReceiptNo = createBookingDto.MoneyReceiptNo;
-            if (createBookingDto.MoneyReceipt.Length > 0)
+            if (createBookingDto.MoneyReceipt != null)
             {
                 booking.MoneyReceipt = await UploadFile(createBookingDto.MoneyReceipt);
             }
@@ -258,6 +261,16 @@ namespace IICT_Store.Services.BookingServices
 
             }
             return "enter valid photo";
+        }
+
+        public async Task<ServiceResponse<List<GetBookingReport>>> GetReport(DateTime start, DateTime end)
+        {
+            ServiceResponse<List<GetBookingReport>> response = new();
+            var allBooking =   baseRepo.GetItems<Booking>(x => x.Date> start && x.Date < end);
+            var bookingToReturn = mapper.Map<List<GetBookingReport>>(allBooking);
+            response.Data = bookingToReturn;
+            response.SetMessage(new List<string>{new string("Booking Report")},HttpStatusCode.OK);
+            return response;
         }
     }
 }
