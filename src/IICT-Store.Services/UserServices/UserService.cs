@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -135,6 +136,16 @@ namespace IICT_Store.Services.UserServices
 
             }
             return "enter valid photo";
+        }
+
+        public async Task<ServiceResponse<GetUserDto>> GetProfile(string userId)
+        {
+            ServiceResponse<GetUserDto> response = new();
+            var user = userRepository.GetById(userId);
+            var userToReturn = mapper.Map<GetUserDto>(user);
+            response.Data = userToReturn;
+            response.SetMessage(new List<string>{new string("Profile.")},HttpStatusCode.OK);
+            return response;
         }
     }
 }

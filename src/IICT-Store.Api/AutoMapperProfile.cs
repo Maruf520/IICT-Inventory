@@ -56,6 +56,7 @@ namespace IICT_Store.Api
             CreateMap<ProductSerialNo, GetProductSerialDto>();
             CreateMap<MaintenanceProduct, GetMaintananceProductDto>();
             CreateMap<Room, GetRoomDto>();
+            CreateMap<Booking, GetBookingReport>();
         }
     }
 }

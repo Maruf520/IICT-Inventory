@@ -17,5 +17,6 @@ namespace IICT_Store.Services.PurchaseServices
         Task<ServiceResponse<GetPurchaseDto>> GetPurchaseById(long id);
         Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByProductId(long id);
         Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess);
+        Task<ServiceResponse<List<GetPurchaseHistory>>> GetPurchaseHistory(int year, int productId);
     }
 }
