@@ -42,7 +42,7 @@ namespace IICT_Store.Api.Controllers
                 return NotFound(user);
             }
             var token = await authService.ForgotPasswordTokenGenerator(user.Data.Email);
-            var bseUrl = "http://20.210.113.90/reset-password";
+            var bseUrl = "http://localhost:3000/reset-password";
             var links =bseUrl + "?Data=" + token.Data + "&" + "email=" + email;
             await emailService.SendEmail(email, "IICT inventory password reset", "This is you password reset link. Use this to reset your password." + "\n" + $"{links}", user.Data.Names);
             return Ok($"Password reset link sent to {email}.");
