@@ -23,6 +23,6 @@ namespace IICT_Store.Services.ProductServices
 
         Task<ServiceResponse<GetProductDto>> InsertProductNoMultiple(long id, FileUploadDto fileUploadDto,
             string userId);
-        Task<ServiceResponse<List<ProductReportDto>>> GetProductDetaills(int year);
+        Task<ServiceResponse<List<ProductReportDto>>> GetProductDetaills(int year, int productId);
     }
 }

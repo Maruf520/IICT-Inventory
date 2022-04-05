@@ -15,5 +15,6 @@ namespace IICT_Store.Services.AdministrationServices
         Task<ServiceResponse<GetRoleDto>> UpdateRole(string rolename, string roleId);
         Task<ServiceResponse<string>> DeleteRole(string roleId);
         Task<ServiceResponse<List<GetRoleDto>>> GetAllRole();
+        Task<ServiceResponse<string>> ForgotPasswordTokenGenerator(string email);
     }
 }

@@ -70,5 +70,43 @@ namespace IICT_Store.Services.AuthServices
             return response;
 
         }
+
+        public async Task<ServiceResponse<string>> ForgotPasswordTokenGenerator(string email)
+        {
+            ServiceResponse<string> response = new();
+            var user = await userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var code = await userManager.GeneratePasswordResetTokenAsync(user);
+                response.Data = code;
+                return response;
+            }
+            return response;
+        }
+        public async Task<ServiceResponse<string>> ResetPassword(ForgotPasswordDto passwordDto)
+        {
+            ServiceResponse<string> response = new();
+            var user = await userManager.FindByEmailAsync(passwordDto.Email);
+            if (user == null)
+            {
+                response.Messages.Add("User Not Found!");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var resetPassword = await userManager.ResetPasswordAsync(user, passwordDto.Token, passwordDto.Password);
+            await userManager.UpdateAsync(user);
+            if (!resetPassword.Succeeded)
+            {
+                foreach (var error in resetPassword.Errors)
+                {
+                    response.Messages.Add(error.Description);
+                }
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                return response;
+            }
+            response.StatusCode = System.Net.HttpStatusCode.OK;
+            response.Messages.Add("Password updated Successfully!");
+            return response;
+        }
     }
 }
