@@ -15,5 +15,6 @@ namespace IICT_Store.Services.UserServices
         Task<ServiceResponse<GetUserDto>> GetUserById(string id);
         Task<ServiceResponse<List<GetUserDto>>> GetAllUser();
         Task<ServiceResponse<GetUserDto>> GetProfile(string userId);
+        Task<ServiceResponse<GetUserDto>> GetUserByEmail(string email);
     }
 }

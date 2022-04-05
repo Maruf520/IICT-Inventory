@@ -101,9 +101,9 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpGet("report")]
-        public async Task<IActionResult> GetProductReport(int year)
+        public async Task<IActionResult> GetProductReport([FromQuery]int year, int productId)
         {
-            var report = await productService.GetProductDetaills(year);
+            var report = await productService.GetProductDetaills(year, productId);
             return Ok(report);
         }
     }

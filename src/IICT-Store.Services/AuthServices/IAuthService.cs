@@ -11,5 +11,7 @@ namespace IICT_Store.Services.AuthServices
     public interface IAuthService
     {
         Task<ServiceResponse<TokenDto>> Login(LoginDto loginDto);
+        Task<ServiceResponse<string>> ForgotPasswordTokenGenerator(string email);
+        Task<ServiceResponse<string>> ResetPassword(ForgotPasswordDto passwordDto);
     }
 }

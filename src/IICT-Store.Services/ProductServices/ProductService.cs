@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using IICT_Store.Models.Pruchashes;
@@ -443,11 +444,51 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<List<ProductReportDto>>> GetProductDetaills(int year)
+        public async Task<ServiceResponse<List<ProductReportDto>>> GetProductDetaills(int year, int productId)
         {
             ServiceResponse<List<ProductReportDto>> response = new();
             var allProducts = await productRepository.GetAllProduct();
             List<ProductReportDto> reportDtos = new();
+            if (productId > 0)
+            {
+                ProductReportDto productReport = new();
+                var product = productRepository.GetById(productId);
+                if (product == null)
+                {
+                    response.SetMessage(new List<string> {new string("Product Not Found.")}, HttpStatusCode.NotFound);
+                    return response;
+                }
+                var productMap = mapper.Map<GetProductDto>(product);
+                var distributedProduct = baseRepo.GetItems<Distribution>(x =>
+                    x.ProductId == productId && x.TotalRemainingQuantity > 0);
+                var totalRemainingQuantity = distributedProduct.Select(x => x.TotalRemainingQuantity).Sum();
+                var damagedProduct = baseRepo.GetItems<DamagedProduct>(x => x.ProductId == productId);
+                var totalDamagedQuantity = damagedProduct.Select(x => x.Quantity).Sum();
+                var maintananceProducts = baseRepo.GetItems<MaintenanceProduct>(x => x.ProductId == productId);
+                int maintananceProductQuantity = 0;
+                foreach (var maintenanceProduct in maintananceProducts)
+                {
+                    var maintananaceproductCount = baseRepo.GetItems<MaintenanceProductSerialNo>(x =>
+                        x.MaintananceProductId == maintenanceProduct.Id && x.IsRepaired == false).Count();
+                    maintananceProductQuantity += maintananaceproductCount;
+                }
+
+                if (year > 0)
+                {
+                    var boughtProductOfYear = baseRepo.GetItems<Purchashed>(x => x.CreatedAt.Year == year && x.ProductId == productId && x.IsConfirmed).Select(x => x.Quantity).Sum();
+                    productReport.TotalBoughtProduct = boughtProductOfYear;
+                }
+                productReport.Product = productMap;
+                productReport.TotalProduct = product.TotalQuantity;
+                productReport.ProductInStock = product.QuantityInStock;
+                productReport.TotalDistributedProduct = totalRemainingQuantity;
+                productReport.TotalDamagedProduct = totalDamagedQuantity;
+                productReport.TotalMaintenanceProduct = maintananceProductQuantity;
+                reportDtos.Add(productReport);
+                response.SetMessage(new List<string> { new("All") });
+                response.Data = reportDtos;
+                return response;
+            }
             foreach (var singleProduct in allProducts)
             {
                 ProductReportDto productReport = new();

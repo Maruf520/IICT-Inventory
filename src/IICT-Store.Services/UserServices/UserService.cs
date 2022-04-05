@@ -147,5 +147,20 @@ namespace IICT_Store.Services.UserServices
             response.SetMessage(new List<string>{new string("Profile.")},HttpStatusCode.OK);
             return response;
         }
+
+        public async Task<ServiceResponse<GetUserDto>> GetUserByEmail(string email)
+        {
+            ServiceResponse<GetUserDto> response = new();
+            var user = await userRepository.GetByEmail(email);
+            if(user == null)
+            {
+                response.SetMessage(new List<string> { new string("User Not Found.") }, HttpStatusCode.NotFound);
+                return response;
+            }
+            var userToMap = mapper.Map<GetUserDto>(user);
+            userToMap.Names = user.Names;
+            response.Data = userToMap;
+            return response;
+        }
     }
 }

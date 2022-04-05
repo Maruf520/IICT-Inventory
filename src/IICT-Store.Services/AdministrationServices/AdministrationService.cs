@@ -106,9 +106,21 @@ namespace IICT_Store.Services.AdministrationServices
                 {
                     continue;
                 }
-
             }
             return "";
+        }
+
+        public async Task<ServiceResponse<string>> ForgotPasswordTokenGenerator(string email)
+        {
+            ServiceResponse<string> response = new();
+            var user = await userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var code = await userManager.GeneratePasswordResetTokenAsync(user);
+                response.Data = code;
+                return response;
+            }
+            return response;
         }
     }
     
