@@ -14,7 +14,6 @@ namespace IICT_Store.Dtos.ProductDtos
         public IFormFile Image { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
         public string Description { get; set; }
         [Required]
         public long CategoryId { get; set; }
