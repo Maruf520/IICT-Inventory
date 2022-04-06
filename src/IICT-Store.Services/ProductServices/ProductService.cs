@@ -66,6 +66,10 @@ namespace IICT_Store.Services.ProductServices
             ServiceResponse<GetProductDto> response = new();
             var product = productRepository.GetById(id);
             var productSerialNo = await productNumberRepository.GetByProductId(id);
+
+            var damagedProductCount = productSerialNo.Where(x => x.ProductStatus != ProductStatus.Damaged).Count();
+            var x = productSerialNo.Count - damagedProductCount;
+            var serialNoCount = product.TotalQuantity - damagedProductCount;
             if (product == null)
             {
                 response.Messages.Add("Not Found.");
@@ -75,7 +79,14 @@ namespace IICT_Store.Services.ProductServices
 
             var productToMap = mapper.Map<GetProductDto>(product);
             productToMap.CategoryId = product.CategoryId;
-            productToMap.NotSerializedProduct = product.TotalQuantity - productSerialNo.Count;
+            if(serialNoCount < 0)
+            {
+                productToMap.NotSerializedProduct = 0;
+            }
+            else
+            {
+                productToMap.NotSerializedProduct = serialNoCount;
+            }
             response.Data = productToMap;
             response.Messages.Add("Product");
             response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -431,10 +442,11 @@ namespace IICT_Store.Services.ProductServices
             foreach(var product in products)
             {
                 var productNos = await productNumberRepository.GetByProductId(product.Id);
+                var productNosWithoutDmamgedProduct = productNos.Where(x => x.ProductStatus != ProductStatus.Damaged).Count();
                 var map = mapper.Map<GetProductDto>(product);
                 if(product.HasSerial == true)
                 {
-                    map.NotSerializedProduct = product.TotalQuantity - productNos.Count;
+                    map.NotSerializedProduct = product.TotalQuantity - productNosWithoutDmamgedProduct;
                 }
                 productDtos.Add(map);
             }

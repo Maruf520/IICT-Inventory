@@ -50,7 +50,7 @@ namespace IICT_Store.Services.DamagedProductServices
         {
             ServiceResponse<DamagedProductDto> response = new();
             var product = productReository.GetById(damagedProductDto.ProductId);
-            var productSerialNo = await productSerialNoRepository.GetByProductNoId(damagedProductDto.SerialId);
+            var productSerialNo = await productSerialNoRepository.GetAssignedProductSerialByProductNoId(damagedProductDto.SerialId);
             var productNo  = productNumberRepository.GetById(damagedProductDto.SerialId);
             if(productNo != null)
             {
@@ -72,6 +72,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 productSerialNoRepository.Update(serialNoToUpdate);
                 distribution.TotalRemainingQuantity = distribution.Quantity - 1;
                 distribution.UpdatedAt = DateTime.Now;
+                product.TotalQuantity = product.TotalQuantity - 1;
                 distributionRepository.Update(distribution);
                 DamagedProduct damagedProduct1 = new();
                 damagedProduct1.PersonId = 0;
@@ -95,7 +96,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 damagedProductSerialNo.DamagedProductId = damagedProduct1.Id;
                 damagedProductSerialNo.ProductNoId = damagedProductDto.SerialId;
                 damagedProductSerialNoRepository.Insert(damagedProductSerialNo);
-
+                productReository.Update(product);
                 response.Messages.Add("Created.");
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
@@ -117,6 +118,10 @@ namespace IICT_Store.Services.DamagedProductServices
                 //damagedProduct1.PersonId = distribution.DistributedTo;
                 //damagedProduct1.ProductId = distribution.ProductId;
                 damagedProduct1.Quantity = 1;
+                var productNoid = productNumberRepository.GetById(damagedProductDto.SerialId);
+                var productByProductNoid = productReository.GetById(productNoid.ProductId);
+                productByProductNoid.TotalQuantity = productByProductNoid.TotalQuantity - 1;
+                productByProductNoid.QuantityInStock = productByProductNoid.QuantityInStock - 1;
                 //if (distribution.RoomNo != null)
                 //{
                 //    damagedProduct1.RoomNo = (int)distribution.RoomNo;
@@ -132,6 +137,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 damagedProduct1.WasNotDistributed = true;
                 damagedProduct1.ProductId = productNo.ProductId;
                 damagedProductRepository.Insert(damagedProduct1);
+                productReository.Update(productByProductNoid);
                 DamagedProductSerialNo damagedProductSerialNo = new();
                 damagedProductSerialNo.CreatedAt = DateTime.Now;
                 damagedProductSerialNo.DamagedProductId = damagedProduct1.Id;
@@ -148,6 +154,9 @@ namespace IICT_Store.Services.DamagedProductServices
             {
                 var distribution = distributionRepository.GetById(damagedProductDto.DistributionId);
                 distribution.TotalRemainingQuantity = distribution.Quantity - damagedProductDto.Quantity;
+                var getProduct = productReository.GetById(distribution.ProductId);
+                getProduct.TotalQuantity = getProduct.TotalQuantity - damagedProductDto.Quantity;
+                productReository.Update(getProduct);
                 distribution.UpdatedAt = DateTime.Now;
                 distributionRepository.Update(distribution);
                 DamagedProduct damagedProduct2 = new();
@@ -175,6 +184,7 @@ namespace IICT_Store.Services.DamagedProductServices
 
                 //var product = productReository.GetById(damagedProductDto.ProductId);
                 product.QuantityInStock = product.QuantityInStock - damagedProductDto.Quantity;
+                product.TotalQuantity = product.TotalQuantity - damagedProductDto.Quantity;
                 productReository.Update(product);
                 DamagedProduct damagedProduct = new();
                 damagedProduct.Quantity = 1;
