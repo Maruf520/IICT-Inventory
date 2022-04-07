@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using IICT_Store.Models.Categories;
 using IICT_Store.Models.Pruchashes;
 using IICT_Store.Repositories.TestRepo;
 using LicenseContext = OfficeOpenXml.LicenseContext;
@@ -536,6 +537,28 @@ namespace IICT_Store.Services.ProductServices
 
             response.SetMessage(new List<string>{new ("All")});
             response.Data = reportDtos;
+            return response;
+        }
+
+
+        public async Task<ServiceResponse<DashboardInformationDto>> GetDashboardInformation()
+        {
+            ServiceResponse<DashboardInformationDto> response = new();
+            var category =  baseRepo.GetAll<Category>().ToList();
+            var products = baseRepo.GetAll<Product>().ToList();
+            var damaged = baseRepo.GetAll<DamagedProduct>();
+            int totalProduct = products.Select(x => x.TotalQuantity).Sum();
+            int totalUnassignedProduct = products.Select(x => x.TotalQuantity).Sum();
+            int totalCategory = category.Count;
+            int totalDamagedProduct = damaged.Select(x =>x.Quantity).Sum();
+
+            DashboardInformationDto informationDto = new();
+            informationDto.TotalCategory = totalCategory;
+            informationDto.TotalDamaged = totalDamagedProduct;
+            informationDto.TotalProduct = totalProduct;
+            informationDto.TotalUnAssigned = totalUnassignedProduct;
+            response.Data = informationDto;
+            response.SetMessage(new List<string>{new string("Product informartion")}, HttpStatusCode.OK);
             return response;
         }
     }

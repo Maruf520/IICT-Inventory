@@ -106,5 +106,12 @@ namespace IICT_Store.Api.Controllers
             var report = await productService.GetProductDetaills(year, productId);
             return Ok(report);
         }
+
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboardInformation()
+        {
+            var information = await productService.GetDashboardInformation();
+            return Ok(information);
+        }
     }
 }
