@@ -54,5 +54,11 @@ namespace IICT_Store.Api.Controllers
             return Ok(report);
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllPurchase()
+        {
+            var purchase = await purchaseService.GetAllPurchase();
+            return Ok(purchase);
+        }
     }
 }

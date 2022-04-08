@@ -247,5 +247,23 @@ namespace IICT_Store.Services.PurchaseServices
             response.Data = getHistories;
             return response;
         }
+
+        public async Task<ServiceResponse<List<GetPurchaseDto>>> GetAllPurchase()
+        {
+            ServiceResponse<List<GetPurchaseDto>> response = new();
+            List<GetPurchaseDto> getPurchaseDtos = new();
+            var purchases =  purchaseRepository.GetAll();
+            foreach(var purcahse in purchases)
+            {
+                var product = productRepository.GetById(purcahse.ProductId);
+                var productToMap = mapper.Map<GetProductDto>(product);
+                var purchaseToMap = mapper.Map<GetPurchaseDto>(purcahse);
+                purchaseToMap.Product = productToMap;
+                getPurchaseDtos.Add(purchaseToMap);
+            }
+            response.Data = getPurchaseDtos;
+            response.SetMessage(new List<string> { new string("All Purchase.")}, System.Net.HttpStatusCode.OK);
+            return response;
+        }
     }
 }
