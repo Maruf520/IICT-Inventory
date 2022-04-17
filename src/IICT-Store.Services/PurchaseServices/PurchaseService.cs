@@ -221,7 +221,7 @@ namespace IICT_Store.Services.PurchaseServices
                     GetPurchaseHistory getPurchaseHistory = new();
                     var singleProduct = await productRepository.GetProductById(product.Id);
                     var productToMap = mapper.Map<GetProductDto>(product);
-                    var getPurchase =  baseRepo.GetItems<Purchashed>( x => x.ProductId == product.Id && x.IsConfirmed && x.CreatedAt.Year == year).ToList();
+                    var getPurchase =  baseRepo.GetItems<Purchashed>( x => x.ProductId == product.Id && x.IsConfirmed && x.PuchasedDate.Year == year && x.PurchaseStatus == PurchaseStatus.Confirmed).ToList();
                     var totalQunatity = getPurchase.Select(x => x.Quantity).Sum();
                     decimal totalAmount = getPurchase.Select(e => e.Price * e.Quantity).Sum();
                     getPurchaseHistory.Product = productToMap;
@@ -234,9 +234,14 @@ namespace IICT_Store.Services.PurchaseServices
                 return response;
             }
             var individualProduct =  baseRepo.GetById<Product>(productId);
+            if(individualProduct == null)
+            {
+                response.SetMessage(new List<string> { new string("All Purchase.") }, System.Net.HttpStatusCode.NotFound);
+                return response;
+            }
             GetPurchaseHistory getPurchaseHistories = new();
             var productToMaap = mapper.Map<GetProductDto>(individualProduct);
-            var getPurchasee = baseRepo.GetItems<Purchashed>(x => x.ProductId == individualProduct.Id && x.IsConfirmed && x.CreatedAt.Year == year);
+            var getPurchasee = baseRepo.GetItems<Purchashed>(x => x.ProductId == individualProduct.Id && x.IsConfirmed && x.PuchasedDate.Year == year && x.PurchaseStatus == PurchaseStatus.Confirmed);
             var totalQunatity1 = getPurchasee.Select(x => x.Quantity).Sum();
             decimal totalAmount1 = getPurchasee.Select(e => e.Price * e.Quantity).Sum();
             getPurchaseHistories.Product = productToMaap;
