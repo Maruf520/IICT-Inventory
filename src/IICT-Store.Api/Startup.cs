@@ -74,18 +74,19 @@ namespace IICT_Store.Api
         {
 
             services.AddControllers();
-/*            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IICT_Store.Api", Version = "v1" });
-            });*/
+            /*            services.AddSwaggerGen(c =>
+                        {
+                            c.SwaggerDoc("v1", new OpenApiInfo { Title = "IICT_Store.Api", Version = "v1" });
+                        });*/
             services.AddDbContext<IICT_StoreDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Connection"), optionsBuilder =>
-            optionsBuilder.MigrationsAssembly("IICT-Store.Api")));            
+            optionsBuilder.MigrationsAssembly("IICT-Store.Api")));
             services.AddDbContext<IdentityContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Connection"), optionsBuilder =>
             optionsBuilder.MigrationsAssembly("IICT-Store.Api")));
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddCors();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
@@ -108,7 +109,7 @@ namespace IICT_Store.Api
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<ITimeSlotReposiotry, TimeSlotRepository>();
             services.AddScoped<IBookingService, BookingService>();
-            services.AddScoped<IMailService, MailService >();
+            services.AddScoped<IMailService, MailService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IBookingTimeSlotRepository, BookingTimeSlotRepository>();
             services.AddScoped<IReturnedProductRepository, ReturnedProductRepository>();
@@ -220,13 +221,13 @@ namespace IICT_Store.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "IICT_Store.Api v1");
             });
             app.UseSwagger();
-            app.UseCors(cors =>
-              cors
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .SetIsOriginAllowed(_ => true)
-              .AllowCredentials()
-            );
+            /*            app.UseCors(cors =>
+                          cors
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .SetIsOriginAllowed( => true)
+                          .AllowCredentials()
+                        );*/
             app.UseHttpsRedirection();
             string path = Path.Combine(Directory.GetCurrentDirectory(), "files");
             app.UseStaticFiles(new StaticFileOptions()
@@ -235,7 +236,11 @@ namespace IICT_Store.Api
                 RequestPath = "/files"
             });
             app.UseRouting();
-
+            app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    .AllowCredentials());
             app.UseAuthentication();
 
             app.UseAuthorization();

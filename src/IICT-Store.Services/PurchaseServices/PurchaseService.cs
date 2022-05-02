@@ -50,7 +50,7 @@ namespace IICT_Store.Services.PurchaseServices
 
 
                 var documentslist = await UploadFile(createPurchaseDto.File);
-   
+
                 foreach (var document in documentslist)
                 {
                     var cashMemo = new CashMemo();
@@ -69,7 +69,7 @@ namespace IICT_Store.Services.PurchaseServices
             }
             var productToMap = mapper.Map<Purchashed>(createPurchaseDto);
             List<CashMemoDtos> cashMemoDtos = new();
-            foreach(var cashmemo in cashMemos)
+            foreach (var cashmemo in cashMemos)
             {
                 CashMemoDtos cashMemoDto = new();
                 cashMemoDto.CreatedAt = cashmemo.CreatedAt;
@@ -82,19 +82,20 @@ namespace IICT_Store.Services.PurchaseServices
             productToMap.CreatedAt = DateTime.Now;
             productToMap.CreatedBy = userId;
             productToMap.CashMemos = cashMemos;
+            productToMap.PuchasedDate = DateTime.Now;
             purchaseRepository.Insert(productToMap);
             var users = await userRepository.GetUserByRole("Approval Admin");
             foreach (var mail in users)
             {
                 var user = await userRepository.GetByEmail(mail);
-                await mailService.SendEmail(mail, "IICT Inventory", "Sir, There is a pending request on IICT Inventory.. Please check it and take your step." ,$"{user.UserName}");
+                await mailService.SendEmail(mail, "IICT Inventory", "Sir, There is a pending request on IICT Inventory.. Please check it and take your step.", $"{user.UserName}");
             }
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToReturn.Id = productToMap.Id;
             productToReturn.CashMemos = cashMemoDtos;
-/*            products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
-            products.TotalQuantity = products.TotalQuantity + createPurchaseDto.Quantity;
-            productRepository.Update(products);*/
+            /*            products.QuantityInStock = products.QuantityInStock + createPurchaseDto.Quantity;
+                        products.TotalQuantity = products.TotalQuantity + createPurchaseDto.Quantity;
+                        productRepository.Update(products);*/
 
             response.Data = productToReturn;
             response.Messages.Add("Purchased.");
@@ -105,9 +106,9 @@ namespace IICT_Store.Services.PurchaseServices
         public async Task<ServiceResponse<GetPurchaseDto>> GetPurchaseById(long id)
         {
             ServiceResponse<GetPurchaseDto> response = new();
-            
-            var purchase =  await purchaseRepository.GetPurchashedById(id);
-            if(purchase == null)
+
+            var purchase = await purchaseRepository.GetPurchashedById(id);
+            if (purchase == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -161,11 +162,11 @@ namespace IICT_Store.Services.PurchaseServices
             return response;
         }
 
-        public async Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByDate(int year,PaymentBy paymentBy, PaymentProcess paymentProcess)
+        public async Task<ServiceResponse<List<GetPurchaseDto>>> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess)
         {
             ServiceResponse<List<GetPurchaseDto>> response = new();
-            var purchase = await purchaseRepository.GetPurchashedByDate(year,paymentBy,paymentProcess);
-            if(purchase.Count == 0)
+            var purchase = await purchaseRepository.GetPurchashedByDate(year, paymentBy, paymentProcess);
+            if (purchase.Count == 0)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -177,7 +178,7 @@ namespace IICT_Store.Services.PurchaseServices
             response.Data = map;
             return response;
         }
-        public async Task< List<string>> UploadFile(List<IFormFile> formFiles)
+        public async Task<List<string>> UploadFile(List<IFormFile> formFiles)
         {
             List<String> medias = new();
             foreach (var file in formFiles)
@@ -201,9 +202,9 @@ namespace IICT_Store.Services.PurchaseServices
                         stream.Flush();
                     }
                     medias.Add(pathdb);
-                    
+
                 }
-               
+
             }
             return medias;
         }
@@ -221,7 +222,8 @@ namespace IICT_Store.Services.PurchaseServices
                     GetPurchaseHistory getPurchaseHistory = new();
                     var singleProduct = await productRepository.GetProductById(product.Id);
                     var productToMap = mapper.Map<GetProductDto>(product);
-                    var getPurchase =  baseRepo.GetItems<Purchashed>( x => x.ProductId == product.Id && x.IsConfirmed && x.PuchasedDate.Year == year && x.PurchaseStatus == PurchaseStatus.Confirmed).ToList();
+                    var history1 = baseRepo.GetItems<Purchashed>(x => x.IsConfirmed == true && x.PurchaseStatus == PurchaseStatus.Confirmed).ToList();
+                    var getPurchase = history1.Where(x => x.PuchasedDate.Year == year).ToList();
                     var totalQunatity = getPurchase.Select(x => x.Quantity).Sum();
                     decimal totalAmount = getPurchase.Select(e => e.Price * e.Quantity).Sum();
                     getPurchaseHistory.Product = productToMap;
@@ -233,15 +235,16 @@ namespace IICT_Store.Services.PurchaseServices
                 response.Data = getHistories;
                 return response;
             }
-            var individualProduct =  baseRepo.GetById<Product>(productId);
-            if(individualProduct == null)
+            var individualProduct = baseRepo.GetById<Product>(productId);
+            if (individualProduct == null)
             {
                 response.SetMessage(new List<string> { new string("All Purchase.") }, System.Net.HttpStatusCode.NotFound);
                 return response;
             }
             GetPurchaseHistory getPurchaseHistories = new();
             var productToMaap = mapper.Map<GetProductDto>(individualProduct);
-            var getPurchasee = baseRepo.GetItems<Purchashed>(x => x.ProductId == individualProduct.Id && x.IsConfirmed && x.PuchasedDate.Year == year && x.PurchaseStatus == PurchaseStatus.Confirmed);
+            var history = baseRepo.GetItems<Purchashed>(x => x.ProductId == individualProduct.Id && x.IsConfirmed == true && x.PurchaseStatus == PurchaseStatus.Confirmed);
+            var getPurchasee = history.Where(x => x.PuchasedDate.Year == year).ToList();
             var totalQunatity1 = getPurchasee.Select(x => x.Quantity).Sum();
             decimal totalAmount1 = getPurchasee.Select(e => e.Price * e.Quantity).Sum();
             getPurchaseHistories.Product = productToMaap;
@@ -250,6 +253,7 @@ namespace IICT_Store.Services.PurchaseServices
             getPurchaseHistories.Year = year;
             getHistories.Add(getPurchaseHistories);
             response.Data = getHistories;
+
             return response;
         }
 
@@ -257,8 +261,8 @@ namespace IICT_Store.Services.PurchaseServices
         {
             ServiceResponse<List<GetPurchaseDto>> response = new();
             List<GetPurchaseDto> getPurchaseDtos = new();
-            var purchases =  purchaseRepository.GetAll();
-            foreach(var purcahse in purchases)
+            var purchases = purchaseRepository.GetAll();
+            foreach (var purcahse in purchases)
             {
                 var product = productRepository.GetById(purcahse.ProductId);
                 var productToMap = mapper.Map<GetProductDto>(product);
@@ -267,7 +271,7 @@ namespace IICT_Store.Services.PurchaseServices
                 getPurchaseDtos.Add(purchaseToMap);
             }
             response.Data = getPurchaseDtos;
-            response.SetMessage(new List<string> { new string("All Purchase.")}, System.Net.HttpStatusCode.OK);
+            response.SetMessage(new List<string> { new string("All Purchase.") }, System.Net.HttpStatusCode.OK);
             return response;
         }
     }
