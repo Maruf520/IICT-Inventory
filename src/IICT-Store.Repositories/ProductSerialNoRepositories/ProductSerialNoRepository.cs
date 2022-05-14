@@ -22,9 +22,14 @@ namespace IICT_Store.Repositories.ProductSerialNoRepositories
             var product = context.ProductSerialNos.Where(x => x.ProductNoId == id).FirstOrDefault();
             return product;
         }
+        public async Task<ProductSerialNo> GetMaintananceProductByProductNoId(long id)
+        {
+            var product = context.ProductSerialNos.Where(x => x.ProductNoId == id && x.ProductStatus == ProductStatus.Maintanance).FirstOrDefault();
+            return product;
+        }
         public async Task<ProductSerialNo> GetAssignedProductSerialByProductNoId(long id)
         {
-            var product = context.ProductSerialNos.Where(x => x.ProductNoId == id && x.ProductStatus == ProductStatus.Assigned).FirstOrDefault();
+            var product = context.ProductSerialNos.Where(x => x.ProductNoId == id && x.ProductStatus == ProductStatus.Assigned || x.ProductStatus == ProductStatus.Maintanance).FirstOrDefault();
             return product;
         }
         public async Task<ProductSerialNo> GetByProductNoIdAndStatus(long id, ProductStatus productStatus)

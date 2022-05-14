@@ -12,5 +12,6 @@ namespace IICT_Store.Repositories.ProductSerialNoRepositories
         Task<ProductSerialNo> GetByProductNoId(long id);
         Task<List<ProductSerialNo>> GetProductNoIdByDistributionId(long id);
         Task<ProductSerialNo> GetAssignedProductSerialByProductNoId(long id);
+        Task<ProductSerialNo> GetMaintananceProductByProductNoId(long id);
     }
 }
