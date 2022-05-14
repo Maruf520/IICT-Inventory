@@ -257,6 +257,43 @@ namespace IICT_Store.Services.PurchaseServices
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetPurchaseHistoryDto>>> GetPurchaseHistoryForIndividualProduct(int productId, int year)
+        {
+            ServiceResponse<List<GetPurchaseHistoryDto>> response = new();
+            try
+            {
+                List<GetPurchaseHistoryDto> getPurchaseHistoryDtos = new();
+                var history = baseRepo.GetItems<Purchashed>(x => x.IsConfirmed && x.ProductId == productId && x.PurchaseStatus == PurchaseStatus.Confirmed).ToList();
+                var productHistory = history.Where(x => x.PuchasedDate.Year == year).ToList();
+                foreach (var item in productHistory)
+                {
+                    var product = productRepository.GetById(productId);
+                    var mapProduct = mapper.Map<GetProductDto>(product);
+                    GetPurchaseHistoryDto getPurchaseHistoryDto = new();
+                    getPurchaseHistoryDto.Id = item.Id;
+                    getPurchaseHistoryDto.Product = mapProduct;
+                    getPurchaseHistoryDto.PricePerUnit = item.Price;
+                    getPurchaseHistoryDto.PaymentProcess = item.PaymentProcess;
+                    getPurchaseHistoryDto.PaymentBy = item.PaymentBy;
+                    getPurchaseHistoryDto.PuchasedDate = item.PuchasedDate;
+                    getPurchaseHistoryDto.Quantity = item.Quantity;
+                    getPurchaseHistoryDto.Supplier = item.Supplier;
+                    getPurchaseHistoryDto.TotalPrice = item.Quantity * item.Price;
+                    getPurchaseHistoryDto.Note = item.Note;
+                    getPurchaseHistoryDtos.Add(getPurchaseHistoryDto);
+                }
+                response.Data = getPurchaseHistoryDtos;
+                response.SetOkMessage();
+                return response;
+
+            }
+            catch (Exception e)
+            {
+                response.SetMessage(new List<string> { new string(e.Message) });
+                return response;
+            }
+        }
+
         public async Task<ServiceResponse<List<GetPurchaseDto>>> GetAllPurchase()
         {
             ServiceResponse<List<GetPurchaseDto>> response = new();
