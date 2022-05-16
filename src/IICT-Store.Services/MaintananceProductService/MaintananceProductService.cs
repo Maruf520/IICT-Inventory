@@ -28,11 +28,11 @@ namespace IICT_Store.Services.MaintananceProductService
         private readonly IBaseRepo baseRepo;
         private readonly IMapper mapper;
 
-        public MaintananceProductService(IMaintanancePeoductSerialNoRepository iMaintanancePeoductSerialNoRepository, 
-            IMaintananceRepository maintananceRepository, 
-            IMaintanancePeoductSerialNoRepository maintanancePeoductSerialNoRepository, 
-            IProductNumberRepository productNumberRepository, 
-            IProductRepository productRepository, 
+        public MaintananceProductService(IMaintanancePeoductSerialNoRepository iMaintanancePeoductSerialNoRepository,
+            IMaintananceRepository maintananceRepository,
+            IMaintanancePeoductSerialNoRepository maintanancePeoductSerialNoRepository,
+            IProductNumberRepository productNumberRepository,
+            IProductRepository productRepository,
             IProductSerialNoRepository productSerialNoRepository, IDistributionRepository distributionRepository, IBaseRepo baseRepo, IMapper mapper)
         {
             this.maintananceRepository = maintananceRepository;
@@ -56,16 +56,49 @@ namespace IICT_Store.Services.MaintananceProductService
                     response.SetNotFoundMessage();
                     return response;
                 }
-
+                var productNo = productNumberRepository.GetById(createMaintananceProduct.ProductSerialId);
                 var productSerialNo = await productSerialNoRepository.GetByProductNoId(createMaintananceProduct.ProductSerialId);
-                var productNo = productNumberRepository.GetById(productSerialNo.ProductNoId);
-                var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
-                if (productNo == null)
+                if (productSerialNo != null)
                 {
-                    response.SetNotFoundMessage();
+
+                    var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
+                    if (productNo == null)
+                    {
+                        response.SetNotFoundMessage();
+                        return response;
+                    }
+
+                    MaintenanceProduct maintananceProduct1 = new MaintenanceProduct()
+                    {
+                        Quantity = 1,
+                        ProductId = createMaintananceProduct.ProductId,
+                        CreatedAt = DateTime.Now,
+                        SenderId = createMaintananceProduct.SenderId,
+                        ReceiverId = createMaintananceProduct.ReceiverId,
+                        DistributionId = distribution.Id,
+                        Note = createMaintananceProduct.Note
+                    };
+                    maintananceRepository.Insert(maintananceProduct1);
+                    distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
+                    distributionRepository.Update(distribution);
+                    productNo.ProductStatus = ProductStatus.Maintanance;
+                    productNo.UpdatedAt = DateTime.Now;
+                    productNumberRepository.Update(productNo);
+                    productSerialNo.ProductStatus = ProductStatus.Maintanance;
+                    productSerialNo.UpdatedAt = DateTime.Now;
+                    productSerialNoRepository.Update(productSerialNo);
+                    MaintenanceProductSerialNo maintenanceProductSerial = new MaintenanceProductSerialNo()
+                    {
+                        IsRepaired = false,
+                        MaintananceProductId = maintananceProduct1.Id,
+                        Name = productNo.Name,
+                        ProductNoId = productNo.Id,
+                        CreatedAt = DateTime.Now
+                    };
+                    maintanancePeoductSerialNoRepository.Insert(maintenanceProductSerial);
+                    response.SetOkMessage();
                     return response;
                 }
-
                 MaintenanceProduct maintananceProduct = new MaintenanceProduct()
                 {
                     Quantity = createMaintananceProduct.Quantity,
@@ -73,19 +106,10 @@ namespace IICT_Store.Services.MaintananceProductService
                     CreatedAt = DateTime.Now,
                     SenderId = createMaintananceProduct.SenderId,
                     ReceiverId = createMaintananceProduct.ReceiverId,
-                    DistributionId = distribution.Id,
                     Note = createMaintananceProduct.Note
                 };
                 maintananceRepository.Insert(maintananceProduct);
-                distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
-                distributionRepository.Update(distribution);
-                productNo.ProductStatus = ProductStatus.Maintanance;
-                productNo.UpdatedAt = DateTime.Now;
-                productNumberRepository.Update(productNo);
-                productSerialNo.ProductStatus = ProductStatus.Maintanance;
-                productSerialNo.UpdatedAt = DateTime.Now;
-                productSerialNoRepository.Update(productSerialNo);
-                MaintenanceProductSerialNo maintenanceProductSerial = new MaintenanceProductSerialNo()
+                MaintenanceProductSerialNo maintenanceProductSerial1 = new MaintenanceProductSerialNo()
                 {
                     IsRepaired = false,
                     MaintananceProductId = maintananceProduct.Id,
@@ -93,17 +117,26 @@ namespace IICT_Store.Services.MaintananceProductService
                     ProductNoId = productNo.Id,
                     CreatedAt = DateTime.Now
                 };
-                maintanancePeoductSerialNoRepository.Insert(maintenanceProductSerial);
+                maintanancePeoductSerialNoRepository.Insert(maintenanceProductSerial1);
+                product.QuantityInStock = product.QuantityInStock - 1;
+
+                productRepository.Update(product);
+                productNo.ProductStatus = ProductStatus.Maintanance;
+                productNo.UpdatedAt = DateTime.Now;
+                productNumberRepository.Update(productNo);
                 response.SetOkMessage();
                 return response;
             }
+
             catch (Exception e)
             {
-                response.SetMessage(new List<string> {e.Message}, HttpStatusCode.BadRequest);
+                response.SetMessage(new List<string> { e.Message }, HttpStatusCode.BadRequest);
                 return response;
             }
         }
 
+
+        //this method is only for repair
         public async Task<ServiceResponse<GetMaintananceProductDto>> RepairOrDamage(CreateMaintananceProductDto maintananceProduct)
         {
             ServiceResponse<GetMaintananceProductDto> response = new ServiceResponse<GetMaintananceProductDto>();
@@ -115,29 +148,46 @@ namespace IICT_Store.Services.MaintananceProductService
                     response.SetNotFoundMessage();
                     return response;
                 }
-
-                var productSerialNo = await productSerialNoRepository.GetByProductNoId(maintananceProduct.ProductSerialId);
-                var productNo = productNumberRepository.GetById(productSerialNo.ProductNoId);
+                // here is a bug. cz we doont filter the productserial which is in maintanane. we just take product by serial and it take from any status.
+                //we need to filter that take only productserial with status of maintanace.
+                //fixed
+                var productNo = productNumberRepository.GetById(maintananceProduct.ProductSerialId);
                 if (productNo == null)
                 {
                     response.SetNotFoundMessage();
                     return response;
                 }
-                productNo.ProductStatus = ProductStatus.Assigned;
-                productSerialNo.ProductStatus = ProductStatus.Assigned;
-                productSerialNo.UpdatedAt = DateTime.Now;
+                var productSerialNo = await productSerialNoRepository.GetMaintananceProductByProductNoId(maintananceProduct.ProductSerialId);
+                if (productSerialNo != null)
+                {
+                    productNo.ProductStatus = ProductStatus.Assigned;
+                    productSerialNo.ProductStatus = ProductStatus.Assigned;
+                    productSerialNo.UpdatedAt = DateTime.Now;
+                    productNo.UpdatedAt = DateTime.Now;
+                    var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
+                    distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity + 1;
+                    productNumberRepository.Update(productNo);
+                    productSerialNoRepository.Update(productSerialNo);
+                    distributionRepository.Update(distribution);
+                    var maintananceProductSerial = baseRepo.GetItems<MaintenanceProductSerialNo>(x => x.ProductNoId == maintananceProduct.ProductSerialId).ToList();
+                    var maintananceProductSerialToUpdate = maintananceProductSerial.OrderByDescending(x => x.ProductNoId).FirstOrDefault();
+                    maintananceProductSerialToUpdate.IsRepaired = true;
+                    maintanancePeoductSerialNoRepository.Update(maintananceProductSerialToUpdate);
+                    response.SetOkMessage();
+                    return response;
+                }
+                product.QuantityInStock = product.QuantityInStock + 1;
+                productRepository.Update(product);
+                productNo.ProductStatus = ProductStatus.Unassigned;
                 productNo.UpdatedAt = DateTime.Now;
-                var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
-                distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity + 1;
                 productNumberRepository.Update(productNo);
-                productSerialNoRepository.Update(productSerialNo);
-                distributionRepository.Update(distribution);
-                var maintananceProductSerial = baseRepo.GetItems<MaintenanceProductSerialNo>(x => x.ProductNoId == maintananceProduct.ProductSerialId).ToList();
-                var  maintananceProductSerialToUpdate = maintananceProductSerial.OrderByDescending(x => x.ProductNoId).FirstOrDefault();
-                maintananceProductSerialToUpdate.IsRepaired = true;
-                maintanancePeoductSerialNoRepository.Update(maintananceProductSerialToUpdate);
+                var maintananceProductSerial1 = baseRepo.GetItems<MaintenanceProductSerialNo>(x => x.ProductNoId == maintananceProduct.ProductSerialId).ToList();
+                var maintananceProductSerialToUpdate1 = maintananceProductSerial1.OrderByDescending(x => x.ProductNoId).FirstOrDefault();
+                maintananceProductSerialToUpdate1.IsRepaired = true;
+                maintanancePeoductSerialNoRepository.Update(maintananceProductSerialToUpdate1);
                 response.SetOkMessage();
                 return response;
+
             }
             catch (Exception e)
             {
@@ -145,12 +195,32 @@ namespace IICT_Store.Services.MaintananceProductService
                 return response;
             }
         }
+        /*
+                public async Task<ServiceResponse<GetMaintananceProductDto>> DamagaFromMaintanance(CreateDamagedProductDto createDamagedProductDto)
+                {
+                    ServiceResponse<GetDamagedProductDto> response = new();
+                    try
+                    {
+                        var product = productRepository.GetById(maintananceProduct.ProductId);
+                        if (product == null)
+                        {
+                            response.SetNotFoundMessage();
+                            return response;
+                        }
+                        // here is a bug. cz we doont filter the productserial which is in maintanane. we just take product by serial and it take from any status.
+                        //we need to filter that take only productserial with status of maintanace.
+                        //fixed
+                        var productNo = productNumberRepository.GetById(maintananceProduct.ProductSerialId);
+
+                    }
+                }*/
+
 
         public async Task<ServiceResponse<GetMaintananceProductDto>> GetByProductSerial(long productId, long serialId)
         {
             ServiceResponse<GetMaintananceProductDto> response = new();
             var products = baseRepo.GetItems<MaintenanceProduct>(x => x.ProductId == productId);
-            var product = products.OrderByDescending(x =>x.ProductId).FirstOrDefault();
+            var product = products.OrderByDescending(x => x.ProductId).FirstOrDefault();
             if (product == null)
             {
                 response.SetNotFoundMessage();
@@ -175,4 +245,4 @@ namespace IICT_Store.Services.MaintananceProductService
         }
     }
 
-    }
+}

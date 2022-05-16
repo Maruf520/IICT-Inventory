@@ -29,7 +29,7 @@ namespace IICT_Store.Services.DamagedProductServices
         public DamagedProductService(
             IProductSerialNoRepository productSerialNoRepository,
             IDamagedProductRepository damagedProductRepository,
-            IDistributionRepository distributionRepository, 
+            IDistributionRepository distributionRepository,
             IProductRepository productReository,
             IDamagedProductSerialNoRepository damagedProductSerialNoRepository,
             IProductNumberRepository productNumberRepository,
@@ -51,15 +51,15 @@ namespace IICT_Store.Services.DamagedProductServices
             ServiceResponse<DamagedProductDto> response = new();
             var product = productReository.GetById(damagedProductDto.ProductId);
             var productSerialNo = await productSerialNoRepository.GetAssignedProductSerialByProductNoId(damagedProductDto.SerialId);
-            var productNo  = productNumberRepository.GetById(damagedProductDto.SerialId);
-            if(productNo != null)
+            var productNo = productNumberRepository.GetById(damagedProductDto.SerialId);
+            if (productNo != null)
             {
                 product = productReository.GetById(productNo.ProductId);
             }
-           if(productSerialNo != null)
+            if (productSerialNo != null)
             {
                 product = productReository.GetById(productNo.ProductId);
-            } 
+            }
             if (productSerialNo != null && product.HasSerial == true)
             {
                 var distribution = distributionRepository.GetById(productSerialNo.DistributionId);
@@ -78,11 +78,11 @@ namespace IICT_Store.Services.DamagedProductServices
                 damagedProduct1.PersonId = 0;
                 damagedProduct1.ProductId = distribution.ProductId;
                 damagedProduct1.Quantity = 1;
-                if(distribution.RoomNo !=null)
+                if (distribution.RoomNo != null)
                 {
                     damagedProduct1.RoomNo = (int)distribution.RoomNo;
                 }
-                if(distribution.DistributedTo != 0)
+                if (distribution.DistributedTo != 0)
                 {
                     damagedProduct1.PersonId = distribution.DistributedTo;
                 }
@@ -101,7 +101,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
             }
-            else if(productSerialNo == null && product.HasSerial == true)
+            else if (productSerialNo == null && product.HasSerial == true)
             {
                 var productno = productNumberRepository.GetById(damagedProductDto.SerialId);
                 productno.ProductStatus = ProductStatus.Damaged;
@@ -150,9 +150,19 @@ namespace IICT_Store.Services.DamagedProductServices
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
             }
-            else if(distributionRepository.GetById(damagedProductDto.DistributionId) != null && product.HasSerial == false)
+            else if (distributionRepository.GetById(damagedProductDto.DistributionId) != null && product.HasSerial == false)
             {
+                if (product.TotalQuantity < damagedProductDto.Quantity)
+                {
+                    response.SetMessage(new List<string> { new string("You have to reduce quantity") });
+                    return response;
+                }
                 var distribution = distributionRepository.GetById(damagedProductDto.DistributionId);
+                if (distribution.TotalRemainingQuantity < damagedProductDto.Quantity)
+                {
+                    response.SetMessage(new List<string> { new string("You have to reduce quantity") });
+                    return response;
+                }
                 distribution.TotalRemainingQuantity = distribution.Quantity - damagedProductDto.Quantity;
                 var getProduct = productReository.GetById(distribution.ProductId);
                 getProduct.TotalQuantity = getProduct.TotalQuantity - damagedProductDto.Quantity;
@@ -181,7 +191,13 @@ namespace IICT_Store.Services.DamagedProductServices
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
             }
-
+            else if (distributionRepository.GetById(damagedProductDto.DistributionId) == null && product.HasSerial == false)
+            {
+                if (product.TotalQuantity < damagedProductDto.Quantity)
+                {
+                    response.SetMessage(new List<string> { new string("You have to reduce quantity") });
+                    return response;
+                }
                 //var product = productReository.GetById(damagedProductDto.ProductId);
                 product.QuantityInStock = product.QuantityInStock - damagedProductDto.Quantity;
                 product.TotalQuantity = product.TotalQuantity - damagedProductDto.Quantity;
@@ -196,7 +212,11 @@ namespace IICT_Store.Services.DamagedProductServices
                 response.Messages.Add("Created.");
                 response.StatusCode = System.Net.HttpStatusCode.Created;
                 return response;
-       }
+            }
+            response.Messages.Add("Something went wrong.");
+            response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+            return response;
+        }
 
 
 
@@ -240,43 +260,43 @@ namespace IICT_Store.Services.DamagedProductServices
 
 
 
-/*
-            distribution.Quantity = distribution.Quantity - 1;
-            distributionRepository.Update(distribution);
-            List<DamagedProductSerialNo> damagedProductSerialNos = new();
-            DamagedProduct damagedProductt = new();
-            damagedProduct.Quantity = 1;
-            damagedProduct.ProductId = distribution.ProductId;
-            damagedProduct.CreatedAt = DateTime.Now;
-            DamagedProductSerialNo damagedProductSerialNo = new();
-            damagedProductSerialNo.ProductNoId = productNo.Id;
-            damagedProductSerialNo.Name = productNo.Name;
-            damagedProductSerialNo.CreatedAt = DateTime.Now;
-            damagedProductSerialNos.Add(damagedProductSerialNo);
-            var productNos = productNumberRepository.GetById(damagedProductSerialNo.ProductNoId);
-            productNos.ProductStatus = ProductStatus.Damaged;
-            productNumberRepository.Update(productNos) ;
-            damagedProduct.DamagedProductSerialNos = damagedProductSerialNos;
-            damagedProductRepository.Insert(damagedProduct);
-            productSerialNoRepository.Delete(productSerialNo.Id);
-            response.Messages.Add("Damaged product added.");
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            return response;*/
+        /*
+                    distribution.Quantity = distribution.Quantity - 1;
+                    distributionRepository.Update(distribution);
+                    List<DamagedProductSerialNo> damagedProductSerialNos = new();
+                    DamagedProduct damagedProductt = new();
+                    damagedProduct.Quantity = 1;
+                    damagedProduct.ProductId = distribution.ProductId;
+                    damagedProduct.CreatedAt = DateTime.Now;
+                    DamagedProductSerialNo damagedProductSerialNo = new();
+                    damagedProductSerialNo.ProductNoId = productNo.Id;
+                    damagedProductSerialNo.Name = productNo.Name;
+                    damagedProductSerialNo.CreatedAt = DateTime.Now;
+                    damagedProductSerialNos.Add(damagedProductSerialNo);
+                    var productNos = productNumberRepository.GetById(damagedProductSerialNo.ProductNoId);
+                    productNos.ProductStatus = ProductStatus.Damaged;
+                    productNumberRepository.Update(productNos) ;
+                    damagedProduct.DamagedProductSerialNos = damagedProductSerialNos;
+                    damagedProductRepository.Insert(damagedProduct);
+                    productSerialNoRepository.Delete(productSerialNo.Id);
+                    response.Messages.Add("Damaged product added.");
+                    response.StatusCode = System.Net.HttpStatusCode.OK;
+                    return response;*/
 
-        
+
 
         public async Task<ServiceResponse<List<DamagedProductDto>>> GetAllDamagedProduct()
         {
             ServiceResponse<List<DamagedProductDto>> response = new();
             List<DamagedProductDto> damagedProductDtos = new();
             var damagedProducts = await damagedProductRepository.GetAllDamagedProduct();
-            if(damagedProducts.Count() == 0)  
+            if (damagedProducts.Count() == 0)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            foreach(var item in damagedProducts)
+            foreach (var item in damagedProducts)
             {
                 DamagedProductDto damagedProductDto = new();
                 var product = productReository.GetById(item.ProductId);
@@ -316,14 +336,14 @@ namespace IICT_Store.Services.DamagedProductServices
         {
             ServiceResponse<GetDamagedProductDto> response = new();
             var damagedProductSerial = damagedProductSerialNoRepository.GetDamagedProductByProductNoId(id);
-            if(damagedProductSerial == null)
+            if (damagedProductSerial == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
             var damagedProduct = damagedProductRepository.GetById(damagedProductSerial.DamagedProductId);
-            if(damagedProduct == null)
+            if (damagedProduct == null)
             {
                 response.Messages.Add("Damaged Product Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -334,5 +354,5 @@ namespace IICT_Store.Services.DamagedProductServices
             response.Data = map;
             return response;
         }
-        }
+    }
 }

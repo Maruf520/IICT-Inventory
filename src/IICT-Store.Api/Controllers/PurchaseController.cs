@@ -21,12 +21,12 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePurchase([FromForm]CreatePurchasedDto createPurchaseDto)
+        public async Task<IActionResult> CreatePurchase([FromForm] CreatePurchasedDto createPurchaseDto)
         {
             var purchase = await purchaseService.CreatePurchase(createPurchaseDto, GetuserId());
             return Ok(purchase);
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPurchaseById(long id)
         {
@@ -43,7 +43,7 @@ namespace IICT_Store.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess)
         {
-            var purchase = await purchaseService.GetPurchaseByDate(year, paymentBy,paymentProcess);
+            var purchase = await purchaseService.GetPurchaseByDate(year, paymentBy, paymentProcess);
             return Ok(purchase);
         }
 
@@ -59,6 +59,13 @@ namespace IICT_Store.Api.Controllers
         {
             var purchase = await purchaseService.GetAllPurchase();
             return Ok(purchase);
+        }
+
+        [HttpGet("history/{productId}/{year}")]
+        public async Task<IActionResult> GetindividualHistory(int productId, int year)
+        {
+            var purchaseHistory = await purchaseService.GetPurchaseHistoryForIndividualProduct(productId, year);
+            return Ok(purchaseHistory);
         }
     }
 }
