@@ -10,7 +10,6 @@ namespace IICT_Store.Dtos.ProductDtos
 {
     public class CreateProductDto
     {
-        [Required]
         public IFormFile Image { get; set; }
         [Required]
         public string Name { get; set; }

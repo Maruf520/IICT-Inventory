@@ -70,7 +70,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 serialNoToUpdate.ProductStatus = ProductStatus.Damaged;
                 serialNoToUpdate.UpdatedAt = DateTime.Now;
                 productSerialNoRepository.Update(serialNoToUpdate);
-                distribution.TotalRemainingQuantity = distribution.Quantity - 1;
+                distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
                 distribution.UpdatedAt = DateTime.Now;
                 product.TotalQuantity = product.TotalQuantity - 1;
                 distributionRepository.Update(distribution);

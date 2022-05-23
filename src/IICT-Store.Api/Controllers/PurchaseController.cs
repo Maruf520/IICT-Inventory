@@ -1,6 +1,7 @@
 ﻿using IICT_Store.Dtos.Purchases;
 using IICT_Store.Models.Pruchashes;
 using IICT_Store.Services.PurchaseServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,48 +20,49 @@ namespace IICT_Store.Api.Controllers
         {
             this.purchaseService = purchaseService;
         }
-
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreatePurchase([FromForm] CreatePurchasedDto createPurchaseDto)
         {
             var purchase = await purchaseService.CreatePurchase(createPurchaseDto, GetuserId());
             return Ok(purchase);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPurchaseById(long id)
         {
             var purchase = await purchaseService.GetPurchaseById(id);
             return Ok(purchase);
         }
+        [Authorize(Roles = "User")]
         [HttpGet("product/{id}")]
         public async Task<IActionResult> GetPurchaseByProductId(long id)
         {
             var purchase = await purchaseService.GetPurchaseByProductId(id);
             return Ok(purchase);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> GetPurchaseByDate(int year, PaymentBy paymentBy, PaymentProcess paymentProcess)
         {
             var purchase = await purchaseService.GetPurchaseByDate(year, paymentBy, paymentProcess);
             return Ok(purchase);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet("report")]
         public async Task<IActionResult> GetReport([FromQuery] int year, int productId)
         {
             var report = await purchaseService.GetPurchaseHistory(year, productId);
             return Ok(report);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPurchase()
         {
             var purchase = await purchaseService.GetAllPurchase();
             return Ok(purchase);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet("history/{productId}/{year}")]
         public async Task<IActionResult> GetindividualHistory(int productId, int year)
         {

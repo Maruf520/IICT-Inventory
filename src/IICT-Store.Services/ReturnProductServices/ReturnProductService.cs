@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ReturnedProductSerialNoRepositories;
+using IICT_Store.Repositories.ProductSerialNoRepositories;
 
 namespace IICT_Store.Services.ReturnProductServices
 {
@@ -24,7 +25,8 @@ namespace IICT_Store.Services.ReturnProductServices
         private readonly IDistributionRepository distributionRepository;
         private readonly IProductNumberRepository productNumberRepository;
         private readonly IReturnedProductSerialNoRepository returnedProductSerialNoRepository;
-        public ReturnProductService(IReturnedProductRepository returnProductRepository, IProductRepository productRepository, IMapper mapper, IDistributionRepository distributionRepository, IProductNumberRepository productNumberRepository, IReturnedProductSerialNoRepository returnedProductSerialNoRepository)
+        private readonly IProductSerialNoRepository productSerialNoRepository;
+        public ReturnProductService(IProductSerialNoRepository productSerialNoRepository, IReturnedProductRepository returnProductRepository, IProductRepository productRepository, IMapper mapper, IDistributionRepository distributionRepository, IProductNumberRepository productNumberRepository, IReturnedProductSerialNoRepository returnedProductSerialNoRepository)
         {
             this.returnProductRepository = returnProductRepository;
             this.productRepository = productRepository;
@@ -32,6 +34,7 @@ namespace IICT_Store.Services.ReturnProductServices
             this.distributionRepository = distributionRepository;
             this.productNumberRepository = productNumberRepository;
             this.returnedProductSerialNoRepository = returnedProductSerialNoRepository;
+            this.productSerialNoRepository = productSerialNoRepository;
         }
 
         public async Task<ServiceResponse<GetReturnProductDto>> CreateReturnProduct(CreateReturnProductDto createReturnProductDto, string userId)
@@ -58,8 +61,8 @@ namespace IICT_Store.Services.ReturnProductServices
             if (product.HasSerial == true)
             {
                 foreach (var serial in createReturnProductDto.ReturnedProductSerialNos)
-                { 
-                    var productNumber =  productNumberRepository.GetById(serial);
+                {
+                    var productNumber = productNumberRepository.GetById(serial);
                     ReturnedProductSerialNo returnedProductSerialNo = new()
                     {
                         Name = productNumber.Name,
@@ -67,6 +70,8 @@ namespace IICT_Store.Services.ReturnProductServices
                         CreatedAt = DateTime.Now,
                         ReturnedProductId = map.Id
                     };
+                    var productSerialNumber = await productSerialNoRepository.GetAssignedProductSerialByProductNoId(serial);
+                    productSerialNumber.ProductStatus = ProductStatus.Unassigned;
                     productNumber.ProductStatus = ProductStatus.Unassigned;
                     productNumberRepository.Update(productNumber);
                     returnedProductSerialNoRepository.Insert(returnedProductSerialNo);
@@ -78,13 +83,13 @@ namespace IICT_Store.Services.ReturnProductServices
                         response.Messages.Add($"Please Reduce the Quantity. This room has only {distributions.Quantity} item.");
                         return response;
                     }
-                    distributions.Quantity = distributions.Quantity - createReturnProductDto.Quantity;
+                    distributions.TotalRemainingQuantity = distributions.TotalRemainingQuantity - createReturnProductDto.Quantity;
                     distributions.UpdatedAt = DateTime.Now;
                     distributionRepository.Update(distributions);
                     product.QuantityInStock = product.QuantityInStock + createReturnProductDto.Quantity;
                     productRepository.Update(product);
                 }
-                response.SetMessage(new List<string>{new string("Product Returned.")},HttpStatusCode.OK);
+                response.SetMessage(new List<string> { new string("Product Returned.") }, HttpStatusCode.OK);
                 return response;
 
             }

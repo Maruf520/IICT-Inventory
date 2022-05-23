@@ -31,8 +31,8 @@ namespace IICT_Store.Services.ProductServices
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IProductNumberRepository productNumberRepository;
         private readonly IBaseRepo baseRepo;
-        public ProductService(IProductRepository productRepository, 
-            IMapper mapper, IDistributionRepository distributionRepository, 
+        public ProductService(IProductRepository productRepository,
+            IMapper mapper, IDistributionRepository distributionRepository,
             IProductSerialNoRepository productSerialNoRepository,
             IProductNumberRepository productNumberRepository, IBaseRepo baseRepo)
         {
@@ -50,9 +50,11 @@ namespace IICT_Store.Services.ProductServices
             var productToCreate = mapper.Map<Product>(createProductDto);
             productToCreate.CreatedAt = DateTime.Now;
             productToCreate.CategoryId = createProductDto.CategoryId;
-
-            var uploadImage = await UploadImage(createProductDto.Image);
-            productToCreate.ImageUrl = uploadImage;
+            if (createProductDto.Image != null)
+            {
+                var uploadImage = await UploadImage(createProductDto.Image);
+                productToCreate.ImageUrl = uploadImage;
+            }
             productToCreate.CreatedBy = userId;
             productRepository.Insert(productToCreate);
             var productToMap = mapper.Map<GetProductDto>(productToCreate);
@@ -61,7 +63,6 @@ namespace IICT_Store.Services.ProductServices
             response.Data = productToMap;
             return response;
         }
-
         public async Task<ServiceResponse<GetProductDto>> GetProductById(long id)
         {
             ServiceResponse<GetProductDto> response = new();
@@ -80,7 +81,7 @@ namespace IICT_Store.Services.ProductServices
 
             var productToMap = mapper.Map<GetProductDto>(product);
             productToMap.CategoryId = product.CategoryId;
-            if(serialNoCount < 0)
+            if (serialNoCount < 0)
             {
                 productToMap.NotSerializedProduct = 0;
             }
@@ -154,17 +155,17 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id,CreateProductNoDto createProductNoDto,string userId)
+        public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto, string userId)
         {
             ServiceResponse<GetProductDto> response = new();
-            var product =  productRepository.GetById(id);
-            if(product == null)
+            var product = productRepository.GetById(id);
+            if (product == null)
             {
                 response.Messages.Add("Product Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            if(product.HasSerial == false)
+            if (product.HasSerial == false)
             {
                 response.Messages.Add("Sorry, this product doesn't have any serial No.");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -181,7 +182,7 @@ namespace IICT_Store.Services.ProductServices
             }
 
             List<ProductNo> nos = new();
-            if(product.TotalQuantity > createProductNoDto.ProductNos.Count)
+            if (product.TotalQuantity > createProductNoDto.ProductNos.Count)
             {
                 response.Messages.Add("Please reduce the quantity of serial number.");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -232,15 +233,15 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetProductDto>> InsertProductNoMultiple(long id, FileUploadDto fileUploadDto,string userId)
+        public async Task<ServiceResponse<GetProductDto>> InsertProductNoMultiple(long id, FileUploadDto fileUploadDto, string userId)
         {
             ServiceResponse<GetProductDto> response = new();
-            var product =  productRepository.GetById(id);
+            var product = productRepository.GetById(id);
             List<string> list = new();
             if (fileUploadDto.File.Length > 0)
             {
                 var path = await UploadImage(fileUploadDto.File);
-                var parseFile =  ParseFile(path);
+                var parseFile = ParseFile(path);
                 list = parseFile.Data;
                 if (parseFile.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
@@ -249,13 +250,13 @@ namespace IICT_Store.Services.ProductServices
                     return response;
                 }
             }
-            if(product == null)
+            if (product == null)
             {
                 response.Messages.Add("Product Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            if(product.HasSerial == false)
+            if (product.HasSerial == false)
             {
                 response.Messages.Add("Sorry, this product doesn't have any serial No.");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -272,7 +273,7 @@ namespace IICT_Store.Services.ProductServices
             }
 
             List<ProductNo> nos = new();
-            if(product.TotalQuantity < list.Count)
+            if (product.TotalQuantity < list.Count)
             {
                 response.Messages.Add("Please reduce the quantity of serial number.");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -299,10 +300,10 @@ namespace IICT_Store.Services.ProductServices
             return response;
         }
 
-        public async  Task<ServiceResponse<List<GetProductNoDto>>> GetAllAvailableProductno(long productId)
+        public async Task<ServiceResponse<List<GetProductNoDto>>> GetAllAvailableProductno(long productId)
         {
-            ServiceResponse < List < GetProductNoDto >> response = new();
-            List <GetProductNoDto> productNos = new();
+            ServiceResponse<List<GetProductNoDto>> response = new();
+            List<GetProductNoDto> productNos = new();
             var product = productRepository.GetById(productId);
             if (product.HasSerial == false)
             {
@@ -314,21 +315,21 @@ namespace IICT_Store.Services.ProductServices
 
             var xx = await productRepository.GetAllProductNoById(productId);
             var productSerial = await productRepository.GetAllProductNoById(productId);
-            foreach(var item in productSerial)
+            foreach (var item in productSerial)
             {
-                foreach(var serial in distribution)
+                foreach (var serial in distribution)
                 {
-                    if(item.Id != serial.ProductNoId)
+                    if (item.Id != serial.ProductNoId)
                     {
                         GetProductNoDto getProductNoDto = new();
                         getProductNoDto.Id = item.Id;
                         getProductNoDto.Name = item.Name;
                         productNos.Add(getProductNoDto);
-                        xx.Remove(productSerial.Find(x =>x.Id == serial.ProductNoId));
+                        xx.Remove(productSerial.Find(x => x.Id == serial.ProductNoId));
                     }
                 }
             }
-         
+
             List<GetProductNoDto> productNos1 = new();
             foreach (var nos in xx)
             {
@@ -338,15 +339,15 @@ namespace IICT_Store.Services.ProductServices
                 productNos1.Add(getProductNoDto);
             }
             response.Data = productNos1;
-           
+
             return response;
         }
 
         public async Task<bool> CheckIfSerialNoExists(long productId, List<ProductNoDto> name)
         {
-            var productSerialNo =  await productRepository.GetAllProductNoById(productId);
+            var productSerialNo = await productRepository.GetAllProductNoById(productId);
             var nameCount = name.Count;
-            for(int i = 0;i<nameCount; i++)
+            for (int i = 0; i < nameCount; i++)
             {
                 foreach (var serialno in productSerialNo)
                 {
@@ -381,14 +382,14 @@ namespace IICT_Store.Services.ProductServices
         {
             ServiceResponse<GetProductNoDto> response = new();
             var getProductNo = await productSerialNoRepository.GetByProductNoId(productNoId);
-            if(getProductNo == null)
+            if (getProductNo == null)
             {
                 response.Messages.Add("Not  found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
             productSerialNoRepository.Delete(getProductNo.Id);
-            var distribution =  distributionRepository.GetById(getProductNo.DistributionId);
+            var distribution = distributionRepository.GetById(getProductNo.DistributionId);
             var product = productRepository.GetById(distribution.ProductId);
             distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
             distribution.UpdatedBy = userId;
@@ -430,22 +431,22 @@ namespace IICT_Store.Services.ProductServices
 
         public async Task<ServiceResponse<List<GetProductDto>>> GetProductByCategoryId(long id)
         {
-            ServiceResponse < List <GetProductDto >> response = new();
+            ServiceResponse<List<GetProductDto>> response = new();
             var products = await productRepository.GetProductByCategoryId(id);
-            
+
             List<GetProductDto> productDtos = new();
-            if (products.Count == 0 )
+            if (products.Count == 0)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            foreach(var product in products)
+            foreach (var product in products)
             {
                 var productNos = await productNumberRepository.GetByProductId(product.Id);
                 var productNosWithoutDmamgedProduct = productNos.Where(x => x.ProductStatus != ProductStatus.Damaged).Count();
                 var map = mapper.Map<GetProductDto>(product);
-                if(product.HasSerial == true)
+                if (product.HasSerial == true)
                 {
                     map.NotSerializedProduct = product.TotalQuantity - productNosWithoutDmamgedProduct;
                 }
@@ -468,7 +469,7 @@ namespace IICT_Store.Services.ProductServices
                 var product = productRepository.GetById(productId);
                 if (product == null)
                 {
-                    response.SetMessage(new List<string> {new string("Product Not Found.")}, HttpStatusCode.NotFound);
+                    response.SetMessage(new List<string> { new string("Product Not Found.") }, HttpStatusCode.NotFound);
                     return response;
                 }
                 var productMap = mapper.Map<GetProductDto>(product);
@@ -518,12 +519,12 @@ namespace IICT_Store.Services.ProductServices
                 {
                     var maintananaceproductCount = baseRepo.GetItems<MaintenanceProductSerialNo>(x =>
                         x.MaintananceProductId == maintenanceProduct.Id && x.IsRepaired == false).Count();
-                        maintananceProductQuantity += maintananaceproductCount;
+                    maintananceProductQuantity += maintananaceproductCount;
                 }
 
                 if (year > 0)
                 {
-                    var boughtProductOfYear = baseRepo.GetItems<Purchashed>(x=>x.CreatedAt.Year == year && x.ProductId == singleProduct.Id && x.IsConfirmed).Select(x =>x.Quantity).Sum();
+                    var boughtProductOfYear = baseRepo.GetItems<Purchashed>(x => x.CreatedAt.Year == year && x.ProductId == singleProduct.Id && x.IsConfirmed).Select(x => x.Quantity).Sum();
                     productReport.TotalBoughtProduct = boughtProductOfYear;
                 }
                 productReport.Product = productMap;
@@ -535,7 +536,7 @@ namespace IICT_Store.Services.ProductServices
                 reportDtos.Add(productReport);
             }
 
-            response.SetMessage(new List<string>{new ("All")});
+            response.SetMessage(new List<string> { new("All") });
             response.Data = reportDtos;
             return response;
         }
@@ -544,13 +545,13 @@ namespace IICT_Store.Services.ProductServices
         public async Task<ServiceResponse<DashboardInformationDto>> GetDashboardInformation()
         {
             ServiceResponse<DashboardInformationDto> response = new();
-            var category =  baseRepo.GetAll<Category>().ToList();
+            var category = baseRepo.GetAll<Category>().ToList();
             var products = baseRepo.GetAll<Product>().ToList();
             var damaged = baseRepo.GetAll<DamagedProduct>();
             int totalProduct = products.Select(x => x.TotalQuantity).Sum();
             int totalUnassignedProduct = products.Select(x => x.TotalQuantity).Sum();
             int totalCategory = category.Count;
-            int totalDamagedProduct = damaged.Select(x =>x.Quantity).Sum();
+            int totalDamagedProduct = damaged.Select(x => x.Quantity).Sum();
 
             DashboardInformationDto informationDto = new();
             informationDto.TotalCategory = totalCategory;
@@ -558,7 +559,7 @@ namespace IICT_Store.Services.ProductServices
             informationDto.TotalProduct = totalProduct;
             informationDto.TotalUnAssigned = totalUnassignedProduct;
             response.Data = informationDto;
-            response.SetMessage(new List<string>{new string("Product informartion")}, HttpStatusCode.OK);
+            response.SetMessage(new List<string> { new string("Product informartion") }, HttpStatusCode.OK);
             return response;
         }
     }
