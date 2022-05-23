@@ -86,7 +86,7 @@ namespace IICT_Store.Services.ReturnProductServices
                     distributions.TotalRemainingQuantity = distributions.TotalRemainingQuantity - 1;
                     distributions.UpdatedAt = DateTime.Now;
                     distributionRepository.Update(distributions);
-                    product.QuantityInStock = product.QuantityInStock + createReturnProductDto.Quantity;
+                    product.QuantityInStock = product.QuantityInStock + 1;
                     productRepository.Update(product);
                 }
                 response.SetMessage(new List<string> { new string("Product Returned.") }, HttpStatusCode.OK);
