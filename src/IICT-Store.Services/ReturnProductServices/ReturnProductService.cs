@@ -83,7 +83,7 @@ namespace IICT_Store.Services.ReturnProductServices
                         response.Messages.Add($"Please Reduce the Quantity. This room has only {distributions.Quantity} item.");
                         return response;
                     }
-                    distributions.TotalRemainingQuantity = distributions.TotalRemainingQuantity - createReturnProductDto.Quantity;
+                    distributions.TotalRemainingQuantity = distributions.TotalRemainingQuantity - 1;
                     distributions.UpdatedAt = DateTime.Now;
                     distributionRepository.Update(distributions);
                     product.QuantityInStock = product.QuantityInStock + createReturnProductDto.Quantity;
