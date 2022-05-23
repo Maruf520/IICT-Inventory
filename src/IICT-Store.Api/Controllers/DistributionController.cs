@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IICT_Store.Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace IICT_Store.Api.Controllers
             this.distributionService = distributionService;
             this.logger = logger;
         }
-
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreateDistribution([FromBody] CreateDistributionDto createDistributionDto)
         {
@@ -40,28 +41,28 @@ namespace IICT_Store.Api.Controllers
                 return BadRequest(distribution);
             }
         }
-        
+        [Authorize(Roles = "User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(long id)
         {
             var distribution = await distributionService.GetById(id);
             return Ok(distribution);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet("roomno/{id}")]
         public async Task<IActionResult> GetByRoomNo(int id)
         {
             var distribution = await distributionService.GetByRoomNo(id);
             return Ok(distribution);
         }
-        
+        [Authorize(Roles = "User")]
         [HttpGet("person/{id}")]
         public async Task<IActionResult> GetByPersonId(long id)
         {
             var distribution = await distributionService.GetByPersonId(id);
             return Ok(distribution);
         }
-
+        [Authorize(Roles = "User")]
         //get all distributions by product Id
         [HttpGet("product/{id}")]
         public async Task<IActionResult> GetALlDistributionByProductId(long id)
@@ -69,14 +70,14 @@ namespace IICT_Store.Api.Controllers
             var distribution = await distributionService.GetAllDistributionByProductId(id);
             return Ok(distribution);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet("product/serial/{id}")]
         public async Task<IActionResult> GetDistributionByProductNoId(long id)
         {
             var distribution = await distributionService.GetDistributionByProductNoId(id);
             return Ok(distribution);
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> GetDistribution([FromQuery] long productId, [FromQuery] long personId, [FromQuery] int roomNo)
         {

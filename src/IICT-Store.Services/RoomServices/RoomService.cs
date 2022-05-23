@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using AutoMapper;
 using IICT_Store.Dtos.Rooms;
@@ -33,7 +34,7 @@ namespace IICT_Store.Services.RoomServices
                 if (rooms.Any(x => x.RoomNo == createRoomDto.RoomNo))
                 {
                     response.SetMessage(
-                        new List<string> {new string($"{createRoomDto.RoomNo}, This room no already exits.")},
+                        new List<string> { new string($"{createRoomDto.RoomNo}, This room no already exits.") },
                         HttpStatusCode.BadRequest);
                     return response;
                 }
@@ -44,17 +45,24 @@ namespace IICT_Store.Services.RoomServices
                     RoomType = createRoomDto.RoomType,
                     CreatedAt = DateTime.Now,
                     CreatedBy = userId
-                    
+
                 };
                 roomRepository.Insert(room);
+                /*                System.Net.Mail.MailMessage mailMessage = new();
+                                MailMessage message = new MailMessage(
+                         "iict.sust.edu@gamil.com",
+                         "md.maruf5201@gmail.com",
+                         "Quarterly data report.",
+                         "See the attached spreadsheet.");
+                                SendEmailx(message);*/
                 var roomToReturn = mapper.Map<GetRoomDto>(room);
                 response.Data = roomToReturn;
-                response.SetMessage(new List<string> {new("Room Created.")}, HttpStatusCode.OK);
+                response.SetMessage(new List<string> { new("Room Created.") }, HttpStatusCode.OK);
                 return response;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                response.SetMessage(new List<string>{new(e.Message)},HttpStatusCode.InternalServerError);
+                response.SetMessage(new List<string> { new(e.Message) }, HttpStatusCode.InternalServerError);
                 return response;
             }
         }
@@ -88,13 +96,13 @@ namespace IICT_Store.Services.RoomServices
                 return response;
             }
         }
-        public  ServiceResponse<GetRoomDto> GetById(int id)
+        public ServiceResponse<GetRoomDto> GetById(int id)
         {
             ServiceResponse<GetRoomDto> response = new();
             var room = roomRepository.GetById(id);
             if (room == null)
             {
-                response.SetMessage(new List<string>(){new string("Room Not Found.")},HttpStatusCode.NotFound);
+                response.SetMessage(new List<string>() { new string("Room Not Found.") }, HttpStatusCode.NotFound);
                 return response;
             }
             var roomToReturn = mapper.Map<GetRoomDto>(room);
@@ -108,7 +116,7 @@ namespace IICT_Store.Services.RoomServices
             var rooms = roomRepository.GetAll().ToList();
             if (!rooms.Any())
             {
-                response.SetMessage(new List<string>() { new string("No Rooms Found.") },HttpStatusCode.OK);
+                response.SetMessage(new List<string>() { new string("No Rooms Found.") }, HttpStatusCode.OK);
                 return response;
             }
             var roomToReturn = mapper.Map<List<GetRoomDto>>(rooms);
@@ -127,8 +135,44 @@ namespace IICT_Store.Services.RoomServices
             }
 
             roomRepository.Delete(id);
-            response.SetMessage(new List<string>() { new string("Room Deleted") },HttpStatusCode.OK);
+            response.SetMessage(new List<string>() { new string("Room Deleted") }, HttpStatusCode.OK);
             return response;
+        }/*
+
+        public static void SendEmailx(System.Net.Mail.MailMessage m)
+        {
+            SendEmail(m, true);
         }
+
+
+
+        public static void SendEmail(System.Net.Mail.MailMessage m, Boolean Async)
+        {
+            System.Net.Mail.SmtpClient smtpClient = null;
+            smtpClient = new System.Net.Mail.SmtpClient();
+
+            NetworkCredential credential = new();
+            credential.Password = "MahiKeya0124";
+            credential.Domain = "iict.sust.edu@gmail.com";
+
+            if (Async)
+            {
+                SendEmailDelegate sd = new SendEmailDelegate(smtpClient.Send);
+                AsyncCallback cb = new AsyncCallback(SendEmailResponse);
+                sd.BeginInvoke(m, cb, sd);
+            }
+            else
+            {
+                smtpClient.Send(m);
+            }
+        }
+
+        private delegate void SendEmailDelegate(System.Net.Mail.MailMessage m);
+        private static void SendEmailResponse(IAsyncResult ar)
+        {
+            SendEmailDelegate sd = (SendEmailDelegate)(ar.AsyncState);
+
+            sd.EndInvoke(ar);
+        }*/
     }
 }
