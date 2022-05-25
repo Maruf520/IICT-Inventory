@@ -25,7 +25,7 @@ namespace IICT_Store.Api.Controllers
             this.userSevice = userSevice;
             this.emailService = emailService;
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
@@ -42,8 +42,8 @@ namespace IICT_Store.Api.Controllers
                 return NotFound(user);
             }
             var token = await authService.ForgotPasswordTokenGenerator(user.Data.Email);
-            var bseUrl = "http://20.210.113.90/reset-password";
-            var links =bseUrl + "?Data=" + token.Data + "&" + "email=" + email;
+            var bseUrl = "http://20.243.27.119/reset-password";
+            var links = bseUrl + "?Data=" + token.Data + "&" + "email=" + email;
             await emailService.SendEmail(email, "IICT inventory password reset", "This is you password reset link. Use this to reset your password." + "\n" + $"{links}", user.Data.Names);
             return Ok($"Password reset link sent to {email}.");
         }
