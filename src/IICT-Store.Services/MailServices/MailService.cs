@@ -18,7 +18,7 @@ namespace IICT_Store.Services.MailServices
         public async Task<string> SendEmail(string to, string subject, string body, string userName)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("IICT Inventory", "md.maruf5201@gmail.com"));
+            message.From.Add(new MailboxAddress("IICT Inventory", "iict.sust.edu@gmail.com"));
             message.To.Add(new MailboxAddress(userName, to));
             message.Subject = subject;
             message.Body = new TextPart("plain")
