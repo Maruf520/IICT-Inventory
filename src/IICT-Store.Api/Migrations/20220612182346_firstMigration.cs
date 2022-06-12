@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IICT_Store.Api.Migrations
 {
-    public partial class MigrationName : Migration
+    public partial class firstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -394,7 +394,6 @@ namespace IICT_Store.Api.Migrations
                     PurchaseStatus = table.Column<int>(type: "int", nullable: false),
                     PaymentProcess = table.Column<int>(type: "int", nullable: false),
                     PaymentBy = table.Column<int>(type: "int", nullable: false),
-                    Purchasedby = table.Column<int>(type: "int", nullable: false),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     ConfirmedBy = table.Column<int>(type: "int", nullable: false),
                     PuchasedDate = table.Column<DateTime>(type: "datetime2", nullable: false),

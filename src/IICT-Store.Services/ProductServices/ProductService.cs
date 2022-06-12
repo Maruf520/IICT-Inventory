@@ -47,6 +47,13 @@ namespace IICT_Store.Services.ProductServices
         public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto, string userId)
         {
             ServiceResponse<GetProductDto> response = new();
+            var allProducts = productRepository.GetAll();
+            if (allProducts.Any(x => x.Name == createProductDto.Name))
+            {
+                response.Messages.Add("This name is already exits. Please try with another name.");
+                response.StatusCode = HttpStatusCode.BadRequest;
+                return response;
+            }
             var productToCreate = mapper.Map<Product>(createProductDto);
             productToCreate.CreatedAt = DateTime.Now;
             productToCreate.CategoryId = createProductDto.CategoryId;
@@ -115,6 +122,13 @@ namespace IICT_Store.Services.ProductServices
         public async Task<ServiceResponse<CreateProductDto>> UpdateProduct(CreateProductDto createProductDto, long id, string userId)
         {
             ServiceResponse<CreateProductDto> response = new();
+            var allProducts = productRepository.GetAll();
+            if (allProducts.Any(x => x.Name == createProductDto.Name))
+            {
+                response.Messages.Add("This name is already exits. Please try with another name.");
+                response.StatusCode = HttpStatusCode.BadRequest;
+                return response;
+            }
             var product = await productRepository.GetProductById(id);
             if (product == null)
             {
@@ -144,6 +158,13 @@ namespace IICT_Store.Services.ProductServices
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            var ifPurchased = baseRepo.GetById<Purchashed>(productId);
+            if (ifPurchased != null)
+            {
+                response.Messages.Add("You can't delete this product.");
+                response.StatusCode = HttpStatusCode.BadRequest;
                 return response;
             }
             productRepository.Delete(productId);

@@ -739,9 +739,6 @@ namespace IICT_Store.Api.Migrations
                     b.Property<int>("PurchaseStatus")
                         .HasColumnType("int");
 
-                    b.Property<int>("Purchasedby")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 

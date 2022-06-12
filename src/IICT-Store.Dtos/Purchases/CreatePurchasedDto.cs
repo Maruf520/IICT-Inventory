@@ -28,12 +28,12 @@ namespace IICT_Store.Dtos.Purchases
         [Required]
         public PaymentProcess PaymentProcess { get; set; }
         //confisued
-        [Required]
-        public int Purchasedby { get; set; }
+        //[Required]
+        //public int Purchasedby { get; set; }
         /*        public int ConfirmedBy { get; set; }*/
         [Required]
         public DateTime PuchasedDate { get; set; }
-/*        public DateTime ConfirmDate { get; set; }*/
+        /*        public DateTime ConfirmDate { get; set; }*/
         public string Note { get; set; }
     }
 }
