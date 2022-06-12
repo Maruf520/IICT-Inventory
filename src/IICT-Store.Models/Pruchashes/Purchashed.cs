@@ -24,7 +24,7 @@ namespace IICT_Store.Models.Pruchashes
         public PaymentBy PaymentBy { get; set; }
         public ICollection<CashMemo> CashMemos { get; set; }
         //confisued
-        public int Purchasedby { get; set; }
+       // public int Purchasedby { get; set; }
         public bool IsConfirmed { get; set; }
         public int ConfirmedBy { get; set; }
         public DateTime PuchasedDate { get; set; }

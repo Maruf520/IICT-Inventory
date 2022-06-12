@@ -33,11 +33,11 @@ namespace IICT_Store.Services.CategoryServices
             var categories = categoryRepository.GetAll();
             if (categories.Any(x => x.Name == categoryDto.Name))
             {
-                response.SetMessage(new List<string>{new ("Category already exists.")});
+                response.SetMessage(new List<string> { new("Category Name already exists.") });
                 return response;
             }
             var uploadImage = "";
-            if(categoryDto.Image != null)
+            if (categoryDto.Image != null)
             {
                 uploadImage = await UploadImage(categoryDto.Image);
             }
@@ -58,9 +58,9 @@ namespace IICT_Store.Services.CategoryServices
         {
             ServiceResponse<GetCategoryDto> response = new();
             var category = categoryRepository.GetById(id);
-            if(category == null)
+            if (category == null)
             {
-                response.Messages.Add("Nit Found.");
+                response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
@@ -78,14 +78,14 @@ namespace IICT_Store.Services.CategoryServices
             ServiceResponse<GetCategoryDto> response = new();
             // var category = categoryRepository.GetById(id);
             var category = repo.GetItems<Category>(e => e.Id == id).FirstOrDefault();
-            if(category == null)
+            if (category == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
             var categoryToMap = mapper.Map<GetCategoryDto>(category);
-            response.StatusCode = System.Net.HttpStatusCode.OK;;
+            response.StatusCode = System.Net.HttpStatusCode.OK; ;
             response.Data = categoryToMap;
             return response;
         }
@@ -94,13 +94,18 @@ namespace IICT_Store.Services.CategoryServices
         {
             ServiceResponse<GetCategoryDto> response = new();
             var category = categoryRepository.GetById(id);
-            if(category == null)
+            if (category == null)
             {
                 response.Messages.Add("Not Found");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-
+            var categories = categoryRepository.GetAll();
+            if (categories.Any(x => x.Name == categoryDto.Name))
+            {
+                response.SetMessage(new List<string> { new("Category Name already exists.") });
+                return response;
+            }
             category.UpdatedBy = userId;
             category.UpdatedAt = DateTime.Now;
             category.Name = categoryDto.Name;
@@ -110,13 +115,13 @@ namespace IICT_Store.Services.CategoryServices
             response.Data = categoryToMap;
             response.Messages.Add("Updated.");
             return response;
-            
+
         }
 
         public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategory()
         {
             ServiceResponse<List<GetCategoryDto>> response = new();
-            var categories =  categoryRepository.GetAll().ToList();
+            var categories = categoryRepository.GetAll().ToList();
             var categoryToMap = mapper.Map<List<GetCategoryDto>>(categories);
             response.Data = categoryToMap;
             response.StatusCode = System.Net.HttpStatusCode.OK;
