@@ -12,7 +12,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController :  BaseController
+    public class UserController : BaseController
     {
         private readonly IUserService userServcie;
         public UserController(IUserService userServcie)
@@ -28,9 +28,9 @@ namespace IICT_Store.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromForm]UserRegistrationDto userRegistrationDto)
+        public async Task<IActionResult> Update([FromForm] UserUpdateDto userRegistrationDto)
         {
-            var user = await userServcie.UpdateUser("",userRegistrationDto);
+            var user = await userServcie.UpdateUser(GetuserId(), userRegistrationDto);
             return Ok(user);
         }
         [HttpGet("{id}")]
@@ -38,7 +38,7 @@ namespace IICT_Store.Api.Controllers
         {
             var user = await userServcie.GetUserById(id);
             return Ok(user);
-        }       
+        }
         [HttpGet("profile")]
         public async Task<IActionResult> Profile()
         {
