@@ -4,6 +4,7 @@ using IICT_Store.Models;
 using IICT_Store.Models.Users;
 using IICT_Store.Repositories.UserRepositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,16 +19,18 @@ namespace IICT_Store.Services.UserServices
     {
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        private readonly UserManager<ApplicationUser> userManager;
+        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
         public async Task<ServiceResponse<UserRegistrationDto>> CreateUser(UserRegistrationDto userRegistrationDto)
         {
             ServiceResponse<UserRegistrationDto> response = new();
             var user = await userRepository.GetByEmail(userRegistrationDto.Email);
-            if(user != null)
+            if (user != null)
             {
                 response.Messages.Add($"User already exists with {userRegistrationDto.Email}");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -38,16 +41,16 @@ namespace IICT_Store.Services.UserServices
             applicationUser.Email = userRegistrationDto.Email;
             applicationUser.Phone = userRegistrationDto.Phone;
             applicationUser.Image = "";
-            if(userRegistrationDto.Image != null)
+            if (userRegistrationDto.Image != null)
             {
                 var upload = await UploadImage(userRegistrationDto.Image);
                 applicationUser.Image = upload;
             }
-            
+
             applicationUser.Names = userRegistrationDto.UserName;
             applicationUser.UserName = userRegistrationDto.Email;
 
-             await userRepository.Create(applicationUser, userRegistrationDto.Password);
+            await userRepository.Create(applicationUser, userRegistrationDto.Password);
             response.Messages.Add("User Created");
             response.StatusCode = System.Net.HttpStatusCode.Created;
             return response;
@@ -74,7 +77,7 @@ namespace IICT_Store.Services.UserServices
         {
             ServiceResponse<List<GetUserDto>> response = new();
             var users = await userRepository.GetAll();
-            if(users.Count == 0)
+            if (users.Count == 0)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NoContent;
@@ -86,24 +89,22 @@ namespace IICT_Store.Services.UserServices
             return response;
         }
 
-        public async Task<ServiceResponse<GetUserDto>> UpdateUser(string id,UserRegistrationDto userRegistrationDto)
+        public async Task<ServiceResponse<GetUserDto>> UpdateUser(string id, UserUpdateDto userUpdateDto)
         {
             ServiceResponse<GetUserDto> response = new();
             var user = await userRepository.GetById(id);
-            if(user == null)
+            if (user == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NoContent;
                 return response;
             }
 
-            var upload = await UploadImage(userRegistrationDto.Image);
+            var upload = await UploadImage(userUpdateDto.Image);
             user.Image = upload;
-            user.Names = userRegistrationDto.UserName;
-            user.Email = userRegistrationDto.Email;
-            user.Phone = userRegistrationDto.Phone;
-            user.Designation = userRegistrationDto.Designation;
-            user.Email = userRegistrationDto.Email;
+            user.Names = userUpdateDto.UserName;
+            user.Phone = userUpdateDto.Phone;
+            user.PasswordHash = (userUpdateDto.Password != null && userUpdateDto.Password != "") ? (userManager.PasswordHasher.HashPassword(user, userUpdateDto.Password)) : (user.PasswordHash);
             await userRepository.Update(user);
             response.Messages.Add("Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -144,7 +145,7 @@ namespace IICT_Store.Services.UserServices
             var user = userRepository.GetById(userId);
             var userToReturn = mapper.Map<GetUserDto>(user);
             response.Data = userToReturn;
-            response.SetMessage(new List<string>{new string("Profile.")},HttpStatusCode.OK);
+            response.SetMessage(new List<string> { new string("Profile.") }, HttpStatusCode.OK);
             return response;
         }
 
@@ -152,7 +153,7 @@ namespace IICT_Store.Services.UserServices
         {
             ServiceResponse<GetUserDto> response = new();
             var user = await userRepository.GetByEmail(email);
-            if(user == null)
+            if (user == null)
             {
                 response.SetMessage(new List<string> { new string("User Not Found.") }, HttpStatusCode.NotFound);
                 return response;
