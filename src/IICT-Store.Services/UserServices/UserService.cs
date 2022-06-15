@@ -100,8 +100,12 @@ namespace IICT_Store.Services.UserServices
                 return response;
             }
 
-            var upload = await UploadImage(userUpdateDto.Image);
-            user.Image = upload;
+            if (userUpdateDto.Image != null)
+            {
+                var upload = await UploadImage(userUpdateDto.Image);
+                user.Image = upload;
+            }
+
             user.Names = userUpdateDto.UserName;
             user.Phone = userUpdateDto.Phone;
             user.PasswordHash = (userUpdateDto.Password != null && userUpdateDto.Password != "") ? (userManager.PasswordHasher.HashPassword(user, userUpdateDto.Password)) : (user.PasswordHash);
