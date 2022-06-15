@@ -71,7 +71,8 @@ namespace IICT_Store.Models
         }
         //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IICT_StoreDbContext
         //dotnet ef --startup-project IICT-Store.Api migrations add MigrationName -c IdentityContext
-        //dotnet ef database update --context IICT_StoreDbContext
+        //dotnet ef database update --context IICT_StoreDbContext 
+        //dotnet ef database update --context IdentityContext 
         //export PATH="$PATH:$HOME/.dotnet/tools/"
         // Update-Database -Context IdentityContext
         //IdentityContext
