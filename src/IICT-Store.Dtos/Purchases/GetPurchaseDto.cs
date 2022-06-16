@@ -1,4 +1,5 @@
 ﻿using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Dtos.UserDtos;
 using IICT_Store.Models.Pruchashes;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,14 @@ namespace IICT_Store.Dtos.Purchases
         public string Description { get; set; }
         //confisued
         public int Purchasedby { get; set; }
-        public int ConfirmedBy { get; set; }
+        public string ConfirmedBy { get; set; }
         public DateTime PuchasedDate { get; set; }
         public DateTime ConfirmDate { get; set; }
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }
+        public GetUserDto CreatedByUser { get; set; }
+        public GetUserDto ConfirmByUser { get; set; }
+        public GetUserDto RejectedByUser { get; set; }
         public bool IsConfirmed { get; set; }
         public string Note { get; set; }
     }

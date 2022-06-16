@@ -26,9 +26,9 @@ namespace IICT_Store.Services.UserServices
             this.mapper = mapper;
             this.userManager = userManager;
         }
-        public async Task<ServiceResponse<UserRegistrationDto>> CreateUser(UserRegistrationDto userRegistrationDto)
+        public async Task<ServiceResponse<GetUserDto>> CreateUser(UserRegistrationDto userRegistrationDto)
         {
-            ServiceResponse<UserRegistrationDto> response = new();
+            ServiceResponse<GetUserDto> response = new();
             var user = await userRepository.GetByEmail(userRegistrationDto.Email);
             if (user != null)
             {
@@ -51,6 +51,7 @@ namespace IICT_Store.Services.UserServices
             applicationUser.UserName = userRegistrationDto.Email;
 
             await userRepository.Create(applicationUser, userRegistrationDto.Password);
+            response.Data = mapper.Map<GetUserDto>(await userRepository.GetById(applicationUser.Id.ToString()));
             response.Messages.Add("User Created");
             response.StatusCode = System.Net.HttpStatusCode.Created;
             return response;
@@ -110,6 +111,7 @@ namespace IICT_Store.Services.UserServices
             user.Phone = userUpdateDto.Phone;
             user.PasswordHash = (userUpdateDto.Password != null && userUpdateDto.Password != "") ? (userManager.PasswordHasher.HashPassword(user, userUpdateDto.Password)) : (user.PasswordHash);
             await userRepository.Update(user);
+            response.Data = mapper.Map<GetUserDto>(user);
             response.Messages.Add("Updated.");
             response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;

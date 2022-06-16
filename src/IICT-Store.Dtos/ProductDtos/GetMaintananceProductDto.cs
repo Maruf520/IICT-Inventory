@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IICT_Store.Dtos.UserDtos;
 using IICT_Store.Models.Products;
 
 namespace IICT_Store.Dtos.ProductDtos
@@ -8,6 +9,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public long Id { get; set; }
         public long ProductId { get; set; }
         public GetProductDto Product { get; set; }
+        public GetUserDto CreatedByUser { get; set; }
         public long DistributionId { get; set; }
         public long ReceiverId { get; set; }
         public long SenderId { get; set; }

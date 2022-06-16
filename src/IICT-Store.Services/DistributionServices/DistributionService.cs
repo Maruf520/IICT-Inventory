@@ -17,6 +17,8 @@ using AutoMapper.Internal;
 using IICT_Store.Repositories.TestRepo;
 using Microsoft.Extensions.Logging;
 using IICT_Store.Models.Persons;
+using IICT_Store.Dtos.UserDtos;
+using IICT_Store.Repositories.UserRepositories;
 
 namespace IICT_Store.Services.DistributionServices
 {
@@ -29,7 +31,8 @@ namespace IICT_Store.Services.DistributionServices
         private readonly IProductNumberRepository productNumberRepository;
         private readonly ILogger<DistributionService> logger;
         private readonly IBaseRepo baseRepo;
-        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository, ILogger<DistributionService> logger, IBaseRepo baseRepo)
+        private readonly IUserRepository userRepository;
+        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository, ILogger<DistributionService> logger, IBaseRepo baseRepo, IUserRepository userRepository)
         {
             this.distributionRepository = distributionRepository;
             this.mapper = mapper;
@@ -38,6 +41,7 @@ namespace IICT_Store.Services.DistributionServices
             this.productNumberRepository = productNumberRepository;
             this.logger = logger;
             this.baseRepo = baseRepo;
+            this.userRepository = userRepository;
         }
         public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto, string userId)
         {
@@ -456,6 +460,8 @@ namespace IICT_Store.Services.DistributionServices
                 getProductSerialDtos.Add(productNoToMap);
             }
             var map = mapper.Map<GetDistributionDto>(distribution);
+            map.CreatedByByUser = mapper.Map<GetUserDto>(await userRepository.GetById(distribution.CreatedBy));
+            map.UpdatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(distribution.UpdatedBy));
             map.GetProductSerialNo = getProductSerialDtos;
             response.Data = map;
             response.StatusCode = System.Net.HttpStatusCode.OK;

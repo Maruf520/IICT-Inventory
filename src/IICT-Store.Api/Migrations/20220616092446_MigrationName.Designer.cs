@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations
 {
     [DbContext(typeof(IICT_StoreDbContext))]
-    [Migration("20220612182346_firstMigration")]
-    partial class firstMigration
+    [Migration("20220616092446_MigrationName")]
+    partial class MigrationName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -705,8 +705,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("ConfirmDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ConfirmedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ConfirmedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -743,6 +743,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("RejectedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Supplier")
                         .HasColumnType("nvarchar(max)");

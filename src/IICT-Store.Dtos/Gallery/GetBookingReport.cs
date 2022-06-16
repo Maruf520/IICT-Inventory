@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IICT_Store.Dtos.UserDtos;
+using System;
 
 namespace IICT_Store.Dtos.Gallery
 {
@@ -10,5 +11,6 @@ namespace IICT_Store.Dtos.Gallery
         public string Purposes { get; set; }
         public decimal Amount { get; set; }
         public string MoneyReceiptNo { get; set; }
+        public GetUserDto CreatedByUser { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IICT_Store.Dtos.UserDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace IICT_Store.Dtos.Gallery
         public string MoneyReceipt { get; set; }
         public string MoneyReceiptNo { get; set; }
         public string BookingBy { get; set; }
+        public GetUserDto CreaedByUser { get; set; }
         public string Purposes { get; set; }
         public string Note { get; set; }
     }

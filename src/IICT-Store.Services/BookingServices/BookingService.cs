@@ -14,6 +14,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using IICT_Store.Repositories.TestRepo;
+using IICT_Store.Dtos.UserDtos;
+using IICT_Store.Repositories.UserRepositories;
 
 namespace IICT_Store.Services.BookingServices
 {
@@ -24,13 +26,15 @@ namespace IICT_Store.Services.BookingServices
         private readonly IBookingRepository bookingRespository;
         private readonly IBookingTimeSlotRepository bookingTimeSlotRepository;
         private readonly IBaseRepo baseRepo;
-        public BookingService(ITimeSlotReposiotry timeSlotRepository, IBookingRepository bookingRespository, IMapper mapper, IBookingTimeSlotRepository bookingTimeSlotRepository, IBaseRepo baseRepo)
+        private readonly IUserRepository userRepository;
+        public BookingService(ITimeSlotReposiotry timeSlotRepository, IBookingRepository bookingRespository, IMapper mapper, IBookingTimeSlotRepository bookingTimeSlotRepository, IBaseRepo baseRepo, IUserRepository userRepository)
         {
             this.bookingRespository = bookingRespository;
             this.timeSlotRepository = timeSlotRepository;
             this.mapper = mapper;
             this.bookingTimeSlotRepository = bookingTimeSlotRepository;
             this.baseRepo = baseRepo;
+            this.userRepository = userRepository;
         }
         public async Task<ServiceResponse<GetBookingDto>> CreateBooking(CreateBookingDto createBookingDto, string userId)
         {
@@ -52,7 +56,7 @@ namespace IICT_Store.Services.BookingServices
                 booking.MoneyReceipt = await UploadFile(createBookingDto.MoneyReceipt);
             }
             bookingRespository.Insert(booking);
-            foreach(var slotId in createBookingDto.TimeSlotId)
+            foreach (var slotId in createBookingDto.TimeSlotId)
             {
                 BookingTimeSlot bookingTimeSLot = new();
                 bookingTimeSLot.TimeSlotId = slotId;
@@ -70,7 +74,7 @@ namespace IICT_Store.Services.BookingServices
         {
             ServiceResponse<GetBookingDto> response = new();
             var booking = bookingRespository.GetById(id);
-            if(booking == null)
+            if (booking == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -84,24 +88,24 @@ namespace IICT_Store.Services.BookingServices
             return response;
         }
 
-        public async Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date,GalleryNo galleryNo)
+        public async Task<ServiceResponse<List<GetTimeSlotDto>>> GetAvailableTimeSlot(DateTime date, GalleryNo galleryNo)
         {
 
             ServiceResponse<List<GetTimeSlotDto>> response = new();
             List<GetTimeSlotDto> getTimeSlotDtos = new();
-            var bookingTImeslots =  bookingTimeSlotRepository.GetByDate(date,galleryNo).Result;
-            if(bookingTImeslots == null)
+            var bookingTImeslots = bookingTimeSlotRepository.GetByDate(date, galleryNo).Result;
+            if (bookingTImeslots == null)
             {
                 response.Messages.Add("No Booking Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-            var timeslots =  timeSlotRepository.GetAll().ToList();
-            foreach(var timeslot  in timeslots.ToList() )
+            var timeslots = timeSlotRepository.GetAll().ToList();
+            foreach (var timeslot in timeslots.ToList())
             {
-                foreach(var bookingtimeslot in bookingTImeslots)
+                foreach (var bookingtimeslot in bookingTImeslots)
                 {
-                    if(timeslot.Id == bookingtimeslot.TimeSlotId)
+                    if (timeslot.Id == bookingtimeslot.TimeSlotId)
                     {
                         var filter = timeslots.FirstOrDefault(x => x.Id == timeslot.Id);
                         timeslots.Remove(filter);
@@ -120,16 +124,16 @@ namespace IICT_Store.Services.BookingServices
             ServiceResponse<List<GetBookingDto>> response = new();
             var booking = await bookingRespository.GetByDate(date, galleryNo);
 
-            
-            if ( booking.Count == 0)
+
+            if (booking.Count == 0)
             {
                 response.Messages.Add("No Booking Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
-           // List<GetTimeSlotDto> timeSlotDtos = new();
-            List < GetBookingDto > GetBookingDtos = new();
-            foreach(var book in booking)
+            // List<GetTimeSlotDto> timeSlotDtos = new();
+            List<GetBookingDto> GetBookingDtos = new();
+            foreach (var book in booking)
             {
                 GetBookingDto getBookingDto = new();
                 getBookingDto.Id = book.Id;
@@ -138,11 +142,12 @@ namespace IICT_Store.Services.BookingServices
                 getBookingDto.Date = book.Date;
                 getBookingDto.Purposes = book.Purposes;
                 getBookingDto.Note = book.Note;
+                getBookingDto.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(book.CreatedBy));
                 GetBookingDtos.Add(getBookingDto);
                 List<GetTimeSlotDto> timeSlotDtos = new();
                 foreach (var timeslotId in book.BookingTimeSlots)
                 {
-                    var timeSlot =  timeSlotRepository.GetById(timeslotId.Id);
+                    var timeSlot = timeSlotRepository.GetById(timeslotId.Id);
                     GetTimeSlotDto getTimeSlotDto = new();
                     getTimeSlotDto.Id = timeslotId.Id;
                     getTimeSlotDto.StartTime = timeSlot.StartTime;
@@ -181,7 +186,7 @@ namespace IICT_Store.Services.BookingServices
                     }
                 }
             }
-            foreach(var time in timeslots)
+            foreach (var time in timeslots)
             {
                 CombinedTimeSlotDto combinedTimeSlotDto = new();
                 combinedTimeSlotDto.TimeSlotId = time.Id;
@@ -190,9 +195,9 @@ namespace IICT_Store.Services.BookingServices
                 combinedTimeSlotDtos.Add(combinedTimeSlotDto);
             }
             var booking = await bookingRespository.GetByDate(date, galleryNo);
-            foreach(var book in booking)
+            foreach (var book in booking)
             {
-                foreach(var timeslotId in book.BookingTimeSlots)
+                foreach (var timeslotId in book.BookingTimeSlots)
                 {
                     CombinedTimeSlotDto combinedTimeSlotDto1 = new();
                     GetBookingDto getBookingDto = new();
@@ -203,6 +208,7 @@ namespace IICT_Store.Services.BookingServices
                     combinedTimeSlotDto1.Purposes = book.Purposes;
                     combinedTimeSlotDto1.Note = book.Note;
                     combinedTimeSlotDto1.Amount = book.Amount;
+                    combinedTimeSlotDto1.CreaedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(book.CreatedBy));
                     combinedTimeSlotDto1.MoneyReceiptNo = book.MoneyReceiptNo;
                     combinedTimeSlotDto1.MoneyReceipt = book.MoneyReceipt;
                     var timeSlot = timeSlotRepository.GetById(timeslotId.TimeSlotId);
@@ -223,13 +229,14 @@ namespace IICT_Store.Services.BookingServices
         {
             ServiceResponse<GetBookingDto> response = new();
             var booking = bookingRespository.GetById(id);
-            if(booking == null)
+            if (booking == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
             var map = mapper.Map<GetBookingDto>(booking);
+            map.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(booking.CreatedBy));
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Messages.Add("Booking.");
             response.Data = map;
@@ -266,10 +273,16 @@ namespace IICT_Store.Services.BookingServices
         public async Task<ServiceResponse<List<GetBookingReport>>> GetReport(DateTime start, DateTime end)
         {
             ServiceResponse<List<GetBookingReport>> response = new();
-            var allBooking =   baseRepo.GetItems<Booking>(x => x.Date> start && x.Date < end);
-            var bookingToReturn = mapper.Map<List<GetBookingReport>>(allBooking);
+            var allBooking = baseRepo.GetItems<Booking>(x => x.Date > start && x.Date < end);
+            var bookingToReturn = new List<GetBookingReport>();
+            foreach (var booking in allBooking)
+            {
+                var returnBooking = mapper.Map<GetBookingReport>(booking);
+                returnBooking.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(booking.CreatedBy));
+                bookingToReturn.Add(returnBooking);
+            }
             response.Data = bookingToReturn;
-            response.SetMessage(new List<string>{new string("Booking Report")},HttpStatusCode.OK);
+            response.SetMessage(new List<string> { new string("Booking Report") }, HttpStatusCode.OK);
             return response;
         }
     }
