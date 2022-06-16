@@ -19,11 +19,13 @@ namespace IICT_Store.Api.Controllers
         private readonly IAuthService authService;
         private readonly IUserService userSevice;
         private readonly IMailService emailService;
-        public AuthController(IAuthService authService, IUserService userSevice, IMailService emailService)
+        private readonly IEmailservice emailservice;
+        public AuthController(IAuthService authService, IUserService userSevice, IMailService emailService, IEmailservice emailservice)
         {
             this.authService = authService;
             this.userSevice = userSevice;
             this.emailService = emailService;
+            this.emailservice = emailservice;
         }
 
         [HttpPost]
@@ -53,6 +55,14 @@ namespace IICT_Store.Api.Controllers
         {
             var resetPassword = await authService.ResetPassword(forgotPasswordDto);
             return Ok(resetPassword);
+        }
+
+        [HttpGet("send/mail")]
+        public async Task<IActionResult> SendEmail()
+        {
+            var message = new Message(new string[] { "rahatultoma@gmail.com" }, "Test email async", "This is the content from our async email.");
+            await emailservice.SendEmailAsync(message);
+            return Ok();
         }
     }
 }

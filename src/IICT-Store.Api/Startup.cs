@@ -89,6 +89,7 @@ namespace IICT_Store.Api
             services.AddCors();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IEmailservice, EmailService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             services.AddScoped<IPurchaseService, PurchaseService>();
