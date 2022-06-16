@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Dtos.UserDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
 using IICT_Store.Repositories.DistributionRepositories;
@@ -14,6 +15,7 @@ using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
 using IICT_Store.Repositories.TestRepo;
+using IICT_Store.Repositories.UserRepositories;
 
 namespace IICT_Store.Services.MaintananceProductService
 {
@@ -27,12 +29,14 @@ namespace IICT_Store.Services.MaintananceProductService
         private readonly IDistributionRepository distributionRepository;
         private readonly IBaseRepo baseRepo;
         private readonly IMapper mapper;
+        private readonly IUserRepository userRepository;
 
         public MaintananceProductService(IMaintanancePeoductSerialNoRepository iMaintanancePeoductSerialNoRepository,
             IMaintananceRepository maintananceRepository,
             IMaintanancePeoductSerialNoRepository maintanancePeoductSerialNoRepository,
             IProductNumberRepository productNumberRepository,
             IProductRepository productRepository,
+            IUserRepository userRepository,
             IProductSerialNoRepository productSerialNoRepository, IDistributionRepository distributionRepository, IBaseRepo baseRepo, IMapper mapper)
         {
             this.maintananceRepository = maintananceRepository;
@@ -45,7 +49,7 @@ namespace IICT_Store.Services.MaintananceProductService
             this.mapper = mapper;
         }
 
-        public async Task<ServiceResponse<GetMaintananceProductDto>> Create(CreateMaintananceProductDto createMaintananceProduct)
+        public async Task<ServiceResponse<GetMaintananceProductDto>> Create(CreateMaintananceProductDto createMaintananceProduct, string userId)
         {
             ServiceResponse<GetMaintananceProductDto> response = new ServiceResponse<GetMaintananceProductDto>();
             try
@@ -76,7 +80,8 @@ namespace IICT_Store.Services.MaintananceProductService
                         SenderId = createMaintananceProduct.SenderId,
                         ReceiverId = createMaintananceProduct.ReceiverId,
                         DistributionId = distribution.Id,
-                        Note = createMaintananceProduct.Note
+                        Note = createMaintananceProduct.Note,
+                        CreatedBy = userId
                     };
                     maintananceRepository.Insert(maintananceProduct1);
                     distribution.TotalRemainingQuantity = distribution.TotalRemainingQuantity - 1;
@@ -101,6 +106,7 @@ namespace IICT_Store.Services.MaintananceProductService
                 }
                 MaintenanceProduct maintananceProduct = new MaintenanceProduct()
                 {
+                    CreatedBy = userId,
                     Quantity = createMaintananceProduct.Quantity,
                     ProductId = createMaintananceProduct.ProductId,
                     CreatedAt = DateTime.Now,
@@ -239,6 +245,7 @@ namespace IICT_Store.Services.MaintananceProductService
             var productToMap = mapper.Map<GetMaintananceProductDto>(mainTananceProduct);
             productToMap.MaintananceProductSerial = maintananceProductSerial.ToList();
             productToMap.Product = productMap;
+            productToMap.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(mainTananceProduct.CreatedBy));
             response.Data = productToMap;
             response.SetOkMessage();
             return response;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IICT_Store.Dtos.UserDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public string Name { get; set; }
         public int Quantity { get; set; }
         public string CreatedBy { get; set; }
+        public GetUserDto CreatedByUser { get; set; }
         public string UpdatedBy { get; set; }
     }
 }

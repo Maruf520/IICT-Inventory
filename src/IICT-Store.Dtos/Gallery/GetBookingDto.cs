@@ -1,4 +1,5 @@
-﻿using IICT_Store.Models.Gallery;
+﻿using IICT_Store.Dtos.UserDtos;
+using IICT_Store.Models.Gallery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace IICT_Store.Dtos.Gallery
         public ICollection<GetTimeSlotDto> BookingTimeSlots { get; set; }
         public string BookingBy { get; set; }
         public string Purposes { get; set; }
+        public GetUserDto CreatedByUser { get; set; }
         public string Note { get; set; }
     }
 }

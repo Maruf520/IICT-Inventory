@@ -27,7 +27,7 @@ namespace IICT_Store.Api
         {
             CreateMap<CreateProductDto, Product>();
             CreateMap<Product, GetProductDto>();
-            CreateMap<Category,GetCategoryDto>();
+            CreateMap<Category, GetCategoryDto>();
             CreateMap<CreatePurchasedDto, Purchashed>();
             CreateMap<CreatePurchasedDto, GetPurchaseDto>();
             CreateMap<Purchashed, GetPurchaseDto>();
@@ -57,6 +57,7 @@ namespace IICT_Store.Api
             CreateMap<MaintenanceProduct, GetMaintananceProductDto>();
             CreateMap<Room, GetRoomDto>();
             CreateMap<Booking, GetBookingReport>();
+            CreateMap<GetUserDto, ApplicationUser>();
         }
     }
 }

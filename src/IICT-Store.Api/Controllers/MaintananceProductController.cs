@@ -11,7 +11,7 @@ namespace IICT_Store.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MaintananceProductController : ControllerBase
+    public class MaintananceProductController : BaseController
     {
         private readonly IMaintananceProductService maintananceProductService;
 
@@ -23,7 +23,7 @@ namespace IICT_Store.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateMaintananceProductDto createMaintananceProduct)
         {
-            var maintanaceProduct = await maintananceProductService.Create(createMaintananceProduct);
+            var maintanaceProduct = await maintananceProductService.Create(createMaintananceProduct, GetuserId());
             return Ok(maintanaceProduct);
         }
         [HttpPost("repair")]

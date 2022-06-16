@@ -1,4 +1,5 @@
 ﻿using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Dtos.UserDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace IICT_Store.Dtos.DistributionDtos
         public string Note { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
+        public GetUserDto UpdatedByUser { get; set; }
+        public GetUserDto CreatedByByUser { get; set; }
         public string UpdatedBy { get; set; }
     }
 }

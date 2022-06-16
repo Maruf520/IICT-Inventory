@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IICT_Store.Dtos.DistributionDtos;
 using IICT_Store.Dtos.ProductDtos;
+using IICT_Store.Dtos.UserDtos;
 using IICT_Store.Models;
 using IICT_Store.Models.Products;
 using IICT_Store.Repositories.DamagedProductRepositories;
@@ -9,6 +10,7 @@ using IICT_Store.Repositories.DistributionRepositories;
 using IICT_Store.Repositories.ProductNumberRepositories;
 using IICT_Store.Repositories.ProductRepositories;
 using IICT_Store.Repositories.ProductSerialNoRepositories;
+using IICT_Store.Repositories.UserRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,7 @@ namespace IICT_Store.Services.DamagedProductServices
         private readonly IDamagedProductSerialNoRepository damagedProductSerialNoRepository;
         private readonly IProductNumberRepository productNumberRepository;
         private readonly IMapper mapper;
+        private readonly IUserRepository userRepository;
         public DamagedProductService(
             IProductSerialNoRepository productSerialNoRepository,
             IDamagedProductRepository damagedProductRepository,
@@ -33,7 +36,8 @@ namespace IICT_Store.Services.DamagedProductServices
             IProductRepository productReository,
             IDamagedProductSerialNoRepository damagedProductSerialNoRepository,
             IProductNumberRepository productNumberRepository,
-            IMapper mapper
+            IMapper mapper,
+            IUserRepository userRepository
 
             )
         {
@@ -44,6 +48,7 @@ namespace IICT_Store.Services.DamagedProductServices
             this.damagedProductSerialNoRepository = damagedProductSerialNoRepository;
             this.productNumberRepository = productNumberRepository;
             this.mapper = mapper;
+            this.userRepository = userRepository;
         }
 
         public async Task<ServiceResponse<DamagedProductDto>> DamageProduct(CreateDamagedProductDto damagedProductDto, string userId)
@@ -304,6 +309,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 var y = x.Where(x => x.Id == item.Id).ToList();
                 damagedProductDto.Id = product.Id;
                 damagedProductDto.Name = product.Name;
+                damagedProductDto.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(item.CreatedBy));
                 damagedProductDto.Quantity = y.Count;
                 damagedProductDtos.Add(damagedProductDto);
 
@@ -325,6 +331,7 @@ namespace IICT_Store.Services.DamagedProductServices
             {
                 GetDamagedProductDto damagedProductDto = new();
                 var map = mapper.Map<GetDamagedProductDto>(items);
+                map.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(items.CreatedBy));
                 damagedProductDtos.Add(map);
             }
             response.Data = damagedProductDtos;
@@ -350,6 +357,7 @@ namespace IICT_Store.Services.DamagedProductServices
                 return response;
             }
             var map = mapper.Map<GetDamagedProductDto>(damagedProduct);
+            map.CreatedByUser = mapper.Map<GetUserDto>(await userRepository.GetById(damagedProduct.CreatedBy));
             response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Data = map;
             return response;

@@ -703,8 +703,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<DateTime>("ConfirmDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ConfirmedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ConfirmedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -741,6 +741,9 @@ namespace IICT_Store.Api.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("RejectedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Supplier")
                         .HasColumnType("nvarchar(max)");
