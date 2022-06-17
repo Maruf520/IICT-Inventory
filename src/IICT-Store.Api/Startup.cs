@@ -78,6 +78,7 @@ namespace IICT_Store.Api
                         {
                             c.SwaggerDoc("v1", new OpenApiInfo { Title = "IICT_Store.Api", Version = "v1" });
                         });*/
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddDbContext<IICT_StoreDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Connection"), optionsBuilder =>
             optionsBuilder.MigrationsAssembly("IICT-Store.Api")));
@@ -89,6 +90,7 @@ namespace IICT_Store.Api
             services.AddCors();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IEmailservice, EmailService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             services.AddScoped<IPurchaseService, PurchaseService>();

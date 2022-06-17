@@ -19,11 +19,13 @@ namespace IICT_Store.Api.Controllers
         private readonly IAuthService authService;
         private readonly IUserService userSevice;
         private readonly IMailService emailService;
-        public AuthController(IAuthService authService, IUserService userSevice, IMailService emailService)
+        private readonly IEmailservice emailservice;
+        public AuthController(IAuthService authService, IUserService userSevice, IMailService emailService, IEmailservice emailservice)
         {
             this.authService = authService;
             this.userSevice = userSevice;
             this.emailService = emailService;
+            this.emailservice = emailservice;
         }
 
         [HttpPost]
@@ -44,7 +46,9 @@ namespace IICT_Store.Api.Controllers
             var token = await authService.ForgotPasswordTokenGenerator(user.Data.Email);
             var bseUrl = "http://20.243.27.119/reset-password";
             var links = bseUrl + "?Data=" + token.Data + "&" + "email=" + email;
-            await emailService.SendEmail(email, "IICT inventory password reset", "This is you password reset link. Use this to reset your password." + "\n" + $"{links}", user.Data.Names);
+            var message = new Message(new string[] { email }, "IICT inventory password reset", "This is you password reset link. Use this to reset your password." + "\n" + $"{links}");
+            await emailservice.SendEmailAsync(message);
+            //await emailService.SendEmail(email, "IICT inventory password reset", "This is you password reset link. Use this to reset your password." + "\n" + $"{links}", user.Data.Names);
             return Ok($"Password reset link sent to {email}.");
         }
 
@@ -53,6 +57,14 @@ namespace IICT_Store.Api.Controllers
         {
             var resetPassword = await authService.ResetPassword(forgotPasswordDto);
             return Ok(resetPassword);
+        }
+
+        [HttpGet("send/mail")]
+        public async Task<IActionResult> SendEmail()
+        {
+            var message = new Message(new string[] { "rahatultoma@gmail.com" }, "Test email async", "Hey Toma, Did you get any mail from my new mail service??" + "\n" + " Please let me know when you are done.");
+            await emailservice.SendEmailAsync(message);
+            return Ok();
         }
     }
 }
