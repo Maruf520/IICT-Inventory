@@ -26,10 +26,10 @@ namespace IICT_Store.Services.PurchaseServices
         private readonly IPurchaseRepository purchaseRepository;
         private readonly IProductService productService;
         private readonly IProductRepository productRepository;
-        private readonly IMailService mailService;
+        private readonly IEmailservice mailService;
         private readonly IUserRepository userRepository;
         private readonly IBaseRepo baseRepo;
-        public PurchaseService(IPurchaseRepository purchaseRepository, IProductService productService, IMapper mapper, IProductRepository productRepository, IMailService mailService, IUserRepository userRepository, IBaseRepo baseRepo)
+        public PurchaseService(IPurchaseRepository purchaseRepository, IProductService productService, IMapper mapper, IProductRepository productRepository, IEmailservice mailService, IUserRepository userRepository, IBaseRepo baseRepo)
         {
             this.purchaseRepository = purchaseRepository;
             this.productService = productService;
@@ -84,12 +84,20 @@ namespace IICT_Store.Services.PurchaseServices
             productToMap.CashMemos = cashMemos;
             productToMap.PuchasedDate = DateTime.Now;
             purchaseRepository.Insert(productToMap);
-            var users = await userRepository.GetUserByRole("Approval Admin");
-            foreach (var mail in users)
-            {
-                var user = await userRepository.GetByEmail(mail);
-                await mailService.SendEmail(mail, "IICT Inventory", "Sir, There is a pending request on IICT Inventory.. Please check it and take your step.", $"{user.UserName}");
-            }
+            /*            string textBody = $"<html><table border=" + 1 + " cellpadding=" + 0 + " cellspacing=" + 0 + " width = " + 400 + $">" +
+                            $"<tr bgcolor='#4da6ff'><td><b>Product Name</b></td> <td> {product.Data.Name} </td></tr>" +
+                            $"<tr bgcolor='#4da6ff'><td><b>Quantity</b></td> <td> <b> {product.Data.QuantityInStock} </b> </td></tr>" +
+                            $"<tr bgcolor='#4da6ff'><td><b>Date</b></td> <td> <b> {product.Data.QuantityInStock} </b> </td></tr> " +
+                            $"<tr bgcolor='#4da6ff'><td><b>Quantity</b></td> <td> <b> {product.Data.QuantityInStock} </b> </td></tr> " +
+                            $"<tr bgcolor='#4da6ff'><td><b>Quantity</b></td> <td> <b> {product.Data.QuantityInStock} </b> </td></tr>" +
+                            $"<tr bgcolor='#4da6ff'><td><b>Quantity</b></td> <td> <b> {product.Data.QuantityInStock} </b> </td></tr></table></html>";*/
+
+            //textBody += "</table>";
+            var emailsByRole = await userRepository.GetUserByRole("Approval Admin");
+            var messaage = new Message(emailsByRole, "IICT Inventory", "Dear Sir," + "\n There is a pending request on IICT Inventory.. Please check it and take your step.");
+
+            await mailService.SendEmailAsync(messaage);
+
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToReturn.Id = productToMap.Id;
             productToReturn.CashMemos = cashMemoDtos;

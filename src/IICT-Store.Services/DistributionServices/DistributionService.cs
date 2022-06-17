@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using IICT_Store.Models.Persons;
 using IICT_Store.Dtos.UserDtos;
 using IICT_Store.Repositories.UserRepositories;
+using IICT_Store.Repositories.PersonRepositories;
 
 namespace IICT_Store.Services.DistributionServices
 {
@@ -32,7 +33,8 @@ namespace IICT_Store.Services.DistributionServices
         private readonly ILogger<DistributionService> logger;
         private readonly IBaseRepo baseRepo;
         private readonly IUserRepository userRepository;
-        public DistributionService(IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository, ILogger<DistributionService> logger, IBaseRepo baseRepo, IUserRepository userRepository)
+        private readonly IPersonRepository personRepository;
+        public DistributionService(IPersonRepository personRepository, IDistributionRepository distributionRepository, IMapper mapper, IProductRepository productRepository, IProductSerialNoRepository productSerialNoRepository, IProductNumberRepository productNumberRepository, ILogger<DistributionService> logger, IBaseRepo baseRepo, IUserRepository userRepository)
         {
             this.distributionRepository = distributionRepository;
             this.mapper = mapper;
@@ -42,6 +44,7 @@ namespace IICT_Store.Services.DistributionServices
             this.logger = logger;
             this.baseRepo = baseRepo;
             this.userRepository = userRepository;
+            this.personRepository = personRepository;
         }
         public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto, string userId)
         {
@@ -475,7 +478,8 @@ namespace IICT_Store.Services.DistributionServices
             ServiceResponse<GetDistributionDto> response = new();
             try
             {
-                var getSenderId = baseRepo.GetItems<Person>(x => x.Email == "syed@sust.edu").FirstOrDefault();
+                var getAllPerson = personRepository.GetAll().ToList();
+                var getSenderId = getAllPerson.Where(x => x.Email == "syed@sust.edu").FirstOrDefault();
                 if (getSenderId == null)
                 {
                     response.Messages.Add("Sender ID Not Found!");
