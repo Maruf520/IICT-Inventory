@@ -277,13 +277,13 @@ namespace IICT_Store.Services.ProductServices
             if (product == null)
             {
                 response.Messages.Add("Product Not Found.");
-                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 return response;
             }
             if (product.HasSerial == false)
             {
                 response.Messages.Add("Sorry, this product doesn't have any serial No.");
-                response.StatusCode = System.Net.HttpStatusCode.OK;
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 return response;
             }
             if (list != null)
@@ -292,6 +292,7 @@ namespace IICT_Store.Services.ProductServices
                 if (checkSerialNo.Result == false)
                 {
                     response.Messages.Add("Please set unique serial no.");
+                    response.StatusCode = HttpStatusCode.BadRequest;
                     return response;
                 }
             }
@@ -300,7 +301,7 @@ namespace IICT_Store.Services.ProductServices
             if (product.TotalQuantity < list.Count)
             {
                 response.Messages.Add("Please reduce the quantity of serial number.");
-                response.StatusCode = System.Net.HttpStatusCode.OK;
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 return response;
             }
             foreach (var item in list)
