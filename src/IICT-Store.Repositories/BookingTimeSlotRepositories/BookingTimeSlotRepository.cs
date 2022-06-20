@@ -22,5 +22,11 @@ namespace IICT_Store.Repositories.BookingTimeSlotRepositories
             var timeSlots = await context.BookingTimeSlots.Include(x => x.Booking).Where(x => x.Date.Date == date.Date && x.GalleryNo == galleryNo).ToListAsync();
             return timeSlots;
         }
+
+        public async Task<BookingTimeSlot> GetByBookingId(long id)
+        {
+            var timeSlot = await context.BookingTimeSlots.Where(x => x.BookingId == id).FirstOrDefaultAsync();
+            return timeSlot;
+        }
     }
 }
