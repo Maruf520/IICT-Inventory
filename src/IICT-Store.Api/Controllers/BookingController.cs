@@ -61,6 +61,12 @@ namespace IICT_Store.Api.Controllers
             return Ok(report);
         }
 
+        [HttpDelete("cancel/{id}")]
+        public async Task<IActionResult> CancelBooking(long id)
+        {
+            var booking = await bookingService.CancelBooking(id);
+            return Ok(booking);
+        }
 
 
     }

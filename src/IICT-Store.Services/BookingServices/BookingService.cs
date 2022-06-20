@@ -285,5 +285,26 @@ namespace IICT_Store.Services.BookingServices
             response.SetMessage(new List<string> { new string("Booking Report") }, HttpStatusCode.OK);
             return response;
         }
+
+        public async Task<ServiceResponse<GetBookingDto>> CancelBooking(long id)
+        {
+            ServiceResponse<GetBookingDto> response = new();
+            try
+            {
+                var booking = bookingRespository.GetById(id);
+                var bookingTimeSlot = await bookingTimeSlotRepository.GetByBookingId(id);
+                bookingRespository.Delete(id);
+                bookingTimeSlotRepository.Delete(bookingTimeSlot.Id);
+                response.StatusCode = HttpStatusCode.OK;
+                response.Messages.Add("Booking cancelled!");
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Messages.Add(e.Message);
+                response.StatusCode = HttpStatusCode.BadRequest;
+                return response;
+            }
+        }
     }
 }

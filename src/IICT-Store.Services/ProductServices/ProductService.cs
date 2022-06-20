@@ -20,6 +20,7 @@ using IICT_Store.Models.Categories;
 using IICT_Store.Models.Pruchashes;
 using IICT_Store.Repositories.TestRepo;
 using LicenseContext = OfficeOpenXml.LicenseContext;
+using IICT_Store.Repositories.UserRepositories;
 
 namespace IICT_Store.Services.ProductServices
 {
@@ -31,10 +32,11 @@ namespace IICT_Store.Services.ProductServices
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IProductNumberRepository productNumberRepository;
         private readonly IBaseRepo baseRepo;
+        private readonly IUserRepository userRepository;
         public ProductService(IProductRepository productRepository,
             IMapper mapper, IDistributionRepository distributionRepository,
             IProductSerialNoRepository productSerialNoRepository,
-            IProductNumberRepository productNumberRepository, IBaseRepo baseRepo)
+            IProductNumberRepository productNumberRepository, IBaseRepo baseRepo, IUserRepository userRepository)
         {
             this.mapper = mapper;
             this.productRepository = productRepository;
@@ -42,6 +44,7 @@ namespace IICT_Store.Services.ProductServices
             this.productSerialNoRepository = productSerialNoRepository;
             this.productNumberRepository = productNumberRepository;
             this.baseRepo = baseRepo;
+            this.userRepository = userRepository;
         }
 
         public async Task<ServiceResponse<GetProductDto>> CreateProduct(CreateProductDto createProductDto, string userId)
@@ -467,6 +470,7 @@ namespace IICT_Store.Services.ProductServices
                 var productNos = await productNumberRepository.GetByProductId(product.Id);
                 var productNosWithoutDmamgedProduct = productNos.Where(x => x.ProductStatus != ProductStatus.Damaged).Count();
                 var map = mapper.Map<GetProductDto>(product);
+
                 if (product.HasSerial == true)
                 {
                     map.NotSerializedProduct = product.TotalQuantity - productNosWithoutDmamgedProduct;

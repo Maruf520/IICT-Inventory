@@ -60,7 +60,7 @@ namespace IICT_Store.Services.PurchaseServices
                     cashMemos.Add(cashMemo);
                 }
             }
-            var product = await productService.GetProductById(createPurchaseDto.ProductId);
+            var product = await productRepository.GetProductById(createPurchaseDto.ProductId);
             if (product == null)
             {
                 response.Messages.Add("Product Not Found.");
