@@ -139,6 +139,7 @@ namespace IICT_Store.Services.ApprovalServices
             purchaseToReturn.Product = productToMap;
             response.Data = purchaseToReturn;
             response.Messages.Add("Purchase Confirmed.");
+            response.StatusCode = System.Net.HttpStatusCode.Created;
             return response;
         }
         public async Task<ServiceResponse<GetPurchaseDto>> RejectStatus(long id, string userId)
@@ -165,6 +166,7 @@ namespace IICT_Store.Services.ApprovalServices
             purchaseToReturn.Product = productToMap;
             response.Data = purchaseToReturn;
             response.Messages.Add("Purchase Rejected.");
+            response.StatusCode = System.Net.HttpStatusCode.OK;
             return response;
         }
 

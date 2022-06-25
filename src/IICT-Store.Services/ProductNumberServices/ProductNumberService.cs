@@ -13,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IICT_Store.Repositories.TestRepo;
+using IICT_Store.Repositories.UserRepositories;
+using IICT_Store.Dtos.UserDtos;
 
 namespace IICT_Store.Services.ProductNumberServices
 {
@@ -24,11 +26,12 @@ namespace IICT_Store.Services.ProductNumberServices
         private readonly IProductSerialNoRepository productSerialNoRepository;
         private readonly IDistributionRepository distributionRepository;
         private readonly IBaseRepo baseRepo;
-        public ProductNumberService(IProductNumberRepository productNumberRepository, 
-            IProductRepository productRepository, 
-            IMapper mapper, 
-            IProductSerialNoRepository productSerialNoRepository, 
-            IDistributionRepository distributionRepository, IBaseRepo baseRepo)
+        private readonly IUserRepository userRepository;
+        public ProductNumberService(IProductNumberRepository productNumberRepository,
+            IProductRepository productRepository,
+            IMapper mapper,
+            IProductSerialNoRepository productSerialNoRepository,
+            IDistributionRepository distributionRepository, IBaseRepo baseRepo, IUserRepository userRepository)
         {
             this.productNumberRepository = productNumberRepository;
             this.productRepository = productRepository;
@@ -36,12 +39,13 @@ namespace IICT_Store.Services.ProductNumberServices
             this.productSerialNoRepository = productSerialNoRepository;
             this.distributionRepository = distributionRepository;
             this.baseRepo = baseRepo;
+            this.userRepository = userRepository;
         }
         public async Task<ServiceResponse<GetProductDto>> InsertProductNo(long id, CreateProductNoDto createProductNoDto, string userId)
         {
             ServiceResponse<GetProductDto> response = new();
             var product = productRepository.GetById(id);
-            if(product == null)
+            if (product == null)
             {
                 response.Messages.Add("Not Found.");
                 response.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -57,15 +61,15 @@ namespace IICT_Store.Services.ProductNumberServices
             {
                 var productCount = await productNumberRepository.GetByProductId(id);
                 var avaiableAmount = product.QuantityInStock - productCount.Count;
-                if(product.TotalQuantity < createProductNoDto.ProductNos.Count)
+                if (product.TotalQuantity < createProductNoDto.ProductNos.Count)
                 {
                     response.Messages.Add("You have to reduce product item.");
                     response.StatusCode = System.Net.HttpStatusCode.OK;
                     return response;
                 }
             }
-/*            if(product.TotalQuantity >= productCount)*/
-            if(product.TotalQuantity < createProductNoDto.ProductNos.Count)
+            /*            if(product.TotalQuantity >= productCount)*/
+            if (product.TotalQuantity < createProductNoDto.ProductNos.Count)
             {
                 response.Messages.Add("You have to reduce product item.");
                 response.StatusCode = System.Net.HttpStatusCode.OK;
@@ -77,7 +81,7 @@ namespace IICT_Store.Services.ProductNumberServices
                 response.Messages.Add("Please set unique serial no.");
                 return response;
             }
-           
+
             foreach (var item in createProductNoDto.ProductNos)
             {
                 ProductNo productNo = new();
@@ -91,7 +95,7 @@ namespace IICT_Store.Services.ProductNumberServices
             response.Messages.Add("Product Number Added.");
             response.StatusCode = System.Net.HttpStatusCode.Created;
             return response;
-            
+
         }
 
         public async Task<bool> CheckIfSerialNoExists(long productId, List<ProductNoDto> name)
@@ -141,6 +145,9 @@ namespace IICT_Store.Services.ProductNumberServices
                         }
 
                         productNoDto.DistributedTo = distribution.DistributedTo;
+                        var user = await userRepository.GetById(distribution.CreatedBy);
+                        productNoDto.UpdatedByUser = mapper.Map<GetUserDto>(user);
+                        productNoDto.CreatedByUser = productNoDto.UpdatedByUser;
                     }
                     productNoDto.Id = product.Id;
                     productNoDto.Name = product.Name;
