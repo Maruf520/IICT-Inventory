@@ -1,4 +1,5 @@
-﻿using IICT_Store.Models.Products;
+﻿using IICT_Store.Dtos.UserDtos;
+using IICT_Store.Models.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public ProductStatus ProductStatus { get; set; }
         public int RoomNo { get; set; }
         public long DistributedTo { get; set; }
+        public GetUserDto CreatedByUser { get; set; }
+        public GetUserDto UpdatedByUser { get; set; }
     }
 }

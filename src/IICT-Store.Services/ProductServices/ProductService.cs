@@ -527,6 +527,7 @@ namespace IICT_Store.Services.ProductServices
                 reportDtos.Add(productReport);
                 response.SetMessage(new List<string> { new("All") });
                 response.Data = reportDtos;
+                response.StatusCode = HttpStatusCode.OK;
                 return response;
             }
             foreach (var singleProduct in allProducts)
@@ -561,7 +562,7 @@ namespace IICT_Store.Services.ProductServices
                 productReport.TotalMaintenanceProduct = maintananceProductQuantity;
                 reportDtos.Add(productReport);
             }
-
+            response.StatusCode = HttpStatusCode.OK;
             response.SetMessage(new List<string> { new("All") });
             response.Data = reportDtos;
             return response;
@@ -585,6 +586,7 @@ namespace IICT_Store.Services.ProductServices
             informationDto.TotalProduct = totalProduct;
             informationDto.TotalUnAssigned = totalUnassignedProduct;
             response.Data = informationDto;
+            response.StatusCode = HttpStatusCode.OK;
             response.SetMessage(new List<string> { new string("Product informartion") }, HttpStatusCode.OK);
             return response;
         }
