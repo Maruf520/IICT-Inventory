@@ -293,8 +293,9 @@ namespace IICT_Store.Services.BookingServices
             {
                 var booking = bookingRespository.GetById(id);
                 var bookingTimeSlot = await bookingTimeSlotRepository.GetByBookingId(id);
-                bookingRespository.Delete(id);
                 bookingTimeSlotRepository.Delete(bookingTimeSlot.Id);
+                bookingRespository.Delete(id);
+
                 response.StatusCode = HttpStatusCode.OK;
                 response.Messages.Add("Booking cancelled!");
                 return response;
