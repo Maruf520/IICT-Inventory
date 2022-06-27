@@ -13,7 +13,7 @@ namespace IICT_Store.Dtos.Gallery
     {
         [Required]
         public GalleryNo GalleryNo { get; set; }
-        [Required]
+
         public IFormFile Application { get; set; }
         [Required]
         public DateTime Date { get; set; }

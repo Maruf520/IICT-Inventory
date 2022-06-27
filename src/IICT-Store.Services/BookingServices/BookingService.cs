@@ -40,8 +40,7 @@ namespace IICT_Store.Services.BookingServices
         {
             ServiceResponse<GetBookingDto> response = new();
             Booking booking = new();
-            var application = await UploadFile(createBookingDto.Application);
-            booking.Application = application;
+
             booking.BookingBy = createBookingDto.BookingBy;
             booking.Date = createBookingDto.Date;
             booking.Note = createBookingDto.Note;
@@ -54,6 +53,11 @@ namespace IICT_Store.Services.BookingServices
             if (createBookingDto.MoneyReceipt != null)
             {
                 booking.MoneyReceipt = await UploadFile(createBookingDto.MoneyReceipt);
+            }
+            if (createBookingDto.Application != null)
+            {
+                var application = await UploadFile(createBookingDto.Application);
+                booking.Application = application;
             }
             bookingRespository.Insert(booking);
             foreach (var slotId in createBookingDto.TimeSlotId)
