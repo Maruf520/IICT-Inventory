@@ -69,7 +69,7 @@ namespace IICT_Store.Services.ProductServices
             productRepository.Insert(productToCreate);
             var productToMap = mapper.Map<GetProductDto>(productToCreate);
             response.Messages.Add("Created");
-            response.StatusCode = System.Net.HttpStatusCode.Created;
+            response.StatusCode = System.Net.HttpStatusCode.OK;
             response.Data = productToMap;
             return response;
         }
