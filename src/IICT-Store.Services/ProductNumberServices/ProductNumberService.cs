@@ -126,7 +126,7 @@ namespace IICT_Store.Services.ProductNumberServices
                 if (productsNo.Count == 0)
                 {
                     response.Messages.Add("Not Found.");
-                    response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    response.StatusCode = System.Net.HttpStatusCode.OK;
                     return response;
                 }
 
