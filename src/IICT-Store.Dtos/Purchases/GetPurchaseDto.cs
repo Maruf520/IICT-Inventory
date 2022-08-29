@@ -14,7 +14,7 @@ namespace IICT_Store.Dtos.Purchases
         public long Id { get; set; }
         public GetProductDto Product { get; set; }
         public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string Supplier { get; set; }
         public ICollection<CashMemoDtos> CashMemos { get; set; }
         public PurchaseStatus PurchaseStatus { get; set; }

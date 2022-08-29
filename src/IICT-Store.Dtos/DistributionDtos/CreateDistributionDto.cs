@@ -13,7 +13,7 @@ namespace IICT_Store.Dtos.DistributionDtos
         [Required]
         public long ProductId { get; set; }
         [Required]
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string NameOfUser { get; set; }
         public string Description { get; set; }
         public int OrderNo { get; set; }

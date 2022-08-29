@@ -12,7 +12,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public long ProductId { get; set; }
         public long SerialId { get; set; }
         public int DistributionId { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         [Required]
         public long SenderId { get; set; }
         [Required]

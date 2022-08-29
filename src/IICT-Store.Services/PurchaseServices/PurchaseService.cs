@@ -93,10 +93,10 @@ namespace IICT_Store.Services.PurchaseServices
                             $"<tr bgcolor='#4da6ff'><td><b>Quantity</b></td> <td> <b> {product.Data.QuantityInStock} </b> </td></tr></table></html>";*/
 
             //textBody += "</table>";
-            var emailsByRole = await userRepository.GetUserByRole("Approval Admin");
-            var messaage = new Message(emailsByRole, "IICT Inventory", "Dear Sir," + "\n There is a pending request on IICT Inventory.. Please check it and take your step.");
+            //var emailsByRole = await userRepository.GetUserByRole("Approval Admin");
+           // var messaage = new Message(emailsByRole, "IICT Inventory", "Dear Sir," + "\n There is a pending request on IICT Inventory.. Please check it and take your step.");
 
-            await mailService.SendEmailAsync(messaage);
+           // await mailService.SendEmailAsync(messaage);
 
             var productToReturn = mapper.Map<GetPurchaseDto>(createPurchaseDto);
             productToReturn.Id = productToMap.Id;

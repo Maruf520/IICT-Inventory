@@ -18,11 +18,11 @@ namespace IICT_Store.Models.Products
         public int? RoomNo { get; set; }
         public long  ProductId { get; set; }
         public Product  Product { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string NameOfUser { get; set; }
         public string Description { get; set; }
         public int OrderNo { get; set; }
-        public int TotalRemainingQuantity { get; set; }
+        public decimal TotalRemainingQuantity { get; set; }
 
         //foreignKey
         [ForeignKey("SenderId")]

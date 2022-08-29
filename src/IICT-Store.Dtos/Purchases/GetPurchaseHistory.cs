@@ -7,7 +7,7 @@ namespace IICT_Store.Dtos.Purchases
         public GetProductDto Product { get; set; }
         public int YearOfPurchase { get; set; }
         public decimal TotalAmount { get; set; }
-        public int TotalQuntity { get; set; }
+        public decimal TotalQuntity { get; set; }
         public int Year { get; set; }
 
     }

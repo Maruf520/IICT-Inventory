@@ -13,7 +13,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public long DistributionId { get; set; }
         public long ReceiverId { get; set; }
         public long SenderId { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string Note { get; set; }
         public List<MaintenanceProductSerialNo> MaintananceProductSerial { get; set; }
     }

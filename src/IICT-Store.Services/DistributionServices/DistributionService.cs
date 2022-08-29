@@ -49,7 +49,7 @@ namespace IICT_Store.Services.DistributionServices
         public async Task<ServiceResponse<GetDistributionDto>> Create(CreateDistributionDto createDistributionDto, string userId)
         {
             ServiceResponse<GetDistributionDto> response = new();
-            var getSenderId = baseRepo.GetItems<Person>(x => x.Email == "syed@sust.edu").FirstOrDefault();
+            var getSenderId = baseRepo.GetItems<Person>(x => x.Email == "maruf@mail.com").FirstOrDefault();
             if (getSenderId == null)
             {
                 response.Messages.Add("Sender ID Not Found!");
@@ -479,7 +479,7 @@ namespace IICT_Store.Services.DistributionServices
             try
             {
                 var getAllPerson = personRepository.GetAll().ToList();
-                var getSenderId = getAllPerson.Where(x => x.Email == "syed@sust.edu").FirstOrDefault();
+                var getSenderId = getAllPerson.Where(x => x.Email == "maruf@mail.com").FirstOrDefault();
                 if (getSenderId == null)
                 {
                     response.Messages.Add("Sender ID Not Found!");

@@ -8,7 +8,7 @@ namespace IICT_Store.Dtos.DistributionDtos
 {
     public class GetDistributionItem
     {
-        public int Total { get; set; }
+        public decimal Total { get; set; }
         public int RoomNo { get; set; }
         public List<ProductSerialNoDto> productSerialNoDtos { get; set; }
     }

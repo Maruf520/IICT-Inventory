@@ -23,7 +23,7 @@ namespace IICT_Store.Models.Products
         public long? PersonId { get; set; } //Damaged from single user
  //       public Person Person { get; set; }
         public DamagedFrom DamagedFrom { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public bool WasNotDistributed { get; set; }
         public ICollection<DamagedProductSerialNo> DamagedProductSerialNos { get; set; }
     }

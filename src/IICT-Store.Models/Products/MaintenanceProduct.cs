@@ -16,7 +16,7 @@ namespace IICT_Store.Models.Products
         public Person Receiver { get; set; }
         public long SenderId { get; set; }
         public Person Sender { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string Note { get; set; }
     }
 }

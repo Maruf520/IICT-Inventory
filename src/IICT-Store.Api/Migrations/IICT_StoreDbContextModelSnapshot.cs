@@ -237,8 +237,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("ReceiverId")
                         .HasColumnType("bigint");
@@ -335,8 +335,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("ReceiverId")
                         .HasColumnType("bigint");
@@ -350,8 +350,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("SignatureOfReceiver")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TotalRemainingQuantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("TotalRemainingQuantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -392,8 +392,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ReceiverId")
                         .HasColumnType("bigint");
@@ -482,11 +482,14 @@ namespace IICT_Store.Api.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("QuantityInStock")
+                    b.Property<decimal>("QuantityInStock")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("QuantityType")
                         .HasColumnType("int");
 
-                    b.Property<int>("TotalQuantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("TotalQuantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -596,8 +599,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ReceiverId")
                         .HasColumnType("int");
@@ -739,8 +742,8 @@ namespace IICT_Store.Api.Migrations
                     b.Property<int>("PurchaseStatus")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("RejectedBy")
                         .HasColumnType("nvarchar(max)");

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IICT_Store.Api.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20220627002400_MigrationName")]
-    partial class MigrationName
+    [Migration("20220829165241_MigrationIdentity")]
+    partial class MigrationIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

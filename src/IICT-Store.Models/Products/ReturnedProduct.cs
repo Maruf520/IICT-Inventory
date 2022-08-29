@@ -10,7 +10,7 @@ namespace IICT_Store.Models.Products
     public class ReturnedProduct : BaseModel
     {
         public int ProductId { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public int ReceiverId { get; set; }
         public Person Receiver { get; set; }
         public int SenderId { get; set; }

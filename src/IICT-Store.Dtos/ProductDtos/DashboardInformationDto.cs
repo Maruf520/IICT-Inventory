@@ -2,9 +2,9 @@
 {
     public class DashboardInformationDto
     {
-        public int TotalProduct { get; set; }
-        public int TotalCategory { get; set; }
-        public int TotalDamaged { get; set; }
-        public int TotalUnAssigned { get; set; }
+        public decimal TotalProduct { get; set; }
+        public decimal TotalCategory { get; set; }
+        public decimal TotalDamaged { get; set; }
+        public decimal TotalUnAssigned { get; set; }
     }
 }

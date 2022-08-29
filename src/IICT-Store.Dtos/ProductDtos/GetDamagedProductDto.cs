@@ -16,7 +16,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public int RoomNo { get; set; } //Damaged from room
         public long PersonId { get; set; } //Damaged from single user
         public DamagedFrom DamagedFrom { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public bool WasNotDistributed { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }

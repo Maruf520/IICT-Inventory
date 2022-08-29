@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IICT_Store.Models.Products;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +17,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public string Description { get; set; }
         [Required]
         public long CategoryId { get; set; }
+        public QuantityType QuantityType { get; set; }
         public bool HasSerial { get; set; }
     }
 }

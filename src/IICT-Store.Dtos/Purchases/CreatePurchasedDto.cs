@@ -18,7 +18,7 @@ namespace IICT_Store.Dtos.Purchases
         [Required]
         public decimal Price { get; set; }
         [Required]
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         [Required]
         public PaymentBy PaymentBy { get; set; }
         public string Description { get; set; }

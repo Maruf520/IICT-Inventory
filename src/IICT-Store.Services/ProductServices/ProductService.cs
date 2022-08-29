@@ -575,10 +575,10 @@ namespace IICT_Store.Services.ProductServices
             var category = baseRepo.GetAll<Category>().ToList();
             var products = baseRepo.GetAll<Product>().ToList();
             var damaged = baseRepo.GetAll<DamagedProduct>();
-            int totalProduct = products.Select(x => x.TotalQuantity).Sum();
-            int totalUnassignedProduct = products.Select(x => x.TotalQuantity).Sum();
+            decimal totalProduct = products.Select(x => x.TotalQuantity).Sum();
+            decimal totalUnassignedProduct = products.Select(x => x.TotalQuantity).Sum();
             int totalCategory = category.Count;
-            int totalDamagedProduct = damaged.Select(x => x.Quantity).Sum();
+            decimal totalDamagedProduct = damaged.Select(x => x.Quantity).Sum();
 
             DashboardInformationDto informationDto = new();
             informationDto.TotalCategory = totalCategory;

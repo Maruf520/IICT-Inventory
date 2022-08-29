@@ -13,7 +13,7 @@ namespace IICT_Store.Dtos.Purchases
         public long Id { get; set; }
         public GetProductDto Product { get; set; }
         public decimal PricePerUnit { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string Supplier { get; set; }
         public PaymentProcess PaymentProcess { get; set; }
         public PaymentBy PaymentBy { get; set; }
