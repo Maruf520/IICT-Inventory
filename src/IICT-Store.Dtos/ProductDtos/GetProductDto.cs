@@ -1,4 +1,5 @@
 ﻿using IICT_Store.Dtos.UserDtos;
+using IICT_Store.Models.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace IICT_Store.Dtos.ProductDtos
         public long CategoryId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public QuantityType QuantityType { get; set; }
         public GetUserDto CreatedByUser { get; set; }
         public GetUserDto UpdatedByUser { get; set; }
         public bool HasSerial { get; set; }
