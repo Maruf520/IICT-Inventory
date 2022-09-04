@@ -142,6 +142,8 @@ namespace IICT_Store.Services.ProductServices
             product.CategoryId = createProductDto.CategoryId;
             product.Description = createProductDto.Description;
             product.Name = createProductDto.Name;
+            product.QuantityType = createProductDto.QuantityType;
+            product.HasSerial = createProductDto.HasSerial;
             product.UpdatedAt = DateTime.Now;
             product.UpdatedBy = userId;
             productRepository.Update(product);
